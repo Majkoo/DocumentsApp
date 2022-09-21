@@ -1,6 +1,5 @@
-
-
 using DocumentsApp.Data;
+using DocumentsApp.Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddDbContext<DocumentsAppDbContext>();
 
 var app = builder.Build();
 
