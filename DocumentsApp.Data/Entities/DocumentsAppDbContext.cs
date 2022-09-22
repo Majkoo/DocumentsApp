@@ -14,7 +14,7 @@ public class DocumentsAppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("MariaDb");
+        var connectionString = _configuration.GetConnectionString("LocalMariaDb");
         optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
     }
     
