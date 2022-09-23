@@ -1,8 +1,7 @@
 using DocumentsApp.Data.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
-namespace DocumentsApp.Data;
+namespace DocumentsApp.Data.Services;
 
 public class DocumentsAppDbSeeder
 {

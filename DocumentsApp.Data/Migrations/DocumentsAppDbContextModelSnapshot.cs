@@ -40,7 +40,7 @@ namespace DocumentsApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DocAuthorizations");
+                    b.ToTable("DocAuthorizations", (string)null);
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
@@ -65,7 +65,7 @@ namespace DocumentsApp.Data.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>
@@ -89,7 +89,7 @@ namespace DocumentsApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.DocAuthorization", b =>

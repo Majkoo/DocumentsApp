@@ -13,6 +13,8 @@ public class User
     [Required]
     [EmailAddress]
     public string Email { get; set; }
+    
+    [Required]
     public string PasswordHash { get; set; }
 
     public ICollection<Document> Documents { get; set; }
