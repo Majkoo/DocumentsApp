@@ -4,7 +4,7 @@ namespace DocumentsApp.Data.Entities;
 
 public class User
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
     [MaxLength(20)]
@@ -13,7 +13,7 @@ public class User
     [Required]
     [EmailAddress]
     public string Email { get; set; }
-    
-    [Required]
     public string PasswordHash { get; set; }
+
+    public ICollection<Document> Documents { get; set; }
 }

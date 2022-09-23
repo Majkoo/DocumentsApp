@@ -1,7 +1,8 @@
 ﻿namespace DocumentsApp.Data.Entities;
 
-public enum AccessLevelEnum
+public enum AccessLevel
 {
     Read,
-    Write
+    Write,
+    Full
 }
