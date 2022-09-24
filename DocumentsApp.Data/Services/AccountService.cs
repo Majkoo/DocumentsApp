@@ -51,8 +51,12 @@ public class AccountService : IAccountService
         if (user is null) throw new BadRequestException("Wrong username or password");
 
         var pwdResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+        
         if (pwdResult is PasswordVerificationResult.Failed) throw new BadRequestException("Wrong username or password");
 
+        //TODO?
+        //include all access levels for documents in claim
+        
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
