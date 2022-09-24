@@ -31,11 +31,13 @@ public class DocumentsAppDbSeeder
             {
                 new Document()
                 {
+                    Name = "testdoc1",
                     Description = "testdocument1ooooooooooooh",
                     Content = "oooooooooooooooooooooooooooooooh",
                 },
                 new Document()
                 {
+                    Name = "testdoc2",
                     Description = "testdocument2",
                     Content = "ok",
                 }

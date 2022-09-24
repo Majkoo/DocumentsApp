@@ -4,6 +4,7 @@ using DocumentsApp.Data.Authentication;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Models;
 using DocumentsApp.Data.Models.AccountModels;
+using DocumentsApp.Data.Models.EntityModels.DocumentModels;
 using DocumentsApp.Data.Models.FluentValidation;
 using DocumentsApp.Data.Services;
 using FluentValidation;
@@ -32,6 +33,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
 
 //Jwt issuing
 var authenticationSettings = new AuthenticationSettings();
