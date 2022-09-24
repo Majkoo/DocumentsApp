@@ -6,11 +6,11 @@ namespace DocumentsApp.Data.ControllersManualTesting;
 
 [Route("testing/account")]
 [ApiController]
-public class ManualTestingControllerAccount : ControllerBase
+public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
 
-    public ManualTestingControllerAccount(IAccountService accountService)
+    public AccountController(IAccountService accountService)
     {
         _accountService = accountService;
     }

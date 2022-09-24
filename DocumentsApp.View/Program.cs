@@ -25,6 +25,7 @@ builder.Services.AddDbContext<DocumentsAppDbContext>();
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
