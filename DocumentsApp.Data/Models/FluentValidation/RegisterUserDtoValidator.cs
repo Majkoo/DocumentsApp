@@ -23,7 +23,6 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
         //TODO 
         //add validation for strong password
         RuleFor(d => d.Password)
-            .NotEmpty()
             .MinimumLength(6);
 
         RuleFor(d => d.ConfirmPassword)

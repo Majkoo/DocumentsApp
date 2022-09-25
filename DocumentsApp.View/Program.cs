@@ -2,6 +2,7 @@ using System.Text;
 using DocumentsApp.Data;
 using DocumentsApp.Data.Authentication;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Models;
 using DocumentsApp.Data.Models.AccountModels;
 using DocumentsApp.Data.Models.EntityModels.DocumentModels;
@@ -21,11 +22,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<DocumentsAppDbContext>();
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -34,7 +37,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
-builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
+builder.Services.AddScoped<IValidator<CreateDocumentDto>, AddDocumentDtoValidator>();
 
 //Jwt issuing
 var authenticationSettings = new AuthenticationSettings();
@@ -66,11 +69,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.UseStaticFiles();
+
+app.UseMiddleware<ErrorHandlingMiddleWare>();
 
 app.UseAuthentication();
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();
 
 app.UseRouting();
 

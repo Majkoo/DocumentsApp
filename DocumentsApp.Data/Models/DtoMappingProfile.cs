@@ -12,6 +12,9 @@ public class DtoMappingProfile : Profile
         CreateMap<RegisterUserDto, User>()
             .ForMember(reg => reg.PasswordHash, opt => opt.Ignore()); //hashing in AccountService
         
-        CreateMap<AddDocumentDto, Document>();
+        CreateMap<CreateDocumentDto, Document>();
+
+        CreateMap<UpdateDocumentDto, Document>()
+            .ForAllMembers(opt => opt.PreCondition((src, dest, srcM) => srcM != null));
     }
 }

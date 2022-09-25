@@ -1,6 +1,6 @@
 ﻿namespace DocumentsApp.Data.Models.EntityModels.DocumentModels;
 
-public class AddDocumentDto
+public class CreateDocumentDto
 {
     public string Name { get; set; }
     public string Description { get; set; }

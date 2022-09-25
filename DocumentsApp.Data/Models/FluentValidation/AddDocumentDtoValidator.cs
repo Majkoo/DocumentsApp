@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace DocumentsApp.Data.Models.FluentValidation;
 
-public class AddDocumentDtoValidator : AbstractValidator<AddDocumentDto>
+public class AddDocumentDtoValidator : AbstractValidator<CreateDocumentDto>
 {
     public AddDocumentDtoValidator()
     {
