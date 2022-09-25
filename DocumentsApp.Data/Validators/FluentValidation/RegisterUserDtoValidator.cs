@@ -1,8 +1,8 @@
-﻿using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Models.AccountModels;
+﻿using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+using DocumentsApp.Data.Entities;
 using FluentValidation;
 
-namespace DocumentsApp.Data.Models.FluentValidation;
+namespace DocumentsApp.Data.Validators.FluentValidation;
 
 public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 {

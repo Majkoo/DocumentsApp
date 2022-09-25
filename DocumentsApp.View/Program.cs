@@ -1,13 +1,13 @@
 using System.Text;
 using DocumentsApp.Data;
 using DocumentsApp.Data.Authentication;
+using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
-using DocumentsApp.Data.Models;
-using DocumentsApp.Data.Models.AccountModels;
-using DocumentsApp.Data.Models.EntityModels.DocumentModels;
-using DocumentsApp.Data.Models.FluentValidation;
 using DocumentsApp.Data.Services;
+using DocumentsApp.Data.Validators.FluentValidation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
@@ -24,20 +24,23 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<DocumentsAppDbContext>();
+
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
+builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ErrorHandlingMiddleWare>();
-
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
+builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<DtoMappingProfile>();
 });
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
-builder.Services.AddScoped<IValidator<CreateDocumentDto>, AddDocumentDtoValidator>();
+
 
 //Jwt issuing
 var authenticationSettings = new AuthenticationSettings();
@@ -85,6 +88,7 @@ var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetRequiredService<DocumentsAppDbSeeder>();
 await seeder.SeedAsync();
 
+app.UseAuthorization();
 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
 app.Run();

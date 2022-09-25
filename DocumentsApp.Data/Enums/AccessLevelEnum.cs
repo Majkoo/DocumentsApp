@@ -1,4 +1,4 @@
-﻿namespace DocumentsApp.Data.Entities;
+﻿namespace DocumentsApp.Data.Enums;
 
 public enum AccessLevel
 {

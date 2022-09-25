@@ -1,8 +1,7 @@
-using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Models.AccountModels;
+using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
 using FluentValidation;
 
-namespace DocumentsApp.Data.Models.FluentValidation;
+namespace DocumentsApp.Data.Validators.FluentValidation;
 
 public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
 {

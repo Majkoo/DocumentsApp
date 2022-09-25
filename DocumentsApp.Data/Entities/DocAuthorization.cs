@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using DocumentsApp.Data.Enums;
 
 namespace DocumentsApp.Data.Entities;
 

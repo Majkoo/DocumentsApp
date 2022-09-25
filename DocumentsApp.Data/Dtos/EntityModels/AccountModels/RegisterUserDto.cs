@@ -1,5 +1,4 @@
-﻿namespace DocumentsApp.Data.Models.AccountModels;
-
+﻿namespace DocumentsApp.Data.Dtos.EntityModels.AccountModels;
 public class RegisterUserDto
 {
     public string UserName { get; set; }

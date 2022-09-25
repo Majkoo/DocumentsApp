@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Data.Models.AccountModels;
+﻿using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
 using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Mvc;
 
