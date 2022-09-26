@@ -2,6 +2,7 @@
 using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
+using DocumentsApp.Data.Repos;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Services;
@@ -19,13 +20,13 @@ public class DocumentService : IDocumentService
 {
     private readonly IMapper _mapper;
     private readonly IUserContextService _userContextService;
-    private readonly DocumentsAppDbContext _dbContext;
+    private readonly IDocumentRepo _documentRepo;
 
-    public DocumentService(IMapper mapper, IUserContextService userContextService, DocumentsAppDbContext dbContext)
+    public DocumentService(IMapper mapper, IUserContextService userContextService, IDocumentRepo documentRepo)
     {
         _mapper = mapper;
         _userContextService = userContextService;
-        _dbContext = dbContext;
+        _documentRepo = documentRepo;
     }
 
     public async Task<GetDocumentDto> GetDocumentAsync(Guid id)
@@ -39,15 +40,12 @@ public class DocumentService : IDocumentService
     public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync()
     {
         var creatorId = _userContextService.GetUserId().GetValueOrDefault();
-
-        //TODO
-        //search if can be made async
-        var documents = _dbContext.Documents.Where(d => d.CreatorId == creatorId);
-
-        if (!await documents.AnyAsync()) throw new NotFoundException("No documents available for this user");
+        var documents = await _documentRepo.GetAllDocumentsAsync(creatorId);
+        
+        if (!documents.Any()) throw new NotFoundException("No documents available for this user");
 
         var resultDocuments = _mapper.Map<IEnumerable<GetDocumentDto>>(documents);
-
+        
         return resultDocuments;
     }
 
@@ -55,10 +53,8 @@ public class DocumentService : IDocumentService
     {
         var document = _mapper.Map<Document>(dto);
         document.CreatorId = _userContextService.GetUserId().GetValueOrDefault();
-
-        await _dbContext.AddAsync(document);
-        await _dbContext.SaveChangesAsync();
-
+        await _documentRepo.InsertDocumentAsync(document);
+        
         return document.Id;
     }
 
@@ -66,24 +62,21 @@ public class DocumentService : IDocumentService
     {
         var document = await SearchDocumentDbAsync(id);
         _mapper.Map(dto, document);
-        await _dbContext.SaveChangesAsync();
+        await _documentRepo.UpdateDocumentAsync(document);
     }
 
     public async Task DeleteDocumentAsync(Guid id)
     {
         var document = await SearchDocumentDbAsync(id);
-        _dbContext.Remove(document);
-        await _dbContext.SaveChangesAsync();
+        await _documentRepo.DeleteDocumentAsync(document);
     }
 
     private async Task<Document> SearchDocumentDbAsync(Guid id)
     {
-        var document = await _dbContext
-            .Documents
-            .FirstOrDefaultAsync(d => d.Id == id);
+        var foundDocument = await _documentRepo.GetDocumentByIdAsync(id);
 
-        if (document is null) throw new NotFoundException("Document does not exist");
+        if (foundDocument is null) throw new NotFoundException("Document does not exist");
 
-        return document;
+        return foundDocument;
     }
 }

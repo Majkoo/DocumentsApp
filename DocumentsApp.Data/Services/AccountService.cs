@@ -6,6 +6,7 @@ using DocumentsApp.Data.Authentication;
 using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
+using DocumentsApp.Data.Repos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,15 +21,15 @@ public interface IAccountService
 
 public class AccountService : IAccountService
 {
-    private readonly DocumentsAppDbContext _context;
+    private readonly IAccountRepo _accountRepo;
     private readonly IMapper _mapper;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly AuthenticationSettings _authenticationSettings;
 
-    public AccountService(DocumentsAppDbContext context, IMapper mapper, IPasswordHasher<User> passwordHasher,
+    public AccountService(IAccountRepo accountRepo, IMapper mapper, IPasswordHasher<User> passwordHasher,
         AuthenticationSettings authenticationSettings)
     {
-        _context = context;
+        _accountRepo = accountRepo;
         _mapper = mapper;
         _passwordHasher = passwordHasher;
         _authenticationSettings = authenticationSettings;
@@ -38,15 +39,12 @@ public class AccountService : IAccountService
     {
         var user = _mapper.Map<User>(dto);
         user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
-        await _context.AddAsync(user);
-        await _context.SaveChangesAsync();
+        await _accountRepo.InsertUserAsync(user);
     }
 
     public async Task<string> GenerateJwtAsync(LoginUserDto dto)
     {
-        var user =  await _context
-            .Users
-            .FirstOrDefaultAsync(u => u.Email == dto.Email);
+        var user = await _accountRepo.GetUserByEmailAsync(dto.Email);
 
         if (user is null) throw new BadRequestException("Wrong username or password");
 
