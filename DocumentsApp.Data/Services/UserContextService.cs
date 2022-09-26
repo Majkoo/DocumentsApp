@@ -20,8 +20,6 @@ public class UserContextService : IUserContextService
 
     public ClaimsPrincipal User => _accessor.HttpContext?.User;
 
-    //TODO
-    //is null value expected?
     public Guid? GetUserId() =>
         User is not null ? Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value) : null;
 }

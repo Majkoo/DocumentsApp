@@ -9,6 +9,7 @@ namespace DocumentsApp.Data.Services;
 public interface IDocumentService
 {
     Task<GetDocumentDto> GetDocumentAsync(Guid id);
+    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync();
     Task<Guid> AddDocumentAsync(AddDocumentDto dto);
     Task UpdateDocumentAsync(Guid id, UpdateDocumentDto dto);
     Task DeleteDocumentAsync(Guid id);
@@ -30,12 +31,26 @@ public class DocumentService : IDocumentService
     public async Task<GetDocumentDto> GetDocumentAsync(Guid id)
     {
         var document = await SearchDocumentDbAsync(id);
-
         var resultDocument = _mapper.Map<GetDocumentDto>(document);
         
         return resultDocument;
     }
-    
+
+    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync()
+    {
+        var creatorId = _userContextService.GetUserId().GetValueOrDefault();
+
+        //TODO
+        //search if can be made async
+        var documents = _dbContext.Documents.Where(d => d.CreatorId == creatorId);
+
+        if (!await documents.AnyAsync()) throw new NotFoundException("No documents available for this user");
+
+        var resultDocuments = _mapper.Map<IEnumerable<GetDocumentDto>>(documents);
+
+        return resultDocuments;
+    }
+
     public async Task<Guid> AddDocumentAsync(AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);

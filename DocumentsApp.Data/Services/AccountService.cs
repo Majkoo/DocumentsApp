@@ -14,8 +14,8 @@ namespace DocumentsApp.Data.Services;
 
 public interface IAccountService
 {
-    Task RegisterUser(RegisterUserDto dto);
-    Task<string> GenerateJwt(LoginUserDto dto);
+    Task RegisterUserAsync(RegisterUserDto dto);
+    Task<string> GenerateJwtAsync(LoginUserDto dto);
 }
 
 public class AccountService : IAccountService
@@ -34,7 +34,7 @@ public class AccountService : IAccountService
         _authenticationSettings = authenticationSettings;
     }
     
-    public async Task RegisterUser(RegisterUserDto dto)
+    public async Task RegisterUserAsync(RegisterUserDto dto)
     {
         var user = _mapper.Map<User>(dto);
         user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
@@ -42,7 +42,7 @@ public class AccountService : IAccountService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<string> GenerateJwt(LoginUserDto dto)
+    public async Task<string> GenerateJwtAsync(LoginUserDto dto)
     {
         var user =  await _context
             .Users
@@ -54,9 +54,6 @@ public class AccountService : IAccountService
         
         if (pwdResult is PasswordVerificationResult.Failed) throw new BadRequestException("Wrong username or password");
 
-        //TODO?
-        //include all access levels for documents in claim
-        
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

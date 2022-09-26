@@ -1,5 +1,6 @@
 ﻿using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
 using DocumentsApp.Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsApp.Data.ControllersManualTesting;
@@ -21,6 +22,14 @@ public class DocumentController : ControllerBase
         var document = await _documentService.GetDocumentAsync(documentId);
         return Ok(document);
     } 
+    
+    [HttpGet]
+    public async Task<ActionResult<GetDocumentDto>> GetAll()
+    {
+        var documents = await _documentService.GetAllDocumentsAsync();
+        return Ok(documents);
+    } 
+
 
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]AddDocumentDto dto)
