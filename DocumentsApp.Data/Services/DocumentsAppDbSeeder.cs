@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using DocumentsApp.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -25,25 +26,25 @@ public class DocumentsAppDbSeeder
         var testUser = new User()
         {
             UserName = "SeededUser",
-            Email = "seededUser@email.com",
+            Email = "seededuser@email.com",
             PasswordHash = "placeholder",
-            Documents = new List<Document>()
+            Documents = new Collection<Document>()
             {
                 new Document()
                 {
                     Name = "testdoc1",
-                    Description = "testdocument1ooooooooooooh",
-                    Content = "oooooooooooooooooooooooooooooooh",
+                    Description = "test document description",
+                    Content = "lorem100",
                 },
                 new Document()
                 {
                     Name = "testdoc2",
-                    Description = "testdocument2",
-                    Content = "ok",
+                    Description = "test document description",
+                    Content = "lorem100",
                 }
             }
         };
-        testUser.PasswordHash = _passwordHasher.HashPassword(testUser, "admin"); //admin is pwd
+        testUser.PasswordHash = _passwordHasher.HashPassword(testUser, "password"); 
         return testUser;
     }
     
