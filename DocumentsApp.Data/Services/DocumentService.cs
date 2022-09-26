@@ -9,9 +9,9 @@ namespace DocumentsApp.Data.Services;
 
 public interface IDocumentService
 {
-    Task<GetDocumentDto> GetDocumentAsync(Guid id);
-    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync();
-    Task<Guid> AddDocumentAsync(AddDocumentDto dto);
+    Task<GetDocumentDto> GetDocumentByIdAsync(Guid id);
+    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId);
+    Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto);
     Task UpdateDocumentAsync(Guid id, UpdateDocumentDto dto);
     Task DeleteDocumentAsync(Guid id);
 }
@@ -19,17 +19,15 @@ public interface IDocumentService
 public class DocumentService : IDocumentService
 {
     private readonly IMapper _mapper;
-    private readonly IUserContextService _userContextService;
     private readonly IDocumentRepo _documentRepo;
 
-    public DocumentService(IMapper mapper, IUserContextService userContextService, IDocumentRepo documentRepo)
+    public DocumentService(IMapper mapper, IDocumentRepo documentRepo)
     {
         _mapper = mapper;
-        _userContextService = userContextService;
         _documentRepo = documentRepo;
     }
 
-    public async Task<GetDocumentDto> GetDocumentAsync(Guid id)
+    public async Task<GetDocumentDto> GetDocumentByIdAsync(Guid id)
     {
         var document = await SearchDocumentDbAsync(id);
         var resultDocument = _mapper.Map<GetDocumentDto>(document);
@@ -37,9 +35,9 @@ public class DocumentService : IDocumentService
         return resultDocument;
     }
 
-    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync()
+    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId)
     {
-        var creatorId = _userContextService.GetUserId().GetValueOrDefault();
+        var creatorId = userId;
         var documents = await _documentRepo.GetAllDocumentsAsync(creatorId);
         
         if (!documents.Any()) throw new NotFoundException("No documents available for this user");
@@ -49,10 +47,10 @@ public class DocumentService : IDocumentService
         return resultDocuments;
     }
 
-    public async Task<Guid> AddDocumentAsync(AddDocumentDto dto)
+    public async Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);
-        document.CreatorId = _userContextService.GetUserId().GetValueOrDefault();
+        document.CreatorId = userId;
         await _documentRepo.InsertDocumentAsync(document);
         
         return document.Id;

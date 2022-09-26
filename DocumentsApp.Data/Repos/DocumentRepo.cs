@@ -39,6 +39,7 @@ public class DocumentRepo : IDocumentRepo
     public async Task<Document> InsertDocumentAsync(Document document)
     {
         await _dbContext.Documents.AddAsync(document);
+        await _dbContext.SaveChangesAsync();
         return await _dbContext
             .Documents
             .SingleOrDefaultAsync(d => d.Id == document.Id);

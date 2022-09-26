@@ -10,23 +10,26 @@ namespace DocumentsApp.Data.ControllersManualTesting;
 public class DocumentController : ControllerBase
 {
     private readonly IDocumentService _documentService;
+    private readonly IUserContextService _userContextService;
 
-    public DocumentController(IDocumentService  documentService)
+    public DocumentController(IDocumentService  documentService, IUserContextService userContextService)
     {
         _documentService = documentService;
+        _userContextService = userContextService;
     }
 
     [HttpGet("{documentId}")]
     public async Task<ActionResult<GetDocumentDto>> GetById([FromRoute] Guid documentId)
     {
-        var document = await _documentService.GetDocumentAsync(documentId);
+        var document = await _documentService.GetDocumentByIdAsync(documentId);
         return Ok(document);
     } 
     
     [HttpGet]
     public async Task<ActionResult<GetDocumentDto>> GetAll()
     {
-        var documents = await _documentService.GetAllDocumentsAsync();
+        var userId = _userContextService.GetUserId();
+        var documents = await _documentService.GetAllDocumentsAsync(userId);
         return Ok(documents);
     } 
 
@@ -34,7 +37,8 @@ public class DocumentController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]AddDocumentDto dto)
     {
-        var documentId = await _documentService.AddDocumentAsync(dto);
+        var userId = _userContextService.GetUserId();
+        var documentId = await _documentService.AddDocumentAsync(userId, dto);
         return Created($"{documentId}", null);
     }
 

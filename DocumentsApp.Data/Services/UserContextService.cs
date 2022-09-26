@@ -6,7 +6,7 @@ namespace DocumentsApp.Data.Services;
 public interface IUserContextService
 {
     ClaimsPrincipal User { get; }
-    Guid? GetUserId();
+    Guid GetUserId();
 }
 
 public class UserContextService : IUserContextService
@@ -20,6 +20,6 @@ public class UserContextService : IUserContextService
 
     public ClaimsPrincipal User => _accessor.HttpContext?.User;
 
-    public Guid? GetUserId() =>
-        User is not null ? Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value) : null;
+    public Guid GetUserId() =>
+        User is not null ? Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value) : default;
 }
