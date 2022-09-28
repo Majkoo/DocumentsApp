@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+﻿using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Entities;
 using FluentValidation;
 
@@ -22,8 +22,11 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 
         //TODO 
         //add validation for strong password
+
+        // e tam uzytkownik sam niech dba o haslo
+        // chyba ze dla sportu regexika chcesz pisac
         RuleFor(d => d.Password)
-            .MinimumLength(6);
+            .MinimumLength(8);
 
         RuleFor(d => d.ConfirmPassword)
             .Equal(u => u.Password);

@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
+﻿using DocumentsApp.Data.Dtos.DocumentDtos;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
@@ -13,9 +13,10 @@ public class AddDocumentDtoValidator : AbstractValidator<AddDocumentDto>
 
         RuleFor(d => d.Description)
             .NotEmpty()
-            .MaximumLength(50);
+            .MaximumLength(150);
 
         RuleFor(d => d.Content)
+            .MaximumLength(5000)
             .NotEmpty();
     }
 }

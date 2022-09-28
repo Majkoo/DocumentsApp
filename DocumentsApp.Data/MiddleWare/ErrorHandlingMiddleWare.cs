@@ -11,17 +11,17 @@ public class ErrorHandlingMiddleWare : IMiddleware
         {
             await next.Invoke(context);
         }
-        catch (BadRequestException badRequestException)
+        catch (BadRequestException e)
         {
             context.Response.StatusCode = 400;
-            await context.Response.WriteAsync(badRequestException.Message);
+            await context.Response.WriteAsync(e.Message);
         }
-        catch (NotFoundException notFoundException)
+        catch (NotFoundException e)
         {
             context.Response.StatusCode = 404;
-            await context.Response.WriteAsync(notFoundException.Message);
+            await context.Response.WriteAsync(e.Message);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             context.Response.StatusCode = 500;
             await context.Response.WriteAsync("Internal server error");

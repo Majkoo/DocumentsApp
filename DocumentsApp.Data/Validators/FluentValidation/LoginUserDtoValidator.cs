@@ -1,4 +1,4 @@
-using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+using DocumentsApp.Data.Dtos.AccountDtos;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
@@ -8,7 +8,8 @@ public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
     public LoginUserDtoValidator()
     {
         RuleFor(d => d.Email)
-            .EmailAddress();
+            .EmailAddress()
+            .NotEmpty();
 
         RuleFor(d => d.Password)
             .NotEmpty();

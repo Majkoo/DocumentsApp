@@ -1,4 +1,4 @@
-﻿namespace DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+﻿namespace DocumentsApp.Data.Dtos.AccountDtos;
 
 public class LoginUserDto
 {

@@ -3,6 +3,7 @@ using System;
 using DocumentsApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,14 +11,39 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsApp.Data.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
-    partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220928195529_AddedUserEmailRelatedProps")]
+    partial class AddedUserEmailRelatedProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("DocumentsApp.Data.Entities.DocAuthorization", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DocAuthorizations");
+                });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
                 {
@@ -47,30 +73,6 @@ namespace DocumentsApp.Data.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("DocumentsApp.Data.Entities.DocumentAccessLevel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("AccessLevel")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("DocumentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DocumentAccessLevels");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>
@@ -107,18 +109,7 @@ namespace DocumentsApp.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
-                {
-                    b.HasOne("DocumentsApp.Data.Entities.User", "Creator")
-                        .WithMany("Documents")
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("DocumentsApp.Data.Entities.DocumentAccessLevel", b =>
+            modelBuilder.Entity("DocumentsApp.Data.Entities.DocAuthorization", b =>
                 {
                     b.HasOne("DocumentsApp.Data.Entities.Document", "Document")
                         .WithMany()
@@ -135,6 +126,17 @@ namespace DocumentsApp.Data.Migrations
                     b.Navigation("Document");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
+                {
+                    b.HasOne("DocumentsApp.Data.Entities.User", "Creator")
+                        .WithMany("Documents")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>

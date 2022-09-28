@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DocumentsApp.Data.Migrations
+namespace DocumentsApp.View.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
     partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
@@ -18,6 +18,30 @@ namespace DocumentsApp.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("DocumentsApp.Data.Entities.DocAuthorization", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DocAuthorizations");
+                });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
                 {
@@ -47,30 +71,6 @@ namespace DocumentsApp.Data.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("DocumentsApp.Data.Entities.DocumentAccessLevel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("AccessLevel")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("DocumentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DocumentAccessLevels");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>
@@ -107,18 +107,7 @@ namespace DocumentsApp.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
-                {
-                    b.HasOne("DocumentsApp.Data.Entities.User", "Creator")
-                        .WithMany("Documents")
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("DocumentsApp.Data.Entities.DocumentAccessLevel", b =>
+            modelBuilder.Entity("DocumentsApp.Data.Entities.DocAuthorization", b =>
                 {
                     b.HasOne("DocumentsApp.Data.Entities.Document", "Document")
                         .WithMany()
@@ -135,6 +124,17 @@ namespace DocumentsApp.Data.Migrations
                     b.Navigation("Document");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
+                {
+                    b.HasOne("DocumentsApp.Data.Entities.User", "Creator")
+                        .WithMany("Documents")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>

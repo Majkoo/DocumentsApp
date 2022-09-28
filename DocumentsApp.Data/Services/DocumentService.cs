@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
+using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;

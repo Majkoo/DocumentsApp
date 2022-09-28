@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
-using DocumentsApp.Data.Enums;
+﻿using DocumentsApp.Data.Enums;
 
 namespace DocumentsApp.Data.Entities;
 
-public class DocAuthorization
+public class DocumentAccessLevel
 {
     public Guid Id { get; set; }
     

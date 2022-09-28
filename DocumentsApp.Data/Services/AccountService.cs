@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using DocumentsApp.Data.Authentication;
-using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
+using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
@@ -55,7 +55,8 @@ public class AccountService : IAccountService
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, $"{user.UserName}")
+            new Claim(ClaimTypes.Name, $"{user.UserName}"),
+            new Claim(ClaimTypes.Email, $"{user.Email}")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

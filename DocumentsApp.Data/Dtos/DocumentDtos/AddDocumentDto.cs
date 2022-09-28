@@ -1,4 +1,4 @@
-﻿namespace DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
+﻿namespace DocumentsApp.Data.Dtos.DocumentDtos;
 
 public class AddDocumentDto
 {

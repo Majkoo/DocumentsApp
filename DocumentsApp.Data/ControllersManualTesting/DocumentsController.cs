@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
+﻿using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

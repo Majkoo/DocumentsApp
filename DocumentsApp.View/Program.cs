@@ -1,8 +1,8 @@
 using System.Text;
 using DocumentsApp.Data;
 using DocumentsApp.Data.Authentication;
-using DocumentsApp.Data.Dtos.EntityModels.AccountModels;
-using DocumentsApp.Data.Dtos.EntityModels.DocumentModels;
+using DocumentsApp.Data.Dtos.AccountDtos;
+using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
@@ -12,6 +12,7 @@ using DocumentsApp.Data.Validators.FluentValidation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +22,20 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddControllers();
 
+
+builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
+{
+    var connString = builder.Configuration.GetConnectionString("LocalMariaDb");
+    opts.UseMySql(
+        connString,
+        ServerVersion.AutoDetect(connString),
+        x => x.MigrationsAssembly("DocumentsApp.Data")
+        );
+});;
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<DocumentsAppDbContext>();
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
 builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
