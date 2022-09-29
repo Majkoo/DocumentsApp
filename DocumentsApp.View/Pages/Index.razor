@@ -5,16 +5,16 @@
 
 <div class="row p-3 ">
 
+    <div class="p-2 col-6 col-md-3 col-lg-2">
+        <AddNewDocumentCard />
+    </div>
+
     @foreach (var doc in _documentDtos)
     {
         <div class="p-2 col-6 col-md-3 col-lg-2">
             <DocumentCard Document="@doc" />
         </div>
     }
-
-    <div class="p-2 col-6 col-md-3 col-lg-2">
-        <AddNewDocumentCard />
-    </div>
 
 </div>
 
