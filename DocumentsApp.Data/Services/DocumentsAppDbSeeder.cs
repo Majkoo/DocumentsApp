@@ -7,9 +7,9 @@ namespace DocumentsApp.Data.Services;
 public class DocumentsAppDbSeeder
 {
     private readonly DocumentsAppDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IPasswordHasher<Account> _passwordHasher;
 
-    public DocumentsAppDbSeeder(DocumentsAppDbContext context, IPasswordHasher<User> passwordHasher)
+    public DocumentsAppDbSeeder(DocumentsAppDbContext context, IPasswordHasher<Account> passwordHasher)
     {
         _context = context;
         _passwordHasher = passwordHasher;
@@ -17,13 +17,13 @@ public class DocumentsAppDbSeeder
 
     public async Task SeedAsync()
     {
-        if (!_context.Users.Any()) await _context.AddAsync(GetUser());
+        if (!_context.Accounts.Any()) await _context.AddAsync(GetAccount());
         await _context.SaveChangesAsync();
     }
     
-    private User GetUser()
+    private Account GetAccount()
     {
-        var testUser = new User()
+        var testAccount = new Account()
         {
             UserName = "SeededUser",
             Email = "seededuser@email.com",
@@ -44,8 +44,8 @@ public class DocumentsAppDbSeeder
                 }
             }
         };
-        testUser.PasswordHash = _passwordHasher.HashPassword(testUser, "password"); 
-        return testUser;
+        testAccount.PasswordHash = _passwordHasher.HashPassword(testAccount, "password"); 
+        return testAccount;
     }
     
 }

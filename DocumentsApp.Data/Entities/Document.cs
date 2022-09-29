@@ -19,11 +19,6 @@ public class Document
     [MaxLength(5000)]
     public string Content { get; set; }
 
-    // ogolem w bazach danych obowiazuje konwencja ze nazywamy pola wiążące relacją tak jak inna tabelka w miare mozliwosci,
-    // np tutaj byloby "UserId"
-    public Guid CreatorId { get; set; }
-
-
-    // a tutaj "User"
-    public virtual User Creator { get; set; }
+    public Guid AccountId { get; set; }
+    public virtual Account Account { get; set; }
 }

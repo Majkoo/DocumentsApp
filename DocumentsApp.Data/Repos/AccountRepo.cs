@@ -5,8 +5,8 @@ namespace DocumentsApp.Data.Repos;
 
 public interface IAccountRepo
 {
-    Task<User> GetUserByEmailAsync(string userEmail);
-    Task<User> InsertUserAsync(User user);
+    Task<Account> GetAccountByEmailAsync(string userEmail);
+    Task<Account> InsertAccountAsync(Account account);
 }
 
 public class AccountRepo : IAccountRepo
@@ -18,19 +18,19 @@ public class AccountRepo : IAccountRepo
         _dbContext = dbContext;
     }
     
-    public async Task<User> GetUserByEmailAsync(string userEmail)
+    public async Task<Account> GetAccountByEmailAsync(string userEmail)
     {
         return await _dbContext
-            .Users
+            .Accounts
             .SingleOrDefaultAsync(u => u.Email == userEmail);
     }
 
-    public async Task<User> InsertUserAsync(User user)
+    public async Task<Account> InsertAccountAsync(Account account)
     {
-        await _dbContext.Users.AddAsync(user);
+        await _dbContext.Accounts.AddAsync(account);
         await _dbContext.SaveChangesAsync();
         return await _dbContext
-            .Users
-            .SingleOrDefaultAsync(u => u.Id == user.Id);
+            .Accounts
+            .SingleOrDefaultAsync(u => u.Id == account.Id);
     }
 }

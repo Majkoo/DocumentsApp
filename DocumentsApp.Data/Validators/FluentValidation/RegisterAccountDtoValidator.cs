@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
 
-public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
+public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
 {
-    public RegisterUserDtoValidator(DocumentsAppDbContext dbContext)
+    public RegisterAccountDtoValidator(DocumentsAppDbContext dbContext)
     {
         RuleFor(d=>d.UserName)
             .NotEmpty()
@@ -16,7 +16,7 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
             .EmailAddress()
             .Custom((value, context) =>
             {
-                if (dbContext.Users.Any(u => u.Email == value))
+                if (dbContext.Accounts.Any(u => u.Email == value))
                     context.AddFailure("Email", "Email is already taken");
             });
 

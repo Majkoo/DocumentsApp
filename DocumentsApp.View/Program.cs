@@ -66,9 +66,9 @@ builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 
 #region Validators
 
-builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<RegisterAccountDto>, RegisterAccountDtoValidator>();
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
-builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator>();
 
 #endregion
 
@@ -88,8 +88,8 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 #region Helper Services
 
-builder.Services.AddScoped<IUserContextService, UserContextService>();
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IAccountContextService, AccountContextService>();
+builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
 #endregion
 

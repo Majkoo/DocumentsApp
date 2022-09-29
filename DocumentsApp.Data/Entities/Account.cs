@@ -2,9 +2,7 @@
 
 namespace DocumentsApp.Data.Entities;
 
-// tu jest git, ale generalnie User jest klasą z pewnego Nugeta i dlatego czytelniej byloby nazwac to Account.
-// dodalem pare propek, moze sie przydadza a jak nie to sie je usunie
-public class User
+public class Account
 {
     public Guid Id { get; set; }
     

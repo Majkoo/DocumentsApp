@@ -1,8 +1,7 @@
 ﻿namespace DocumentsApp.Data.Dtos.AccountDtos;
-public class RegisterUserDto
+
+public class LoginAccountDto
 {
-    public string UserName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public string ConfirmPassword { get; set; }
 }

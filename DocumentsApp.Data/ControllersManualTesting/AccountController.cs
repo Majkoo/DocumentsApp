@@ -16,14 +16,14 @@ public class AccountController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<ActionResult> RegisterUser([FromBody] RegisterUserDto dto)
+    public async Task<ActionResult> RegisterUser([FromBody] RegisterAccountDto dto)
     {
-        await _accountService.RegisterUserAsync(dto);
+        await _accountService.RegisterAccountAsync(dto);
         return Ok();
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<string>> LoginUser([FromBody] LoginUserDto dto)
+    public async Task<ActionResult<string>> LoginUser([FromBody] LoginAccountDto dto)
     {
         var token = await _accountService.GenerateJwtAsync(dto);
         return Ok(token);

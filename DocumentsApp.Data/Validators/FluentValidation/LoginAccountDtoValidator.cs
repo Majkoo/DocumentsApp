@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
 
-public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
+public class LoginAccountDtoValidator : AbstractValidator<LoginAccountDto>
 {
-    public LoginUserDtoValidator()
+    public LoginAccountDtoValidator()
     {
         RuleFor(d => d.Email)
             .EmailAddress()

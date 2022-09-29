@@ -5,7 +5,7 @@ namespace DocumentsApp.Data.Repos;
 
 public interface IDocumentRepo
 {
-    Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid userId);
+    Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid accountId);
     Task<Document> GetDocumentByIdAsync(Guid id);
     Task<Document> InsertDocumentAsync(Document document);
     Task<Document> UpdateDocumentAsync(Document document);
@@ -21,11 +21,11 @@ public class DocumentRepo : IDocumentRepo
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid userId)
+    public async Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid accountId)
     {
         return await _dbContext
             .Documents
-            .Where(d => d.CreatorId == userId)
+            .Where(d => d.AccountId == accountId)
             .ToListAsync();
     }
 

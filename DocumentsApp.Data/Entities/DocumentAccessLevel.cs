@@ -6,8 +6,8 @@ public class DocumentAccessLevel
 {
     public Guid Id { get; set; }
     
-    public Guid UserId { get; set; }
-    public virtual User User { get; set; }
+    public Guid AccountId { get; set; }
+    public virtual Account Account { get; set; }
     
     public Guid DocumentId { get; set; }
     public virtual Document Document { get; set; }

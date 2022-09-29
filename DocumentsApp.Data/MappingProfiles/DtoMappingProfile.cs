@@ -12,7 +12,7 @@ public class DtoMappingProfile : Profile
         // nie musisz uzywac ignore,
         // jak automapper sam nie znajdzie takiego samego pola to automatycznie je zignoruje
 
-        CreateMap<RegisterUserDto, User>()
+        CreateMap<RegisterAccountDto, Account>()
             .ForMember(
                 reg => reg.PasswordHash,
                 opt => opt.Ignore()); //hashing in AccountService

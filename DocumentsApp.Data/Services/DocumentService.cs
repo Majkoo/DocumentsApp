@@ -40,7 +40,7 @@ public class DocumentService : IDocumentService
         var creatorId = userId;
         var documents = await _documentRepo.GetAllDocumentsAsync(creatorId);
         
-        if (!documents.Any()) throw new NotFoundException("No documents available for this user");
+        if (!documents.Any()) throw new NotFoundException("No documents available for this account");
 
         var resultDocuments = _mapper.Map<IEnumerable<GetDocumentDto>>(documents);
         
@@ -50,7 +50,7 @@ public class DocumentService : IDocumentService
     public async Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);
-        document.CreatorId = userId;
+        document.AccountId = userId;
         await _documentRepo.InsertDocumentAsync(document);
         
         return document.Id;

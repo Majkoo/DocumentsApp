@@ -6,8 +6,8 @@
 <div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
 
     <RadzenTemplateForm
-        TItem="RegisterUserDto"
-        Data="@_registerUserDto"
+        TItem="RegisterAccountDto"
+        Data="@_registerAccountDto"
         Style="width: 100%; max-width: 450px"
         Submit="@OnSubmit">
 
@@ -19,17 +19,17 @@
 
             <div class="mb-4">
 
-                <RadzenLabel Text="Username"/>
+                <RadzenLabel Text="Accountname"/>
 
                 <RadzenTextBox
-                    Placeholder="Enter Username..."
-                    Name="Username"
+                    Placeholder="Enter Accountname..."
+                    Name="Accountname"
                     Style="display: block"
-                    @bind-Value="@_registerUserDto.UserName"/>
+                    @bind-Value="@_registerAccountDto.UserName"/>
 
                 <RadzenRequiredValidator
-                    Component="Username"
-                    Text="Username is required"
+                    Component="Accountname"
+                    Text="Accountname is required"
                     Popup="@true"
                     Style="position: absolute"/>
 
@@ -43,7 +43,7 @@
                     Placeholder="Enter email..."
                     Name="Email"
                     Style="display: block"
-                    @bind-Value="@_registerUserDto.Email"/>
+                    @bind-Value="@_registerAccountDto.Email"/>
 
                 <RadzenRequiredValidator
                     Component="Email"
@@ -61,7 +61,7 @@
                     Placeholder="Enter password..."
                     Name="Password"
                     Style="display: block"
-                    @bind-Value="@_registerUserDto.Password"/>
+                    @bind-Value="@_registerAccountDto.Password"/>
 
                 <RadzenRequiredValidator
                     Component="Password"
@@ -79,11 +79,11 @@
                     Placeholder="Confirm password..."
                     Name="ConfirmPassword"
                     Style="display: block"
-                    @bind-Value="@_registerUserDto.ConfirmPassword"/>
+                    @bind-Value="@_registerAccountDto.ConfirmPassword"/>
 
                 <RadzenCompareValidator
-                    Visible="@(!string.IsNullOrEmpty(_registerUserDto.ConfirmPassword))"
-                    Value="@_registerUserDto.Password"
+                    Visible="@(!string.IsNullOrEmpty(_registerAccountDto.ConfirmPassword))"
+                    Value="@_registerAccountDto.Password"
                     Component="ConfirmPassword"
                     Text="Passwords should be the same"
                     Popup="@true" Style="position: absolute" />
@@ -109,9 +109,9 @@
 </div>
 
 @code {
-    readonly RegisterUserDto _registerUserDto = new RegisterUserDto();
+    readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
 
-    void OnSubmit(RegisterUserDto registerUserDto)
+    void OnSubmit(RegisterAccountDto registerAccountDto)
     {
         // try catch if register is successful or not
         throw new NotImplementedException();

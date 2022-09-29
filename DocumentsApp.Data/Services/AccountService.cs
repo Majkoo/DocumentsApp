@@ -15,18 +15,18 @@ namespace DocumentsApp.Data.Services;
 
 public interface IAccountService
 {
-    Task RegisterUserAsync(RegisterUserDto dto);
-    Task<string> GenerateJwtAsync(LoginUserDto dto);
+    Task RegisterAccountAsync(RegisterAccountDto dto);
+    Task<string> GenerateJwtAsync(LoginAccountDto dto);
 }
 
 public class AccountService : IAccountService
 {
     private readonly IAccountRepo _accountRepo;
     private readonly IMapper _mapper;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IPasswordHasher<Account> _passwordHasher;
     private readonly AuthenticationSettings _authenticationSettings;
 
-    public AccountService(IAccountRepo accountRepo, IMapper mapper, IPasswordHasher<User> passwordHasher,
+    public AccountService(IAccountRepo accountRepo, IMapper mapper, IPasswordHasher<Account> passwordHasher,
         AuthenticationSettings authenticationSettings)
     {
         _accountRepo = accountRepo;
@@ -35,28 +35,28 @@ public class AccountService : IAccountService
         _authenticationSettings = authenticationSettings;
     }
     
-    public async Task RegisterUserAsync(RegisterUserDto dto)
+    public async Task RegisterAccountAsync(RegisterAccountDto dto)
     {
-        var user = _mapper.Map<User>(dto);
+        var user = _mapper.Map<Account>(dto);
         user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
-        await _accountRepo.InsertUserAsync(user);
+        await _accountRepo.InsertAccountAsync(user);
     }
 
-    public async Task<string> GenerateJwtAsync(LoginUserDto dto)
+    public async Task<string> GenerateJwtAsync(LoginAccountDto dto)
     {
-        var user = await _accountRepo.GetUserByEmailAsync(dto.Email);
+        var account = await _accountRepo.GetAccountByEmailAsync(dto.Email);
 
-        if (user is null) throw new BadRequestException("Wrong username or password");
+        if (account is null) throw new BadRequestException("Wrong username or password");
 
-        var pwdResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+        var pwdResult = _passwordHasher.VerifyHashedPassword(account, account.PasswordHash, dto.Password);
         
         if (pwdResult is PasswordVerificationResult.Failed) throw new BadRequestException("Wrong username or password");
 
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, $"{user.UserName}"),
-            new Claim(ClaimTypes.Email, $"{user.Email}")
+            new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
+            new Claim(ClaimTypes.Name, $"{account.UserName}"),
+            new Claim(ClaimTypes.Email, $"{account.Email}")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

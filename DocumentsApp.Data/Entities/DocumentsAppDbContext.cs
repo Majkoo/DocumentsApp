@@ -6,7 +6,7 @@ public class DocumentsAppDbContext : DbContext
 {
     public DocumentsAppDbContext(DbContextOptions<DocumentsAppDbContext> options): base(options) {}
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<Account> Accounts { get; set; }
     public DbSet<DocumentAccessLevel> DocumentAccessLevels { get; set; }
     public DbSet<Document> Documents { get; set; }
 }

@@ -75,7 +75,7 @@ namespace DocumentsApp.Data.Migrations
                     b.ToTable("DocumentAccessLevels");
                 });
 
-            modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>
+            modelBuilder.Entity("DocumentsApp.Data.Entities.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,7 +111,7 @@ namespace DocumentsApp.Data.Migrations
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
                 {
-                    b.HasOne("DocumentsApp.Data.Entities.User", "Creator")
+                    b.HasOne("DocumentsApp.Data.Entities.Account", "Creator")
                         .WithMany("Documents")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -128,7 +128,7 @@ namespace DocumentsApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DocumentsApp.Data.Entities.User", "User")
+                    b.HasOne("DocumentsApp.Data.Entities.Account", "Account")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -136,10 +136,10 @@ namespace DocumentsApp.Data.Migrations
 
                     b.Navigation("Document");
 
-                    b.Navigation("User");
+                    b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("DocumentsApp.Data.Entities.User", b =>
+            modelBuilder.Entity("DocumentsApp.Data.Entities.Account", b =>
                 {
                     b.Navigation("Documents");
                 });
