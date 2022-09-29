@@ -1,0 +1,20 @@
+@using DocumentsApp.Data.Dtos.DocumentDtos
+<RadzenCard class="w-100 doc-card">
+    <RadzenText
+        TextStyle="TextStyle.H5"
+        Text="@Document.Name" />
+    <RadzenText
+        TextStyle="TextStyle.Body1"
+        Text="@(Document.Description ?? "No description")" />
+    <hr>
+    <RadzenText
+        TextStyle="TextStyle.Body2"
+        Text="@(Document.Content.Length > 100 ? $"{Document.Content.Substring(0,100)}..." : Document.Content)" />
+</RadzenCard>
+
+@code {
+
+    [Parameter]
+    public GetDocumentDto Document { get; set; } = new GetDocumentDto();
+
+}

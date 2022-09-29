@@ -17,11 +17,9 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddSingleton<WeatherForecastService>();
+#region Backend Services
 
-builder.Services.AddControllers();
-
+#region DbContext
 
 builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 {
@@ -30,32 +28,14 @@ builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
         connString,
         ServerVersion.AutoDetect(connString),
         x => x.MigrationsAssembly("DocumentsApp.Data")
-        );
-});;
-
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<DocumentsAppDbSeeder>();
-builder.Services.AddScoped<ErrorHandlingMiddleWare>();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IDocumentService, DocumentService>();
-builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
-builder.Services.AddScoped<IAccountRepo, AccountRepo>();
-builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
-builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
-builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<DtoMappingProfile>();
+    );
 });
 
-builder.Services.AddFluentValidationAutoValidation();
+#endregion
+
+#region Auth Config
 
 
-//Jwt issuing
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 builder.Services.AddSingleton(authenticationSettings);
@@ -76,13 +56,71 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+#endregion
+
+#region Middleware
+
+builder.Services.AddScoped<ErrorHandlingMiddleWare>();
+
+#endregion
+
+#region Validators
+
+builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
+builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+
+#endregion
+
+#region Repositories
+
+builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
+builder.Services.AddScoped<IAccountRepo, AccountRepo>();
+
+#endregion
+
+#region Business Logic Services
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+
+#endregion
+
+#region Helper Services
+
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+#endregion
+
+#region Other Services
+
+builder.Services.AddScoped<DocumentsAppDbSeeder>();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<DtoMappingProfile>();
+});
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllers();
+
+#endregion
+
+#endregion
+
+#region Frontend Services
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+#endregion
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStaticFiles();

@@ -1,0 +1,120 @@
+@page "/signup"
+@using DocumentsApp.Data.Dtos.AccountDtos
+
+<PageTitle>DocumentsApp - Sign Up</PageTitle>
+
+<div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
+
+    <RadzenTemplateForm
+        TItem="RegisterUserDto"
+        Data="@_registerUserDto"
+        Style="width: 100%; max-width: 450px"
+        Submit="@OnSubmit">
+
+        <RadzenFieldset>
+
+            <h2 class="text-center mt-2 mb-4">
+                <strong>Sign Up</strong>
+            </h2>
+
+            <div class="mb-4">
+
+                <RadzenLabel Text="Username"/>
+
+                <RadzenTextBox
+                    Placeholder="Enter Username..."
+                    Name="Username"
+                    Style="display: block"
+                    @bind-Value="@_registerUserDto.UserName"/>
+
+                <RadzenRequiredValidator
+                    Component="Username"
+                    Text="Username is required"
+                    Popup="@true"
+                    Style="position: absolute"/>
+
+            </div>
+
+            <div class="mb-4">
+
+                <RadzenLabel Text="Email"/>
+
+                <RadzenTextBox
+                    Placeholder="Enter email..."
+                    Name="Email"
+                    Style="display: block"
+                    @bind-Value="@_registerUserDto.Email"/>
+
+                <RadzenRequiredValidator
+                    Component="Email"
+                    Text="Email is required"
+                    Popup="@true"
+                    Style="position: absolute"/>
+
+            </div>
+
+            <div class="mb-4">
+
+                <RadzenLabel Text="Password"/>
+
+                <RadzenPassword
+                    Placeholder="Enter password..."
+                    Name="Password"
+                    Style="display: block"
+                    @bind-Value="@_registerUserDto.Password"/>
+
+                <RadzenRequiredValidator
+                    Component="Password"
+                    Text="Password is required"
+                    Popup="@true" Style="position: absolute"/>
+
+
+            </div>
+
+            <div class="mb-4">
+
+                <RadzenLabel Text="Confirm Password"/>
+
+                <RadzenPassword
+                    Placeholder="Confirm password..."
+                    Name="ConfirmPassword"
+                    Style="display: block"
+                    @bind-Value="@_registerUserDto.ConfirmPassword"/>
+
+                <RadzenCompareValidator
+                    Visible="@(!string.IsNullOrEmpty(_registerUserDto.ConfirmPassword))"
+                    Value="@_registerUserDto.Password"
+                    Component="ConfirmPassword"
+                    Text="Passwords should be the same"
+                    Popup="@true" Style="position: absolute" />
+
+
+            </div>
+
+            <div class="w-100 text-end">
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+            </div>
+
+        </RadzenFieldset>
+
+        <div class="w-100 text-start">
+            <RadzenText TextStyle="TextStyle.Caption" Text="Have an account?"/>
+            <a href="signin">
+                <RadzenText TextStyle="TextStyle.Caption" Text="Sign in here."/>
+            </a>
+        </div>
+
+    </RadzenTemplateForm>
+
+</div>
+
+@code {
+    readonly RegisterUserDto _registerUserDto = new RegisterUserDto();
+
+    void OnSubmit(RegisterUserDto registerUserDto)
+    {
+        // try catch if register is successful or not
+        throw new NotImplementedException();
+    }
+
+}
