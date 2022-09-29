@@ -5,17 +5,7 @@
     <projectFile profileName="IIS Express">DocumentsApp.View/DocumentsApp.View.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c110a456-01b6-4070-b64d-2c3f7676bb03" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220922155311_Init.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220922155311_Init.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220924131829_AddedDocumentNameProp.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220924131829_AddedDocumentNameProp.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220928195529_AddedUserEmailRelatedProps.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220928195529_AddedUserEmailRelatedProps.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220928195847_ChangedTableNames.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/20220928195847_ChangedTableNames.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DocumentsApp.Data/Migrations/DocumentsAppDbContextModelSnapshot.cs" beforeDir="false" />
-    </list>
+    <list default="true" id="c110a456-01b6-4070-b64d-2c3f7676bb03" name="Changes" comment="added .idea" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,7 +112,7 @@
       <workItem from="1664464510075" duration="5404000" />
       <workItem from="1664470013960" duration="255000" />
       <workItem from="1664470285239" duration="474000" />
-      <workItem from="1664470785744" duration="295000" />
+      <workItem from="1664470785744" duration="625000" />
     </task>
     <task id="LOCAL-00001" summary="Added db entities and applied init migration">
       <created>1663795282234</created>
@@ -236,7 +226,28 @@
       <option name="project" value="LOCAL" />
       <updated>1664470200740</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="migrations reset">
+      <created>1664471195763</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1664471195763</updated>
+    </task>
+    <task id="LOCAL-00018" summary="migrations reset">
+      <created>1664471257626</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1664471257626</updated>
+    </task>
+    <task id="LOCAL-00019" summary="added .idea">
+      <created>1664471346707</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1664471346707</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,6 +325,8 @@
     <MESSAGE value="removed gitignore and added latest migration" />
     <MESSAGE value="removed .idea on remote" />
     <MESSAGE value="test commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="test commit" />
+    <MESSAGE value="migrations reset" />
+    <MESSAGE value="added .idea" />
+    <option name="LAST_COMMIT_MESSAGE" value="added .idea" />
   </component>
 </project>
