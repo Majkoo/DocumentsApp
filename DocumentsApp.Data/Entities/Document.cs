@@ -19,6 +19,9 @@ public class Document
     [MaxLength(5000)]
     public string Content { get; set; }
 
+    [Required]
+    public DateTime DateCreated { get; set; }
+
     public Guid AccountId { get; set; }
     public virtual Account Account { get; set; }
 }

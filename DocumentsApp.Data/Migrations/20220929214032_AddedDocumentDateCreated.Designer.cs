@@ -3,6 +3,7 @@ using System;
 using DocumentsApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsApp.Data.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
-    partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220929214032_AddedDocumentDateCreated")]
+    partial class AddedDocumentDateCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,9 +96,6 @@ namespace DocumentsApp.Data.Migrations
 
                     b.Property<int>("AccessLevel")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("AccessLevelDateGranted")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("char(36)");

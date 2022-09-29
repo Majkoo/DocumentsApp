@@ -51,6 +51,7 @@ public class DocumentService : IDocumentService
     {
         var document = _mapper.Map<Document>(dto);
         document.AccountId = userId;
+        document.DateCreated = DateTime.Now;
         await _documentRepo.InsertDocumentAsync(document);
         
         return document.Id;
