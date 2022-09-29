@@ -13,20 +13,23 @@ namespace DocumentsApp.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Accounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserName = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordHash = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EmailConfirmationToken = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    PasswordResetToken = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    AccountConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -35,77 +38,79 @@ namespace DocumentsApp.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Description = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Content = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatorId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    Content = table.Column<string>(type: "varchar(5000)", maxLength: 5000, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AccountId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Documents_Users_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "Users",
+                        name: "FK_Documents_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "DocAuthorizations",
+                name: "DocumentAccessLevels",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    AccountId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     DocumentId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     AccessLevel = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DocAuthorizations", x => x.Id);
+                    table.PrimaryKey("PK_DocumentAccessLevels", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocAuthorizations_Documents_DocumentId",
-                        column: x => x.DocumentId,
-                        principalTable: "Documents",
+                        name: "FK_DocumentAccessLevels_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DocAuthorizations_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_DocumentAccessLevels_Documents_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DocAuthorizations_DocumentId",
-                table: "DocAuthorizations",
+                name: "IX_DocumentAccessLevels_AccountId",
+                table: "DocumentAccessLevels",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocumentAccessLevels_DocumentId",
+                table: "DocumentAccessLevels",
                 column: "DocumentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DocAuthorizations_UserId",
-                table: "DocAuthorizations",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_CreatorId",
+                name: "IX_Documents_AccountId",
                 table: "Documents",
-                column: "CreatorId");
+                column: "AccountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DocAuthorizations");
+                name: "DocumentAccessLevels");
 
             migrationBuilder.DropTable(
                 name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Accounts");
         }
     }
 }
