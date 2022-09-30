@@ -1,13 +1,8 @@
 ﻿using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Repos;
-
-public interface IAccountRepo
-{
-    Task<Account> GetAccountByEmailAsync(string userEmail);
-    Task<Account> InsertAccountAsync(Account account);
-}
 
 public class AccountRepo : IAccountRepo
 {
@@ -20,8 +15,7 @@ public class AccountRepo : IAccountRepo
     
     public async Task<Account> GetAccountByEmailAsync(string userEmail)
     {
-        return await _dbContext
-            .Accounts
+        return await _dbContext.Accounts
             .SingleOrDefaultAsync(u => u.Email == userEmail);
     }
 

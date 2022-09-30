@@ -14,7 +14,7 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
-    
+
     [HttpPost("register")]
     public async Task<ActionResult> RegisterUser([FromBody] RegisterAccountDto dto)
     {

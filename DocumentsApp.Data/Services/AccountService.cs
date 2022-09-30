@@ -6,9 +6,8 @@ using DocumentsApp.Data.Authentication;
 using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
-using DocumentsApp.Data.Repos;
+using DocumentsApp.Data.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DocumentsApp.Data.Services;
@@ -34,7 +33,7 @@ public class AccountService : IAccountService
         _passwordHasher = passwordHasher;
         _authenticationSettings = authenticationSettings;
     }
-    
+
     public async Task RegisterAccountAsync(RegisterAccountDto dto)
     {
         var user = _mapper.Map<Account>(dto);
@@ -49,7 +48,7 @@ public class AccountService : IAccountService
         if (account is null) throw new BadRequestException("Wrong username or password");
 
         var pwdResult = _passwordHasher.VerifyHashedPassword(account, account.PasswordHash, dto.Password);
-        
+
         if (pwdResult is PasswordVerificationResult.Failed) throw new BadRequestException("Wrong username or password");
 
         var claims = new List<Claim>()

@@ -3,6 +3,7 @@ using DocumentsApp.Data.Authentication;
 using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.Interfaces;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
@@ -33,9 +34,13 @@ builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 builder.Services.AddIdentity<Account, IdentityRole>(opts =>
 {
     opts.Password.RequiredLength = 8;
+    opts.User.RequireUniqueEmail = true;
+
     opts.SignIn.RequireConfirmedEmail = false;
-})
-    .AddEntityFrameworkStores<DocumentsAppDbContext>();
+    opts.SignIn.RequireConfirmedAccount = false;
+    opts.SignIn.RequireConfirmedPhoneNumber = false;
+
+}).AddEntityFrameworkStores<DocumentsAppDbContext>();
 
 #endregion
 
@@ -126,26 +131,28 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
+    var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DocumentsAppDbSeeder>();
+    await seeder.SeedAsync();
+
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseMiddleware<ErrorHandlingMiddleWare>();
-app.UseHttpsRedirection();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<DocumentsAppDbSeeder>();
-await seeder.SeedAsync();
-
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+});
 
 app.Run();
 

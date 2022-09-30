@@ -1,5 +1,7 @@
 @page "/signin"
+
 @using DocumentsApp.Data.Dtos.AccountDtos
+@using DocumentsApp.Data.Exceptions
 
 <PageTitle>DocumentsApp - Sign In</PageTitle>
 
@@ -56,12 +58,6 @@
                     Text="Password is required"
                     Popup="@true" Style="position: absolute"/>
 
-                <RadzenRegexValidator
-                    Component="Password"
-                    Text="Provide a better password"
-                    Pattern="@PasswordRegexPattern"
-                    Popup="@true" Style="position: absolute"/>
-
             </div>
 
             <div class="w-100 text-end">
@@ -83,12 +79,11 @@
 
 
 @code {
-    private const string PasswordRegexPattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$";
     readonly LoginAccountDto _loginAccountDto = new LoginAccountDto();
 
-    void OnSubmit(LoginAccountDto loginAccountDto)
+
+    private async Task OnSubmit(LoginAccountDto loginAccountDto)
     {
-        // try catch if login is successful or not
         throw new NotImplementedException();
     }
 

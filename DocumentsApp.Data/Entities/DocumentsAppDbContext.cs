@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Entities;
 
-public class DocumentsAppDbContext : IdentityDbContext<Account>
+public class DocumentsAppDbContext : IdentityDbContext
 {
     public DocumentsAppDbContext(DbContextOptions<DocumentsAppDbContext> options): base(options) {}
 

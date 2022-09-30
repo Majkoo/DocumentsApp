@@ -1,4 +1,5 @@
 @page "/signup"
+
 @using DocumentsApp.Data.Dtos.AccountDtos
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
@@ -51,6 +52,12 @@
                     Popup="@true"
                     Style="position: absolute"/>
 
+                <RadzenEmailValidator
+                    Component="Email"
+                    Text="Provide a valid email address"
+                    Popup="@true"
+                    Style="position: absolute"/>
+
             </div>
 
             <div class="mb-4">
@@ -82,6 +89,12 @@
                     Style="display: block"
                     @bind-Value="@_registerAccountDto.ConfirmPassword"/>
 
+                <RadzenRequiredValidator
+                    Component="ConfirmPassword"
+                    Text="Repeat your password"
+                    Popup="@true"
+                    Style="position: absolute" />
+
                 <RadzenCompareValidator
                     Visible="@(!string.IsNullOrEmpty(_registerAccountDto.ConfirmPassword))"
                     Value="@_registerAccountDto.Password"
@@ -111,11 +124,11 @@
 </div>
 
 @code {
+
     readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
 
-    void OnSubmit(RegisterAccountDto registerAccountDto)
+    private async Task OnSubmit(RegisterAccountDto registerAccountDto)
     {
-        // try catch if register is successful or not
         throw new NotImplementedException();
     }
 

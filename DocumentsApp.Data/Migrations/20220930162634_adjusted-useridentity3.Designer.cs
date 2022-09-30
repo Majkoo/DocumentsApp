@@ -3,6 +3,7 @@ using System;
 using DocumentsApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsApp.Data.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
-    partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220930162634_adjusted-useridentity3")]
+    partial class adjusteduseridentity3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
