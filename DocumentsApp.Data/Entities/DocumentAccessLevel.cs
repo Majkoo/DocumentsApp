@@ -12,7 +12,7 @@ public class DocumentAccessLevel
 
     public AccessLevel AccessLevel { get; set; }
 
-    public DateTime AccessLevelDateGranted { get; set; }
+    public DateTime AccessLevelGranted { get; set; } = DateTime.Now;
 
     public virtual Account Account { get; set; }
     public virtual Document Document { get; set; }
