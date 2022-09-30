@@ -5,8 +5,8 @@ namespace DocumentsApp.Data.Repos;
 
 public interface IDocumentRepo
 {
-    Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid accountId);
-    Task<Document> GetDocumentByIdAsync(Guid id);
+    Task<IEnumerable<Document>> GetAllDocumentsAsync(string accountId);
+    Task<Document> GetDocumentByIdAsync(string id);
     Task<Document> InsertDocumentAsync(Document document);
     Task<Document> UpdateDocumentAsync(Document document);
     Task<bool> DeleteDocumentAsync(Document document);
@@ -21,7 +21,7 @@ public class DocumentRepo : IDocumentRepo
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Document>> GetAllDocumentsAsync(Guid accountId)
+    public async Task<IEnumerable<Document>> GetAllDocumentsAsync(string accountId)
     {
         return await _dbContext
             .Documents
@@ -29,7 +29,7 @@ public class DocumentRepo : IDocumentRepo
             .ToListAsync();
     }
 
-    public async Task<Document> GetDocumentByIdAsync(Guid id)
+    public async Task<Document> GetDocumentByIdAsync(string id)
     {
         return await _dbContext
             .Documents

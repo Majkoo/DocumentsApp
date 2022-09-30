@@ -3,6 +3,7 @@ using System;
 using DocumentsApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsApp.Data.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
-    partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220930112335_adjusted-useridentity")]
+    partial class adjusteduseridentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,10 +87,14 @@ namespace DocumentsApp.Data.Migrations
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
-                    b.Property<string>("AccountId")
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("AccountId1")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Content")
@@ -100,8 +106,8 @@ namespace DocumentsApp.Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -110,15 +116,16 @@ namespace DocumentsApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId1");
 
                     b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.DocumentAccessLevel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("AccessLevel")
                         .HasColumnType("int");
@@ -126,15 +133,18 @@ namespace DocumentsApp.Data.Migrations
                     b.Property<DateTime>("AccessLevelGranted")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("AccountId")
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("AccountId1")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("DocumentId")
-                        .HasColumnType("varchar(255)");
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId1");
 
                     b.HasIndex("DocumentId");
 
@@ -273,7 +283,7 @@ namespace DocumentsApp.Data.Migrations
                 {
                     b.HasOne("DocumentsApp.Data.Entities.Account", "Account")
                         .WithMany("Documents")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId1");
 
                     b.Navigation("Account");
                 });
@@ -282,11 +292,13 @@ namespace DocumentsApp.Data.Migrations
                 {
                     b.HasOne("DocumentsApp.Data.Entities.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId1");
 
                     b.HasOne("DocumentsApp.Data.Entities.Document", "Document")
                         .WithMany()
-                        .HasForeignKey("DocumentId");
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
 

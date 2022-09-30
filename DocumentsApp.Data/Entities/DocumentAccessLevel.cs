@@ -4,11 +4,11 @@ namespace DocumentsApp.Data.Entities;
 
 public class DocumentAccessLevel
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
 
-    public Guid AccountId { get; set; }
+    public string AccountId { get; set; }
 
-    public Guid DocumentId { get; set; }
+    public string DocumentId { get; set; }
 
     public AccessLevel AccessLevel { get; set; }
 

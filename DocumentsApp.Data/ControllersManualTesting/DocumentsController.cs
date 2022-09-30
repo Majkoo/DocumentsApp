@@ -19,7 +19,7 @@ public class DocumentController : ControllerBase
     }
 
     [HttpGet("{documentId}")]
-    public async Task<ActionResult<GetDocumentDto>> GetById([FromRoute] Guid documentId)
+    public async Task<ActionResult<GetDocumentDto>> GetById([FromRoute] string documentId)
     {
         var document = await _documentService.GetDocumentByIdAsync(documentId);
         return Ok(document);
@@ -43,14 +43,14 @@ public class DocumentController : ControllerBase
     }
 
     [HttpPut("{documentId}")]
-    public async Task<ActionResult> UpdateById([FromRoute] Guid documentId, [FromBody] UpdateDocumentDto dto)
+    public async Task<ActionResult> UpdateById([FromRoute] string documentId, [FromBody] UpdateDocumentDto dto)
     {
         await _documentService.UpdateDocumentAsync(documentId, dto);
         return Ok();
     }
 
     [HttpDelete("{documentId}")]
-    public async Task<ActionResult> DeleteById([FromRoute] Guid documentId)
+    public async Task<ActionResult> DeleteById([FromRoute] string documentId)
     {
         await _documentService.DeleteDocumentAsync(documentId);
         return Ok();

@@ -9,11 +9,11 @@ namespace DocumentsApp.Data.Services;
 
 public interface IDocumentService
 {
-    Task<GetDocumentDto> GetDocumentByIdAsync(Guid id);
-    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId);
-    Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto);
-    Task UpdateDocumentAsync(Guid id, UpdateDocumentDto dto);
-    Task DeleteDocumentAsync(Guid id);
+    Task<GetDocumentDto> GetDocumentByIdAsync(string id);
+    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(string userId);
+    Task<string> AddDocumentAsync(string userId, AddDocumentDto dto);
+    Task UpdateDocumentAsync(string id, UpdateDocumentDto dto);
+    Task DeleteDocumentAsync(string id);
 }
 
 public class DocumentService : IDocumentService
@@ -27,7 +27,7 @@ public class DocumentService : IDocumentService
         _documentRepo = documentRepo;
     }
 
-    public async Task<GetDocumentDto> GetDocumentByIdAsync(Guid id)
+    public async Task<GetDocumentDto> GetDocumentByIdAsync(string id)
     {
         var document = await SearchDocumentDbAsync(id);
         var resultDocument = _mapper.Map<GetDocumentDto>(document);
@@ -35,7 +35,7 @@ public class DocumentService : IDocumentService
         return resultDocument;
     }
 
-    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId)
+    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(string userId)
     {
         var creatorId = userId;
         var documents = await _documentRepo.GetAllDocumentsAsync(creatorId);
@@ -47,7 +47,7 @@ public class DocumentService : IDocumentService
         return resultDocuments;
     }
 
-    public async Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto)
+    public async Task<string> AddDocumentAsync(string userId, AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);
         document.AccountId = userId;
@@ -56,20 +56,20 @@ public class DocumentService : IDocumentService
         return document.Id;
     }
 
-    public async Task UpdateDocumentAsync(Guid id, UpdateDocumentDto dto)
+    public async Task UpdateDocumentAsync(string id, UpdateDocumentDto dto)
     {
         var document = await SearchDocumentDbAsync(id);
         _mapper.Map(dto, document);
         await _documentRepo.UpdateDocumentAsync(document);
     }
 
-    public async Task DeleteDocumentAsync(Guid id)
+    public async Task DeleteDocumentAsync(string id)
     {
         var document = await SearchDocumentDbAsync(id);
         await _documentRepo.DeleteDocumentAsync(document);
     }
 
-    private async Task<Document> SearchDocumentDbAsync(Guid id)
+    private async Task<Document> SearchDocumentDbAsync(string id)
     {
         var foundDocument = await _documentRepo.GetDocumentByIdAsync(id);
 
