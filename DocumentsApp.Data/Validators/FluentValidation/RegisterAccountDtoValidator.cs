@@ -1,5 +1,5 @@
-﻿using DocumentsApp.Data.Dtos.AccountDtos;
-using DocumentsApp.Data.Entities;
+﻿using DocumentsApp.Data.Entities;
+using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;

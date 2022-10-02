@@ -1,7 +1,5 @@
 @page "/signin"
-
-@using DocumentsApp.Data.Dtos.AccountDtos
-@using DocumentsApp.Data.Exceptions
+@using DocumentsApp.Shared.Dtos.AccountDtos
 
 <PageTitle>DocumentsApp - Sign In</PageTitle>
 
@@ -11,7 +9,8 @@
         TItem="LoginAccountDto"
         Data="@_loginAccountDto"
         Style="width: 100%; max-width: 450px"
-        Submit="@OnSubmit">
+        Method="post"
+        Action="identity/signin">
 
         <RadzenFieldset>
 
@@ -77,14 +76,8 @@
 
 </div>
 
-
 @code {
-    readonly LoginAccountDto _loginAccountDto = new LoginAccountDto();
 
-
-    private async Task OnSubmit(LoginAccountDto loginAccountDto)
-    {
-        throw new NotImplementedException();
-    }
-
+    private readonly LoginAccountDto _loginAccountDto = new LoginAccountDto();
 }
+

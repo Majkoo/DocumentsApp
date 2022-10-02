@@ -1,19 +1,19 @@
-using System.Text;
-using DocumentsApp.Data.Authentication;
-using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Interfaces;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
+using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
+using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Validators.FluentValidation;
+using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,32 +40,16 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
     opts.SignIn.RequireConfirmedAccount = false;
     opts.SignIn.RequireConfirmedPhoneNumber = false;
 
-}).AddEntityFrameworkStores<DocumentsAppDbContext>();
+})
+    .AddEntityFrameworkStores<DocumentsAppDbContext>()
+    .AddDefaultTokenProviders();
 
 #endregion
 
 #region Auth Config
 
-
-var authenticationSettings = new AuthenticationSettings();
-builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
-builder.Services.AddSingleton(authenticationSettings);
-builder.Services.AddAuthentication(opt =>
-{
-    opt.DefaultAuthenticateScheme = "Bearer";
-    opt.DefaultScheme = "Bearer";
-    opt.DefaultChallengeScheme = "Bearer";
-}).AddJwtBearer(cfg =>
-{
-    cfg.RequireHttpsMetadata = false;
-    cfg.SaveToken = true;
-    cfg.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidIssuer = authenticationSettings.JwtIssuer,
-        ValidAudience = authenticationSettings.JwtIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
-    };
-});
+builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(
+    stateProvider => (ServerAuthenticationStateProvider)stateProvider.GetRequiredService<AuthenticationStateProvider>());
 
 #endregion
 
@@ -92,8 +76,8 @@ builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 
 #region Business Logic Services
 
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 #endregion
 
@@ -152,6 +136,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapBlazorHub();
     endpoints.MapFallbackToPage("/_Host");
+    endpoints.MapControllers();
 });
 
 app.Run();

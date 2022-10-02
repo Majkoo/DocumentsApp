@@ -1,6 +1,5 @@
 @page "/signup"
-
-@using DocumentsApp.Data.Dtos.AccountDtos
+@using DocumentsApp.Shared.Dtos.AccountDtos
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -10,7 +9,8 @@
         TItem="RegisterAccountDto"
         Data="@_registerAccountDto"
         Style="width: 100%; max-width: 450px"
-        Submit="@OnSubmit">
+        Method="post"
+        Action="identity/signup">
 
         <RadzenFieldset>
 
@@ -20,17 +20,17 @@
 
             <div class="mb-4">
 
-                <RadzenLabel Text="Accountname"/>
+                <RadzenLabel Text="Username"/>
 
                 <RadzenTextBox
-                    Placeholder="Enter Accountname..."
-                    Name="Accountname"
+                    Placeholder="Enter Username..."
+                    Name="Username"
                     Style="display: block"
                     @bind-Value="@_registerAccountDto.UserName"/>
 
                 <RadzenRequiredValidator
-                    Component="Accountname"
-                    Text="Accountname is required"
+                    Component="Username"
+                    Text="Username is required"
                     Popup="@true"
                     Style="position: absolute"/>
 
@@ -126,10 +126,5 @@
 @code {
 
     readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
-
-    private async Task OnSubmit(RegisterAccountDto registerAccountDto)
-    {
-        throw new NotImplementedException();
-    }
 
 }

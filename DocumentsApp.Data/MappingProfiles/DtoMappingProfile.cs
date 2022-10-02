@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Shared.Dtos.AccountDtos;
 
 namespace DocumentsApp.Data.MappingProfiles;
 

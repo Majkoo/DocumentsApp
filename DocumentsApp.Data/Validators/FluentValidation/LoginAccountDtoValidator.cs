@@ -1,4 +1,4 @@
-using DocumentsApp.Data.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
