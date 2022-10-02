@@ -12,7 +12,6 @@ public class AddDocumentDtoValidator : AbstractValidator<AddDocumentDto>
             .MaximumLength(20);
 
         RuleFor(d => d.Description)
-            .NotEmpty()
             .MaximumLength(150);
 
         RuleFor(d => d.Content)

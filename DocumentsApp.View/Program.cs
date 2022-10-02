@@ -1,6 +1,7 @@
 using System.Text;
-using DocumentsApp.Data;
+using AutoMapper;
 using DocumentsApp.Data.Authentication;
+using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Dtos.AccountDtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
@@ -8,12 +9,16 @@ using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Services;
+using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Sieve.Models;
+using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +109,7 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
+builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 
 #endregion
 

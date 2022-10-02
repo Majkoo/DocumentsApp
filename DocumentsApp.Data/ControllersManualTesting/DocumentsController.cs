@@ -2,6 +2,7 @@
 using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Attributes;
 
 namespace DocumentsApp.Data.ControllersManualTesting;
 
@@ -32,7 +33,6 @@ public class DocumentController : ControllerBase
         var documents = await _documentService.GetAllDocumentsAsync(userId);
         return Ok(documents);
     } 
-
 
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]AddDocumentDto dto)
