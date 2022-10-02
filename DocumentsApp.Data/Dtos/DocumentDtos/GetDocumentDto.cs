@@ -11,4 +11,6 @@ public class GetDocumentDto
     public string Content { get; set; }
 
     public DateTime DateCreated { get; set; }
+
+    public string AccountName { get; set; }
 }

@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
+using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace DocumentsApp.Data.Services;
 
 public interface IDocumentService
 {
     Task<GetDocumentDto> GetDocumentByIdAsync(Guid id);
-    Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId);
+    Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(Guid userId, SieveModel query);
     Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto);
     Task UpdateDocumentAsync(Guid id, UpdateDocumentDto dto);
     Task DeleteDocumentAsync(Guid id);
@@ -20,11 +23,13 @@ public class DocumentService : IDocumentService
 {
     private readonly IMapper _mapper;
     private readonly IDocumentRepo _documentRepo;
+    private readonly ISieveProcessor _sieveProcessor;
 
-    public DocumentService(IMapper mapper, IDocumentRepo documentRepo)
+    public DocumentService(IMapper mapper, IDocumentRepo documentRepo, ISieveProcessor sieveProcessor)
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
+        _sieveProcessor = sieveProcessor;
     }
 
     public async Task<GetDocumentDto> GetDocumentByIdAsync(Guid id)
@@ -35,16 +40,20 @@ public class DocumentService : IDocumentService
         return resultDocument;
     }
 
-    public async Task<IEnumerable<GetDocumentDto>> GetAllDocumentsAsync(Guid userId)
+    public async Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(Guid userId, SieveModel query)
     {
         var creatorId = userId;
-        var documents = await _documentRepo.GetAllDocumentsAsync(creatorId);
+        var documents = _documentRepo.GetAllDocumentsAsQueryable(creatorId);
         
         if (!documents.Any()) throw new NotFoundException("No documents available for this account");
 
-        var resultDocuments = _mapper.Map<IEnumerable<GetDocumentDto>>(documents);
-        
-        return resultDocuments;
+         var resultDocuments = await _sieveProcessor
+            .Apply(query, documents)
+            .Select(d => _mapper.Map<GetDocumentDto>(d))
+            .ToListAsync();
+         
+        return new PagedResults<GetDocumentDto>(resultDocuments, resultDocuments.Count,
+            query.PageSize.GetValueOrDefault(), query.Page.GetValueOrDefault());
     }
 
     public async Task<Guid> AddDocumentAsync(Guid userId, AddDocumentDto dto)

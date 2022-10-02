@@ -21,7 +21,8 @@ public class DocumentsAppSieveProcessor : SieveProcessor
 
         mapper.Property<Document>(d => d.Account.UserName)
             .CanFilter()
-            .CanSort();
+            .CanSort()
+            .HasName("AccountName");
 
         return mapper;
     }

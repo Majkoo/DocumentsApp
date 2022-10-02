@@ -3,6 +3,7 @@ using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Attributes;
+using Sieve.Models;
 
 namespace DocumentsApp.Data.ControllersManualTesting;
 
@@ -27,10 +28,10 @@ public class DocumentController : ControllerBase
     } 
     
     [HttpGet]
-    public async Task<ActionResult<GetDocumentDto>> GetAll()
+    public async Task<ActionResult<GetDocumentDto>> GetAll([FromBody] SieveModel query)
     {
         var userId = _accountContextService.GetAccountId();
-        var documents = await _documentService.GetAllDocumentsAsync(userId);
+        var documents = await _documentService.GetAllDocumentsAsync(userId, query);
         return Ok(documents);
     } 
 
