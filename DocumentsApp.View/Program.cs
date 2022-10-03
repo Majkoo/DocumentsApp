@@ -74,6 +74,7 @@ builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 builder.Services.AddScoped<IValidator<RegisterAccountDto>, RegisterAccountDtoValidator>();
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator>();
+builder.Services.AddScoped<IValidator<SieveModel>, SieveModelValidator>();
 
 #endregion
 

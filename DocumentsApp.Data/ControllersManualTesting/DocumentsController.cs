@@ -1,8 +1,6 @@
 ﻿using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Sieve.Attributes;
 using Sieve.Models;
 
 namespace DocumentsApp.Data.ControllersManualTesting;
