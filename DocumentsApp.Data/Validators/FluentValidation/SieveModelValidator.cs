@@ -28,6 +28,6 @@ public class SieveModelValidator : AbstractValidator<SieveModel>
         RuleFor(s=>s.Sorts)
             .Must(value => string.IsNullOrEmpty(value) || _allowedSortValues.Contains(value) ||
                            _allowedSortValues.Contains(value.Remove(0,1)))
-            .WithMessage($"Sorts is optional or must be in [{string.Join(",", _allowedSortValues)}]");
+            .WithMessage($"Sorts is optional or must be in [{string.Join(",", _allowedSortValues)}] or negative");
     }
 }

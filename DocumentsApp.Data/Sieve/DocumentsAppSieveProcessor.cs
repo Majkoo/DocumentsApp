@@ -14,6 +14,12 @@ public class DocumentsAppSieveProcessor : SieveProcessor
         mapper.Property<Document>(d => d.Name)
             .CanFilter()
             .CanSort();
+
+        mapper.Property<Document>(d => d.Description)
+            .CanFilter();
+
+        mapper.Property<Document>(d => d.Content)
+            .CanFilter();
         
         mapper.Property<Document>(d => d.DateCreated)
             .CanFilter()

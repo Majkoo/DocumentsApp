@@ -1,12 +1,13 @@
 ﻿using DocumentsApp.Data.Dtos.AccountDtos;
-using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.Repos;
 using FluentValidation;
+using Sieve.Extensions;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
 
 public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
 {
-    public RegisterAccountDtoValidator(DocumentsAppDbContext dbContext)
+    public RegisterAccountDtoValidator(IAccountRepo accountRepo)
     {
         RuleFor(d=>d.UserName)
             .NotEmpty()
@@ -16,15 +17,13 @@ public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
             .EmailAddress()
             .Custom((value, context) =>
             {
-                if (dbContext.Accounts.Any(u => u.Email == value))
-                    context.AddFailure("Email", "Email is already taken");
+                var accounts =  accountRepo.GetAllAccountsAsync().Result;
+                if (accounts.Any(a => a.Email == value))
+                {
+                    context.AddFailure("Email", "Email must be unique");
+                }
             });
 
-        //TODO 
-        //add validation for strong password
-
-        // e tam uzytkownik sam niech dba o haslo
-        // chyba ze dla sportu regexika chcesz pisac
         RuleFor(d => d.Password)
             .MinimumLength(8);
 

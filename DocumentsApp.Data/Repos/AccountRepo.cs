@@ -5,6 +5,7 @@ namespace DocumentsApp.Data.Repos;
 
 public interface IAccountRepo
 {
+    Task<IEnumerable<Account>> GetAllAccountsAsync();
     Task<Account> GetAccountByEmailAsync(string userEmail);
     Task<Account> InsertAccountAsync(Account account);
 }
@@ -17,7 +18,14 @@ public class AccountRepo : IAccountRepo
     {
         _dbContext = dbContext;
     }
-    
+
+    public async Task<IEnumerable<Account>> GetAllAccountsAsync()
+    {
+        return await _dbContext
+            .Accounts
+            .ToListAsync();
+    }
+
     public async Task<Account> GetAccountByEmailAsync(string userEmail)
     {
         return await _dbContext
