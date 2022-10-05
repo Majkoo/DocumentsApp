@@ -3,6 +3,18 @@
 
 <PageTitle>DocumentsApp - Homepage</PageTitle>
 
+<AuthorizeView>
+
+    <Authorized>
+        <h1>Hello, @context.User.Identity!.Name</h1>
+    </Authorized>
+
+    <NotAuthorized>
+        <h1>Hello, Guest!</h1>
+    </NotAuthorized>
+
+</AuthorizeView>
+
 <div class="row p-3 ">
 
     <div class="p-2 col-6 col-lg-3 col-xl-2">
@@ -19,6 +31,8 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
 
     readonly List<GetDocumentDto> _documentDtos = new List<GetDocumentDto>();
 

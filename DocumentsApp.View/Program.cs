@@ -1,3 +1,4 @@
+using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
@@ -5,13 +6,12 @@ using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
-using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,13 +46,6 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
 
 #endregion
 
-#region Auth Config
-
-builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(
-    stateProvider => (ServerAuthenticationStateProvider)stateProvider.GetRequiredService<AuthenticationStateProvider>());
-
-#endregion
-
 #region Middleware
 
 builder.Services.AddScoped<ErrorHandlingMiddleWare>();
@@ -77,7 +70,6 @@ builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 #region Business Logic Services
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 #endregion
 
@@ -104,10 +96,19 @@ builder.Services.AddControllers();
 
 #endregion
 
+#region Auth Config
+
+builder.Services.AddAuthenticationCore();
+
+#endregion
+
 #region Frontend Services
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 #endregion
 

@@ -1,5 +1,15 @@
-@page "/signin"
+@page "/auth/signin"
 @using DocumentsApp.Shared.Dtos.AccountDtos
+@using Microsoft.AspNetCore.Identity
+@using DocumentsApp.Data.Entities
+@using DocumentsApp.Data.Auth
+@using DocumentsApp.Data.Repos.Interfaces
+
+@inject IAccountRepo AccountRepo
+@inject IJSRuntime JsRuntime
+@inject SignInManager<Account> SignInManager
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>DocumentsApp - Sign In</PageTitle>
 
@@ -9,8 +19,7 @@
         TItem="LoginAccountDto"
         Data="@_loginAccountDto"
         Style="width: 100%; max-width: 450px"
-        Method="post"
-        Action="identity/signin">
+        Submit="() => OnSubmit(_loginAccountDto)">
 
         <RadzenFieldset>
 
@@ -67,7 +76,7 @@
 
         <div class="w-100 text-start">
             <RadzenText TextStyle="TextStyle.Caption" Text="Do not have an account?"/>
-            <a href="signup">
+            <a href="auth/signup">
                 <RadzenText TextStyle="TextStyle.Caption" Text="Create one here."/>
             </a>
         </div>
@@ -79,5 +88,28 @@
 @code {
 
     private readonly LoginAccountDto _loginAccountDto = new LoginAccountDto();
+
+    private async Task OnSubmit(LoginAccountDto loginDto)
+    {
+        // implement better error handling
+        var userAccount = await AccountRepo.GetAccountByEmailAsync(loginDto.Email) ??
+                          await AccountRepo.GetAccountByUsernameAsync(loginDto.Email);
+
+        if (userAccount is null) await JsRuntime.InvokeVoidAsync("alert", "invalid login credentials");
+
+        var signInResult = await SignInManager.CheckPasswordSignInAsync(userAccount, loginDto.Password, false);
+
+        if (!signInResult.Succeeded) await JsRuntime.InvokeVoidAsync("alert", "invalid login credentials");
+        if (signInResult.IsLockedOut || signInResult.IsNotAllowed) await JsRuntime.InvokeVoidAsync("alert", "Account locked out. check your e-mail.");
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+
+        if (userAccount is not null && signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed)
+        {
+            await customAuthStateProvider.MarkUserAsSignedIn(userAccount);
+            NavigationManager.NavigateTo("/", true);
+        }
+
+    }
 }
 

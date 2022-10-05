@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using DocumentsApp.Data.Auth
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">DocumentsApp</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,41 +12,66 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span>
-                Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="signin">
-                <span class="oi oi-person" aria-hidden="true"></span>
-                Sign in
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="signup">
-                <span class="oi oi-plus" aria-hidden="true"></span>
-                Sign up
-            </NavLink>
-        </div>
-        <div class="nav-item px-3 text-white">
-            <NavLink class="nav-link" href="identity/signout">
-                <span class="oi oi-minus" aria-hidden="true"></span>
-                Sign Out
-            </NavLink>
-        </div>
+        <AuthorizeView>
+
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span>
+                        Home
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="auth/signin">
+                        <span class="oi oi-person" aria-hidden="true"></span>
+                        Sign in
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="auth/signup">
+                        <span class="oi oi-plus" aria-hidden="true"></span>
+                        Sign up
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span>
+                        Home
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3 text-white">
+                    <NavLink class="nav-link" href="auth/signin" @onclick="@SignOut">
+                        <span class="oi oi-minus" aria-hidden="true"></span>
+                        Sign Out
+                    </NavLink>
+                </div>
+            </Authorized>
+
+        </AuthorizeView>
     </nav>
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool _collapseNavMenu = true;
+
+    private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        _collapseNavMenu = !_collapseNavMenu;
+    }
+
+    private async Task SignOut()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+
+        await customAuthStateProvider.MarkUserAsSignedOut();
     }
 
 }

@@ -1,5 +1,11 @@
-@page "/signup"
+@page "/auth/signup"
 @using DocumentsApp.Shared.Dtos.AccountDtos
+@using DocumentsApp.Data.Entities
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<Account> UserManager
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -9,8 +15,7 @@
         TItem="RegisterAccountDto"
         Data="@_registerAccountDto"
         Style="width: 100%; max-width: 450px"
-        Method="post"
-        Action="identity/signup">
+        Submit="() => OnSubmit(_registerAccountDto)">
 
         <RadzenFieldset>
 
@@ -114,7 +119,7 @@
 
         <div class="w-100 text-start">
             <RadzenText TextStyle="TextStyle.Caption" Text="Have an account?"/>
-            <a href="signin">
+            <a href="auth/signin">
                 <RadzenText TextStyle="TextStyle.Caption" Text="Sign in here."/>
             </a>
         </div>
@@ -126,5 +131,34 @@
 @code {
 
     readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
+
+    private async Task OnSubmit(RegisterAccountDto registerDto)
+    {
+        // implement better error handling
+
+        var newAccount = new Account()
+        {
+            UserName = _registerAccountDto.UserName,
+            Email = _registerAccountDto.Email
+        };
+
+        var result = await UserManager.CreateAsync(newAccount, _registerAccountDto.Password);
+
+        if (result.Succeeded)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Register succeed");
+            NavigationManager.NavigateTo("/auth/signin");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Register failed");
+            foreach (var identityError in result.Errors)
+            {
+                await JsRuntime.InvokeVoidAsync("alert", identityError.Description);
+            }
+        }
+
+
+    }
 
 }
