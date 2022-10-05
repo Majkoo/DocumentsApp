@@ -29,23 +29,17 @@
 
             <div class="mb-4">
 
-                <RadzenLabel Text="Email"/>
+                <RadzenLabel Text="Email or username"/>
 
                 <RadzenTextBox
-                    Placeholder="Enter email..."
-                    Name="Email"
+                    Placeholder="Enter email or username..."
+                    Name="Email/Username"
                     Style="display: block"
                     @bind-Value="@_loginAccountDto.Email"/>
 
                 <RadzenRequiredValidator
-                    Component="Email"
-                    Text="Email is required"
-                    Popup="@true"
-                    Style="position: absolute"/>
-
-                <RadzenEmailValidator
-                    Component="Email"
-                    Text="Provide a valid email address"
+                    Component="Email/Username"
+                    Text="Email/Username is required"
                     Popup="@true"
                     Style="position: absolute"/>
 
