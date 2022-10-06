@@ -5,7 +5,7 @@ using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
-using DocumentsApp.Data.Repos.Interfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
@@ -29,12 +29,12 @@ public class DocumentService : IDocumentService
     private readonly CustomAuthenticationStateProvider _authenticationStateProvider;
 
     public DocumentService(IMapper mapper, IDocumentRepo documentRepo, ISieveProcessor sieveProcessor,
-        CustomAuthenticationStateProvider authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
         _sieveProcessor = sieveProcessor;
-        _authenticationStateProvider = authenticationStateProvider;
+        _authenticationStateProvider = (CustomAuthenticationStateProvider)authenticationStateProvider;
     }
 
     public async Task<GetDocumentDto> GetDocumentByIdAsync(string id)
