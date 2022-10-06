@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace DocumentsApp.Data.MappingProfiles;
 
@@ -9,28 +11,15 @@ public class DtoMappingProfile : Profile
 {
     public DtoMappingProfile()
     {
-        // nie musisz uzywac ignore,
-        // jak automapper sam nie znajdzie takiego samego pola to automatycznie je zignoruje
-
-        CreateMap<RegisterAccountDto, Account>()
-            .ForMember(
-                reg => reg.PasswordHash,
-                opt => opt.Ignore()); //hashing in AccountService
-
-        // jezeli dobrze rozumiem,
-        // to context chyba nie moze nigdy byc nullem (?)
-        // nie chodzilo o src.Content?
+        CreateMap<RegisterAccountDto, Account>();
 
         CreateMap<Document, GetDocumentDto>()
-            .ForMember(
-                m => m.Description,
-                opt => opt.PreCondition(
-                    (src, dest, srcM) => srcM != null));
+            .ForMember(dest => dest.Description, opt => opt.PreCondition(src => src.Description != null))
+            .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.UserName));
         
         CreateMap<AddDocumentDto, Document>();
 
         CreateMap<UpdateDocumentDto, Document>()
-            .ForAllMembers(opt => opt.Condition(
-                (src, dest, srcM) => srcM != null));
+            .ForAllMembers(opt => opt.Condition((src, dest, srcM) => srcM != null));
     }
 }

@@ -1,10 +1,16 @@
-﻿namespace DocumentsApp.Data.Dtos.DocumentDtos;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DocumentsApp.Data.Dtos.DocumentDtos;
 
 public class GetDocumentDto
 {
     public string Name { get; set; }
-    public string? Description { get; set; }
+    
+    [AllowNull]
+    public string Description { get; set; }
     public string Content { get; set; }
 
     public DateTime DateCreated { get; set; }
+
+    public string AccountName { get; set; }
 }

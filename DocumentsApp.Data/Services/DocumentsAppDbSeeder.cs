@@ -35,12 +35,14 @@ public class DocumentsAppDbSeeder
                     Name = "testdoc1",
                     Description = "test document description",
                     Content = "lorem100",
+                    DateCreated = DateTime.Now
                 },
                 new Document()
                 {
                     Name = "testdoc2",
                     Description = "test document description",
                     Content = "lorem100",
+                    DateCreated = DateTime.Now
                 }
             }
         };
