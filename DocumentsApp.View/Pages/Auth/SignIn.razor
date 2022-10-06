@@ -101,7 +101,7 @@
         if (userAccount is not null && signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed)
         {
             await customAuthStateProvider.MarkUserAsSignedIn(userAccount);
-            NavigationManager.NavigateTo("/", true);
+            NavigationManager.NavigateTo("/my-documents", true);
         }
 
     }
