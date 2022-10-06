@@ -13,7 +13,15 @@ public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
     {
         RuleFor(d=>d.UserName)
             .NotEmpty()
-            .MaximumLength(20);
+            .MaximumLength(20)
+            .Custom((value, context) =>
+            {
+                var accounts =  accountRepo.GetAllAccountsAsync().Result;
+                if (accounts.Any(a => a.UserName == value))
+                {
+                    context.AddFailure("UserName", "UserName is already taken");
+                }
+            });
         
         RuleFor(d => d.Email)
             .EmailAddress()
@@ -22,7 +30,7 @@ public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
                 var accounts =  accountRepo.GetAllAccountsAsync().Result;
                 if (accounts.Any(a => a.Email == value))
                 {
-                    context.AddFailure("Email", "Email must be unique");
+                    context.AddFailure("Email", "Email is already taken");
                 }
             });
 

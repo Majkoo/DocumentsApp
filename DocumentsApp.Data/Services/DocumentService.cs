@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentsApp.Data.Auth;
+using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
@@ -26,15 +27,15 @@ public class DocumentService : IDocumentService
     private readonly IMapper _mapper;
     private readonly IDocumentRepo _documentRepo;
     private readonly ISieveProcessor _sieveProcessor;
-    private readonly CustomAuthenticationStateProvider _authenticationStateProvider;
+    private readonly IAuthenticationContextProvider _authenticationStateProvider;
 
     public DocumentService(IMapper mapper, IDocumentRepo documentRepo, ISieveProcessor sieveProcessor,
-        AuthenticationStateProvider authenticationStateProvider)
+        IAuthenticationContextProvider authenticationStateProvider)
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
         _sieveProcessor = sieveProcessor;
-        _authenticationStateProvider = (CustomAuthenticationStateProvider)authenticationStateProvider;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     public async Task<GetDocumentDto> GetDocumentByIdAsync(string id)

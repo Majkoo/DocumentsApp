@@ -1,4 +1,5 @@
 ﻿using DocumentsApp.Data.Auth;
+using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +12,10 @@ namespace DocumentsApp.Data.ControllersManualTesting;
 public class DocumentController : ControllerBase
 {
     private readonly IDocumentService _documentService;
-    private readonly CustomAuthenticationStateProvider _authenticationStateProvider;
 
-    public DocumentController(IDocumentService  documentService, CustomAuthenticationStateProvider authenticationStateProvider)
+    public DocumentController(IDocumentService  documentService)
     {
         _documentService = documentService;
-        _authenticationStateProvider = authenticationStateProvider;
     }
 
     [HttpGet("{documentId}")]
@@ -36,7 +35,6 @@ public class DocumentController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]AddDocumentDto dto)
     {
-        var userId = await _authenticationStateProvider.GetUserId();
         var documentId = await _documentService.AddDocumentAsync(dto);
         return Created($"{documentId}", null);
     }

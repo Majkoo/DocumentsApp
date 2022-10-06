@@ -7,6 +7,7 @@ using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
+using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,7 +79,6 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 #region Helper Services
 
-builder.Services.AddScoped<IAccountContextService, AccountContextService>();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
 #endregion
@@ -91,6 +92,7 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 
