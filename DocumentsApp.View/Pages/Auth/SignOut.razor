@@ -1,0 +1,27 @@
+@page "/auth/signout"
+@using DocumentsApp.Data.Auth
+@using DocumentsApp.Shared.Notifications
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+<h3>SignOut</h3>
+
+<PageTitle>DocumentsApp - Sign out</PageTitle>
+
+@code {
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+
+        await customAuthStateProvider.MarkUserAsSignedOut();
+        NavigationManager.NavigateTo("auth/signin", false);
+        NotificationService.Messages.Clear();
+        NotificationService.Notify(new WarningNotification("Signed out", "When you are not authenticated, you cannot access the application."));
+
+    }
+
+}

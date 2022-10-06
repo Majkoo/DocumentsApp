@@ -1,4 +1,5 @@
 using DocumentsApp.Data.Auth;
+using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
@@ -6,7 +7,6 @@ using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
-using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Sieve.Services;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,8 +77,8 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 #region Helper Services
 
+builder.Services.AddScoped<IAccountContextService, AccountContextService>();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
-builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 
 #endregion
 
@@ -93,7 +93,6 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 
 #endregion
 
@@ -110,8 +109,14 @@ builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
+
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContextProvider>();
 
 #endregion
 

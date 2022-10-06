@@ -1,20 +1,36 @@
-﻿@inherits LayoutComponentBase
+﻿@using DocumentsApp.Data.Repos.Interfaces
+@inherits LayoutComponentBase
 
 <PageTitle>DocumentsApp.View</PageTitle>
 
-
 <div class="page">
-    <div class="sidebar">
+    <div class="sidebar fixed-top d-md-block mb-5 mb-md-0">
         <NavMenu/>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+    <main class="mt-5 mt-md-0">
+        <div class="top-row">
+            <AuthorizeView>
+                <Authorized>
+                    @* Show context menu on click *@
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="My Account" Icon="person"/>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
         </div>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
+
 </div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+}
