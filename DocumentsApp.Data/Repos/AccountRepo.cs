@@ -12,6 +12,13 @@ public class AccountRepo : IAccountRepo
     {
         _dbContext = dbContext;
     }
+
+    public async Task<IEnumerable<Account>> GetAllAccountsAsync()
+    {
+        return await _dbContext.Accounts
+            .Include(a => a.Documents)
+            .ToListAsync();
+    }
     
     public async Task<Account> GetAccountByEmailAsync(string userEmail)
     {

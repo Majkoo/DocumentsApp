@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace DocumentsApp.Data.MappingProfiles;
 
@@ -13,7 +15,7 @@ public class DtoMappingProfile : Profile
 
         CreateMap<Document, GetDocumentDto>()
             .ForMember(dest => dest.Description, opt => opt.PreCondition(src => src.Description != null))
-            .ForPath(getD => getD.AccountName, opt => opt.MapFrom(d => d.Name));
+            .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.UserName));
         
         CreateMap<AddDocumentDto, Document>();
 

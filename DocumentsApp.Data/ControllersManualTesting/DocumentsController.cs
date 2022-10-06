@@ -1,4 +1,5 @@
-﻿using DocumentsApp.Data.Dtos.DocumentDtos;
+﻿using DocumentsApp.Data.Auth;
+using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Services;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Models;
@@ -10,12 +11,12 @@ namespace DocumentsApp.Data.ControllersManualTesting;
 public class DocumentController : ControllerBase
 {
     private readonly IDocumentService _documentService;
-    private readonly IAccountContextService _accountContextService;
+    private readonly CustomAuthenticationStateProvider _authenticationStateProvider;
 
-    public DocumentController(IDocumentService  documentService, IAccountContextService accountContextService)
+    public DocumentController(IDocumentService  documentService, CustomAuthenticationStateProvider authenticationStateProvider)
     {
         _documentService = documentService;
-        _accountContextService = accountContextService;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     [HttpGet("{documentId}")]
@@ -28,16 +29,15 @@ public class DocumentController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<GetDocumentDto>> GetAll([FromBody] SieveModel query)
     {
-        var userId = _accountContextService.GetAccountId();
-        var documents = await _documentService.GetAllDocumentsAsync(userId, query);
+        var documents = await _documentService.GetAllDocumentsAsync(query);
         return Ok(documents);
     } 
 
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]AddDocumentDto dto)
     {
-        var userId = _accountContextService.GetAccountId();
-        var documentId = await _documentService.AddDocumentAsync(userId, dto);
+        var userId = await _authenticationStateProvider.GetUserId();
+        var documentId = await _documentService.AddDocumentAsync(dto);
         return Created($"{documentId}", null);
     }
 
