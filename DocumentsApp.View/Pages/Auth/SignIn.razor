@@ -4,12 +4,13 @@
 @using DocumentsApp.Data.Entities
 @using DocumentsApp.Data.Auth
 @using DocumentsApp.Data.Repos.Interfaces
+@using DocumentsApp.Shared.Notifications
 
 @inject IAccountRepo AccountRepo
-@inject IJSRuntime JsRuntime
 @inject SignInManager<Account> SignInManager
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NotificationService NotificationService
 
 <PageTitle>DocumentsApp - Sign In</PageTitle>
 
@@ -63,7 +64,7 @@
             </div>
 
             <div class="w-100 text-end">
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Submit"></RadzenButton>
             </div>
 
         </RadzenFieldset>
@@ -89,19 +90,32 @@
         var userAccount = await AccountRepo.GetAccountByEmailAsync(loginDto.Email) ??
                           await AccountRepo.GetAccountByUsernameAsync(loginDto.Email);
 
-        if (userAccount is null) await JsRuntime.InvokeVoidAsync("alert", "invalid login credentials");
+        if (userAccount is null)
+        {
+            NotificationService.Notify(new ErrorNotification("Auth failed", "Invalid login credentials"));
+            return;
+        }
 
         var signInResult = await SignInManager.CheckPasswordSignInAsync(userAccount, loginDto.Password, false);
 
-        if (!signInResult.Succeeded) await JsRuntime.InvokeVoidAsync("alert", "invalid login credentials");
-        if (signInResult.IsLockedOut || signInResult.IsNotAllowed) await JsRuntime.InvokeVoidAsync("alert", "Account locked out. check your e-mail.");
+        if (!signInResult.Succeeded)
+        {
+            NotificationService.Notify(new ErrorNotification("Auth failed", "Invalid login credentials"));
+            return;
+        }
+
+        if (signInResult.IsLockedOut || signInResult.IsNotAllowed)
+        {
+            NotificationService.Notify(new ErrorNotification("Auth failed", "Account locked out. check your e-mail for details."));
+            return;
+        }
 
         var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
-
-        if (userAccount is not null && signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed)
+        if (signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed)
         {
             await customAuthStateProvider.MarkUserAsSignedIn(userAccount);
-            NavigationManager.NavigateTo("/my-documents", true);
+            NavigationManager.NavigateTo("/my-documents", false);
+            NotificationService.Notify(new SuccessNotification("Auth succeed", "Signed in successfully."));
         }
 
     }

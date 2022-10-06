@@ -1,11 +1,14 @@
 @page "/auth/signup"
 @using DocumentsApp.Shared.Dtos.AccountDtos
 @using DocumentsApp.Data.Entities
+@using DocumentsApp.Shared.Notifications
 @using Microsoft.AspNetCore.Identity
+@using System.Text
 
 @inject UserManager<Account> UserManager
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JsRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NotificationService NotificationService
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -112,7 +115,7 @@
             </div>
 
             <div class="w-100 text-end">
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Submit"></RadzenButton>
             </div>
 
         </RadzenFieldset>
@@ -146,16 +149,19 @@
 
         if (result.Succeeded)
         {
-            await JsRuntime.InvokeVoidAsync("alert", "Register succeed");
-            NavigationManager.NavigateTo("/auth/signin");
+            NotificationService.Notify(new SuccessNotification("Success", "Successfully registered an account."));
+            NavigationManager.NavigateTo("/auth/signin", false);
         }
         else
         {
-            await JsRuntime.InvokeVoidAsync("alert", "Register failed");
+            var sb = new StringBuilder();
+
             foreach (var identityError in result.Errors)
             {
-                await JsRuntime.InvokeVoidAsync("alert", identityError.Description);
+                sb.Append($"{identityError.Description}\n");
             }
+            NotificationService.Notify(new ErrorNotification("Could not sign up", sb.ToString()));
+
         }
 
 

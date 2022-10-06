@@ -50,7 +50,7 @@
                     </NavLink>
                 </div>
                 <div class="nav-item px-3 text-white">
-                    <NavLink class="nav-link" href="auth/signin" @onclick="@SignOut">
+                    <NavLink class="nav-link" href="auth/signout">
                         <span class="oi oi-account-logout" aria-hidden="true"></span>
                         Sign Out
                     </NavLink>
@@ -72,13 +72,6 @@
     private void ToggleNavMenu()
     {
         _collapseNavMenu = !_collapseNavMenu;
-    }
-
-    private async Task SignOut()
-    {
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-
-        await customAuthStateProvider.MarkUserAsSignedOut();
     }
 
 }

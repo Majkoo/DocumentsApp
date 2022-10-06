@@ -22,6 +22,8 @@
       </PackageReference>
         
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+        
+      <PackageReference Include="Radzen.Blazor" Version="4.1.7" />
       <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 
