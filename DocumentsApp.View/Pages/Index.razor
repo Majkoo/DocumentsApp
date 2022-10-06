@@ -1,42 +1,20 @@
 ﻿@page "/"
-@using DocumentsApp.Data.Dtos.DocumentDtos
 
-<PageTitle>DocumentsApp - Homepage</PageTitle>
+@inject NavigationManager NavigationManager
 
-<div class="row p-3 ">
+<PageTitle>DocumentsApp</PageTitle>
 
-    <div class="p-2 col-6 col-md-3 col-lg-2">
-        <AddNewDocumentCard />
-    </div>
-
-    @foreach (var doc in _documentDtos)
-    {
-        <div class="p-2 col-6 col-md-3 col-lg-2">
-            <DocumentCard Document="@doc" />
-        </div>
-    }
-
-</div>
+@* some seo friendly text *@
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
 
-    readonly List<GetDocumentDto> _documentDtos = new List<GetDocumentDto>();
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var random = new Random().Next(5,15);
+        var user = (await AuthState!).User;
 
-        for (int i = 0; i < random; i++)
-        {
-            _documentDtos.Add(
-                new GetDocumentDto()
-                {
-                    Name = "Lipsum",
-                    Content = "lorem ipsum dolor sit amet",
-                    Description = "lorem ipsum"
-                }
-                );
-        }
+        NavigationManager.NavigateTo(user.Identity!.IsAuthenticated ? "/my-documents" : "/auth/signin");
     }
 
 }

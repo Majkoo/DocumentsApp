@@ -1,5 +1,11 @@
-@page "/signup"
-@using DocumentsApp.Data.Dtos.AccountDtos
+@page "/auth/signup"
+@using DocumentsApp.Shared.Dtos.AccountDtos
+@using DocumentsApp.Data.Entities
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<Account> UserManager
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -9,7 +15,7 @@
         TItem="RegisterAccountDto"
         Data="@_registerAccountDto"
         Style="width: 100%; max-width: 450px"
-        Submit="@OnSubmit">
+        Submit="() => OnSubmit(_registerAccountDto)">
 
         <RadzenFieldset>
 
@@ -19,17 +25,17 @@
 
             <div class="mb-4">
 
-                <RadzenLabel Text="Accountname"/>
+                <RadzenLabel Text="Username"/>
 
                 <RadzenTextBox
-                    Placeholder="Enter Accountname..."
-                    Name="Accountname"
+                    Placeholder="Enter Username..."
+                    Name="Username"
                     Style="display: block"
                     @bind-Value="@_registerAccountDto.UserName"/>
 
                 <RadzenRequiredValidator
-                    Component="Accountname"
-                    Text="Accountname is required"
+                    Component="Username"
+                    Text="Username is required"
                     Popup="@true"
                     Style="position: absolute"/>
 
@@ -48,6 +54,12 @@
                 <RadzenRequiredValidator
                     Component="Email"
                     Text="Email is required"
+                    Popup="@true"
+                    Style="position: absolute"/>
+
+                <RadzenEmailValidator
+                    Component="Email"
+                    Text="Provide a valid email address"
                     Popup="@true"
                     Style="position: absolute"/>
 
@@ -82,6 +94,12 @@
                     Style="display: block"
                     @bind-Value="@_registerAccountDto.ConfirmPassword"/>
 
+                <RadzenRequiredValidator
+                    Component="ConfirmPassword"
+                    Text="Repeat your password"
+                    Popup="@true"
+                    Style="position: absolute" />
+
                 <RadzenCompareValidator
                     Visible="@(!string.IsNullOrEmpty(_registerAccountDto.ConfirmPassword))"
                     Value="@_registerAccountDto.Password"
@@ -101,7 +119,7 @@
 
         <div class="w-100 text-start">
             <RadzenText TextStyle="TextStyle.Caption" Text="Have an account?"/>
-            <a href="signin">
+            <a href="auth/signin">
                 <RadzenText TextStyle="TextStyle.Caption" Text="Sign in here."/>
             </a>
         </div>
@@ -111,12 +129,36 @@
 </div>
 
 @code {
+
     readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
 
-    void OnSubmit(RegisterAccountDto registerAccountDto)
+    private async Task OnSubmit(RegisterAccountDto registerDto)
     {
-        // try catch if register is successful or not
-        throw new NotImplementedException();
+        // implement better error handling
+
+        var newAccount = new Account()
+        {
+            UserName = _registerAccountDto.UserName,
+            Email = _registerAccountDto.Email
+        };
+
+        var result = await UserManager.CreateAsync(newAccount, _registerAccountDto.Password);
+
+        if (result.Succeeded)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Register succeed");
+            NavigationManager.NavigateTo("/auth/signin");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Register failed");
+            foreach (var identityError in result.Errors)
+            {
+                await JsRuntime.InvokeVoidAsync("alert", identityError.Description);
+            }
+        }
+
+
     }
 
 }

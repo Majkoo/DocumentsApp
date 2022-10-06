@@ -6,7 +6,7 @@ namespace DocumentsApp.Data.Services;
 public interface IAccountContextService
 {
     ClaimsPrincipal User { get; }
-    Guid GetAccountId();
+    string GetAccountId();
 }
 
 public class AccountContextService : IAccountContextService
@@ -20,6 +20,6 @@ public class AccountContextService : IAccountContextService
 
     public ClaimsPrincipal User => _accessor.HttpContext?.User;
 
-    public Guid GetAccountId() =>
-        User is not null ? Guid.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value) : default;
+    public string GetAccountId() =>
+        User is not null ? User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value : default;
 }

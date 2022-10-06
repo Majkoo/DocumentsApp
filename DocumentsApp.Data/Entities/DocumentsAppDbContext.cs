@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Entities;
 
-public class DocumentsAppDbContext : DbContext
+public class DocumentsAppDbContext : IdentityDbContext
 {
     public DocumentsAppDbContext(DbContextOptions<DocumentsAppDbContext> options): base(options) {}
 

@@ -1,30 +1,25 @@
-using System.Text;
-using AutoMapper;
-using DocumentsApp.Data.Authentication;
-using DocumentsApp.Data.Dtos;
-using DocumentsApp.Data.Dtos.AccountDtos;
+using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
+using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
-using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
+using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Sieve.Models;
-using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region Backend Services
 
-#region DbContext
+#region DbContext & UserIdentity
 
 builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 {
@@ -36,30 +31,18 @@ builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
     );
 });
 
-#endregion
-
-#region Auth Config
-
-
-var authenticationSettings = new AuthenticationSettings();
-builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
-builder.Services.AddSingleton(authenticationSettings);
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddIdentity<Account, IdentityRole>(opts =>
 {
-    opt.DefaultAuthenticateScheme = "Bearer";
-    opt.DefaultScheme = "Bearer";
-    opt.DefaultChallengeScheme = "Bearer";
-}).AddJwtBearer(cfg =>
-{
-    cfg.RequireHttpsMetadata = false;
-    cfg.SaveToken = true;
-    cfg.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidIssuer = authenticationSettings.JwtIssuer,
-        ValidAudience = authenticationSettings.JwtIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
-    };
-});
+    opts.Password.RequiredLength = 8;
+    opts.User.RequireUniqueEmail = true;
+
+    opts.SignIn.RequireConfirmedEmail = false;
+    opts.SignIn.RequireConfirmedAccount = false;
+    opts.SignIn.RequireConfirmedPhoneNumber = false;
+
+})
+    .AddEntityFrameworkStores<DocumentsAppDbContext>()
+    .AddDefaultTokenProviders();
 
 #endregion
 
@@ -74,8 +57,6 @@ builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 builder.Services.AddScoped<IValidator<RegisterAccountDto>, RegisterAccountDtoValidator>();
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator>();
-builder.Services.AddScoped<IValidator<SieveModel>, SieveModelValidator>();
-builder.Services.AddScoped<IValidator<UpdateUserNameDto>, UpdateUserNameValidator>();
 
 #endregion
 
@@ -88,7 +69,6 @@ builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 
 #region Business Logic Services
 
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 #endregion
@@ -111,9 +91,14 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
-builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 
 #endregion
+
+#endregion
+
+#region Auth Config
+
+builder.Services.AddAuthenticationCore();
 
 #endregion
 
@@ -122,33 +107,38 @@ builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
 #endregion
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
+    var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DocumentsAppDbSeeder>();
+    await seeder.SeedAsync();
+
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-app.UseStaticFiles();
 
-app.UseMiddleware<ErrorHandlingMiddleWare>();
-
-app.UseAuthentication();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseMiddleware<ErrorHandlingMiddleWare>();
 
 app.UseRouting();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<DocumentsAppDbSeeder>();
-await seeder.SeedAsync();
-
+app.UseAuthentication();
 app.UseAuthorization();
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+    endpoints.MapControllers();
+});
 
 app.Run();
 
