@@ -1,5 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.AccountDtos;
-using DocumentsApp.Data.Repos;
+﻿using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using FluentValidation;

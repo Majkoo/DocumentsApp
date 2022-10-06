@@ -7,7 +7,6 @@
 
 @inject UserManager<Account> UserManager
 @inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NotificationService NotificationService
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
@@ -137,8 +136,6 @@
 
     private async Task OnSubmit(RegisterAccountDto registerDto)
     {
-        // implement better error handling
-
         var newAccount = new Account()
         {
             UserName = _registerAccountDto.UserName,

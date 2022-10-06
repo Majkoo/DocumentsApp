@@ -29,8 +29,12 @@ public class DocumentService : IDocumentService
     private readonly ISieveProcessor _sieveProcessor;
     private readonly IAuthenticationContextProvider _authenticationStateProvider;
 
-    public DocumentService(IMapper mapper, IDocumentRepo documentRepo, ISieveProcessor sieveProcessor,
-        IAuthenticationContextProvider authenticationStateProvider)
+    public DocumentService(
+        IMapper mapper,
+        IDocumentRepo documentRepo,
+        ISieveProcessor sieveProcessor,
+        IAuthenticationContextProvider authenticationStateProvider
+        )
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
@@ -58,8 +62,12 @@ public class DocumentService : IDocumentService
             .Select(d => _mapper.Map<GetDocumentDto>(d))
             .ToListAsync();
          
-        return new PagedResults<GetDocumentDto>(resultDocuments, documents.Count(),
-            query.PageSize.GetValueOrDefault(), query.Page.GetValueOrDefault());
+        return new PagedResults<GetDocumentDto>(
+            resultDocuments,
+            documents.Count(),
+            query.PageSize.GetValueOrDefault(),
+            query.Page.GetValueOrDefault()
+            );
     }
 
     public async Task<string> AddDocumentAsync(AddDocumentDto dto)

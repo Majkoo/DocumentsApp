@@ -1,4 +1,4 @@
-namespace DocumentsApp.Data.Dtos.AccountDtos;
+namespace DocumentsApp.Shared.Dtos.AccountDtos;
 
 public class UpdateUserNameDto
 {
