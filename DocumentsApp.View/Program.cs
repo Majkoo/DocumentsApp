@@ -1,4 +1,5 @@
 using DocumentsApp.Data.Auth;
+using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
@@ -115,6 +116,7 @@ builder.Services.AddScoped<ContextMenuService>();
 
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContextProvider>();
 
 #endregion
 
