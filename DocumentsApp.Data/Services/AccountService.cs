@@ -18,6 +18,7 @@ namespace DocumentsApp.Data.Services;
 public interface IAccountService
 {
     Task RegisterAccountAsync(RegisterAccountDto dto);
+    Task UpdateUserNameAsync(UpdateUserNameDto dto);
     Task<string> GenerateJwtAsync(LoginAccountDto dto);
 }
 
@@ -27,14 +28,16 @@ public class AccountService : IAccountService
     private readonly IMapper _mapper;
     private readonly IPasswordHasher<Account> _passwordHasher;
     private readonly AuthenticationSettings _authenticationSettings;
+    private readonly IAccountContextService _accountContextService;
 
     public AccountService(IAccountRepo accountRepo, IMapper mapper, IPasswordHasher<Account> passwordHasher,
-        AuthenticationSettings authenticationSettings)
+        AuthenticationSettings authenticationSettings, IAccountContextService accountContextService)
     {
         _accountRepo = accountRepo;
         _mapper = mapper;
         _passwordHasher = passwordHasher;
         _authenticationSettings = authenticationSettings;
+        _accountContextService = accountContextService;
     }
     
     public async Task RegisterAccountAsync(RegisterAccountDto dto)
@@ -44,15 +47,34 @@ public class AccountService : IAccountService
         await _accountRepo.InsertAccountAsync(user);
     }
 
+    public async Task UpdateUserNameAsync(UpdateUserNameDto dto)
+    {
+        var user = await _accountRepo.GetAccountByEmailAsync(_accountContextService.User
+            .FindFirst(c => c.Type == ClaimTypes.Email)?.Value);
+        
+        var passResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+        if (passResult is PasswordVerificationResult.Failed) 
+            throw new BadRequestException("Password is wrong");
+
+        user.UserName = dto.NewUserName;
+
+        await _accountRepo.UpdateAccountAsync(user);
+    }
+
+    public async Task UpdateUserPasswordAsync(UpdateUserPasswordDto dto)
+    {
+        
+    }
+
     public async Task<string> GenerateJwtAsync(LoginAccountDto dto)
     {
         var account = await _accountRepo.GetAccountByEmailAsync(dto.Email);
-
-        if (account is null) throw new BadRequestException("Wrong username or password");
+        if (account is null) 
+            throw new BadRequestException("Wrong username or password");
 
         var pwdResult = _passwordHasher.VerifyHashedPassword(account, account.PasswordHash, dto.Password);
-        
-        if (pwdResult is PasswordVerificationResult.Failed) throw new BadRequestException("Wrong username or password");
+        if (pwdResult is PasswordVerificationResult.Failed) 
+            throw new BadRequestException("Wrong username or password");
 
         var claims = new List<Claim>()
         {

@@ -75,6 +75,7 @@ builder.Services.AddScoped<IValidator<RegisterAccountDto>, RegisterAccountDtoVal
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator>();
 builder.Services.AddScoped<IValidator<SieveModel>, SieveModelValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserNameDto>, UpdateUserNameValidator>();
 
 #endregion
 

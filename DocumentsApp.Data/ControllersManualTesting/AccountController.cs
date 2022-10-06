@@ -22,6 +22,13 @@ public class AccountController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("updateUserName")]
+    public async Task<ActionResult> UpdateUserName([FromBody] UpdateUserNameDto dto)
+    {
+        await _accountService.UpdateUserNameAsync(dto);
+        return Ok();
+    }
+
     [HttpPost("login")]
     public async Task<ActionResult<string>> LoginUser([FromBody] LoginAccountDto dto)
     {
