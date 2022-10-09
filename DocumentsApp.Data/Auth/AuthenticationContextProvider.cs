@@ -19,7 +19,7 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
 
     public async Task<string?> GetUserId()
     {
-        var idClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+        var idClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
         return await Task.FromResult(idClaim?.Value);
     }
 

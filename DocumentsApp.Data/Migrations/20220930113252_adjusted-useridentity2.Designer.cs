@@ -122,7 +122,7 @@ namespace DocumentsApp.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("AccessLevel")
+                    b.Property<int>("AccessLevelEnum")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AccessLevelGranted")

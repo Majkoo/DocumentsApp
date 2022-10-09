@@ -1,17 +1,11 @@
-﻿using DocumentsApp.Data.Entities;
+﻿using System.Linq.Dynamic.Core;
+using DocumentsApp.Data.Entities;
+using DocumentsApp.Data.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Repos;
 
-public interface IDocumentRepo
-{
-    IQueryable<Document> GetAllDocumentsAsQueryable(string accountId);
-    Task<IEnumerable<Document>> GetAllDocumentsAsync(string accountId);
-    Task<Document> GetDocumentByIdAsync(string id);
-    Task<Document> InsertDocumentAsync(Document document);
-    Task<Document> UpdateDocumentAsync(Document document);
-    Task<bool> DeleteDocumentAsync(Document document);
-}
+
 
 public class DocumentRepo : IDocumentRepo
 {
@@ -22,7 +16,7 @@ public class DocumentRepo : IDocumentRepo
         _dbContext = dbContext;
     }
 
-    public IQueryable<Document> GetAllDocumentsAsQueryable(string accountId)
+    public IQueryable<Document> GetAllUserDocumentsAsQueryable(string accountId)
     {
         return _dbContext
             .Documents
@@ -31,7 +25,7 @@ public class DocumentRepo : IDocumentRepo
             .AsQueryable();
     }
 
-    public async Task<IEnumerable<Document>> GetAllDocumentsAsync(string accountId)
+    public async Task<IEnumerable<Document>> GetAllUserDocumentsAsync(string accountId)
     {
         return await _dbContext
             .Documents
@@ -51,8 +45,8 @@ public class DocumentRepo : IDocumentRepo
     {
         await _dbContext.Documents.AddAsync(document);
         await _dbContext.SaveChangesAsync();
-        return await _dbContext
-            .Documents
+        
+        return await _dbContext.Documents
             .SingleOrDefaultAsync(d => d.Id == document.Id);
     }
 
@@ -60,8 +54,8 @@ public class DocumentRepo : IDocumentRepo
     {
         _dbContext.Documents.Update(document);
         await _dbContext.SaveChangesAsync();
-        return await _dbContext
-            .Documents
+        
+        return await _dbContext.Documents
             .SingleOrDefaultAsync(d => d.Id == document.Id);
     }
 
@@ -69,6 +63,16 @@ public class DocumentRepo : IDocumentRepo
     {
         _dbContext.Documents.Remove(document);
         return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
+    {
+        var accesslevels = _dbContext.DocumentAccessLevels
+            .Where(a => a.AccountId == userId);
+
+        return accesslevels
+            .Select(d => GetDocumentByIdAsync(d.DocumentId).Result)
+            .AsQueryable();
     }
 
 }

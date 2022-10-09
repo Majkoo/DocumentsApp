@@ -1,26 +1,19 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
-using Microsoft.AspNetCore.Components.Authorization;
+using DocumentsApp.Data.Repos.Interfaces;
+using DocumentsApp.Data.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
 
 namespace DocumentsApp.Data.Services;
 
-public interface IDocumentService
-{
-    Task<GetDocumentDto> GetDocumentByIdAsync(string id);
-    Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(SieveModel query);
-    Task<string> AddDocumentAsync(AddDocumentDto dto);
-    Task UpdateDocumentAsync(string id, UpdateDocumentDto dto);
-    Task DeleteDocumentAsync(string id);
-}
+
 
 public class DocumentService : IDocumentService
 {
@@ -49,7 +42,7 @@ public class DocumentService : IDocumentService
     public async Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(SieveModel query)
     {
         var accountId = await _authenticationStateProvider.GetUserId();
-        var documents = _documentRepo.GetAllDocumentsAsQueryable(accountId);
+        var documents = _documentRepo.GetAllUserDocumentsAsQueryable(accountId);
         
         if (!documents.Any()) throw new NotFoundException("No documents available for this account");
 

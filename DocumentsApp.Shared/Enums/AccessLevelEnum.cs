@@ -1,7 +1,8 @@
 ﻿namespace DocumentsApp.Data.Enums;
 
-public enum AccessLevel
+public enum AccessLevelEnum
 {
+    None,
     Read,
     Write,
     Full
