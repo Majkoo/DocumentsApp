@@ -1,7 +1,6 @@
 html, body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
 body {
   overflow-y: scroll;
 }
@@ -17,7 +16,6 @@ a, .btn-link {
 .sidebar {
   z-index: 10 !important;
 }
-
 .pagin-footer {
   z-index: 9 !important;
 }
@@ -68,9 +66,6 @@ a, .btn-link {
 }
 
 .blazor-error-boundary::after {
-  content: "An error has occurred.";
+  content: "An error has occurred."
 }
-
-/*# sourceMappingURL=site.css.map */
-
 /*# sourceMappingURL=site.css.map */

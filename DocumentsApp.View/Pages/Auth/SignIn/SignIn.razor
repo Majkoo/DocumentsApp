@@ -114,7 +114,7 @@
         if (signInResult.Succeeded && !signInResult.IsLockedOut && !signInResult.IsNotAllowed)
         {
             await customAuthStateProvider.MarkUserAsSignedIn(userAccount);
-            NavigationManager.NavigateTo("/my-documents", false);
+            NavigationManager.NavigateTo("/documents", false);
             NotificationService.Notify(new SuccessNotification("Auth succeed", "Signed in successfully."));
         }
 
