@@ -1,0 +1,13 @@
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@inject IDocumentService DocumentService
+
+@attribute [Authorize]
+
+<h3>ShareDocument</h3>
+
+@code {
+
+    [Parameter]
+    public GetDocumentDto? DocumentDto { get; set; }
+
+}

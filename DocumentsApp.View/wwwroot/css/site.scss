@@ -51,6 +51,16 @@ h1:focus {
 
 }
 
+.big-dialog {
+  height: 100vh;
+  width: 100% !important;
+  max-width: 900px;
+}
+
+.rz-dialog-content {
+  height: 100%;
+}
+
 a, .btn-link {
   color: #0071c1;
 }

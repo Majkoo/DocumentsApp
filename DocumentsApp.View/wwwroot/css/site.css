@@ -50,6 +50,16 @@ h1:focus {
   outline: 1px solid rgba(0, 0, 0, 0.25);
 }
 
+.big-dialog {
+  height: 100vh;
+  width: 100% !important;
+  max-width: 900px;
+}
+
+.rz-dialog-content {
+  height: 100%;
+}
+
 a, .btn-link {
   color: #0071c1;
 }

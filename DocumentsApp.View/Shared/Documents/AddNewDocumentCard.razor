@@ -1,4 +1,3 @@
-@using DocumentsApp.View.Pages.Documents.DialogPages.Create
 @inject DialogService DialogService
 
 <RadzenCard class="w-100 doc-card add-doc-card" @onclick="@OnClick">
@@ -18,9 +17,11 @@
 
     private void OnClick()
     {
-        DialogService.Open<CreateDocument>($"Create a new document",
-            new Dictionary<string, object>(),
-            new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true });
+        DialogService.Open(
+            "Create a new document",
+            ds => @<CreateDocument />,
+            new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true}
+            );
     }
 
 }

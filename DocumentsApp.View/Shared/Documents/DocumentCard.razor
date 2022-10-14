@@ -8,13 +8,10 @@
     <RadzenText
         TextStyle="TextStyle.H5"
         Text="@Document.Name" />
+    <hr>
     <RadzenText
         TextStyle="TextStyle.Body1"
         Text="@(Document.Description ?? "No description")" />
-    <hr>
-    <RadzenText
-        TextStyle="TextStyle.Body2"
-        Text="@(Document.Content.Length > 100 ? $"{Document.Content.Substring(0,100)}..." : Document.Content)" />
 </RadzenCard>
 
 @code {
@@ -43,33 +40,37 @@
         {
             case DocumentContextMenuAction.View:
             {
-                DialogService.Open<ViewDocument>($"View {Document.Name}",
-                    new Dictionary<string, object>() { { "documentId", Document.Id } },
-                    new DialogOptions() { Width = "1000px", Height = "100vh" });
+                DialogService.Open($"View {Document.Name}",
+                    ds => @<ViewDocument DocumentDto="Document" />,
+                    new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true, CssClass = "big-dialog"}
+                    );
 
                 break;
             }
             case DocumentContextMenuAction.Edit:
             {
-                DialogService.Open<EditDocument>($"Edit {Document.Name}",
-                    new Dictionary<string, object>() { { "documentId", Document.Id } },
-                    new DialogOptions() { Width = "1000px", Height = "100vh" });
+                DialogService.Open($"Edit {Document.Name}",
+                    ds => @<EditDocument DocumentDto="Document" />,
+                    new DialogOptions(){ CssClass = "big-dialog" }
+                    );
 
                 break;
             }
             case DocumentContextMenuAction.Share:
             {
-                DialogService.Open<ShareDocument>($"Share {Document.Name}",
-                    new Dictionary<string, object>() { { "documentId", Document.Id  } },
-                    new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true });
+                DialogService.Open($"Share {Document.Name}",
+                    ds => @<ShareDocument DocumentDto="Document" />,
+                    new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true}
+                    );
 
                 break;
             }
             case DocumentContextMenuAction.Delete:
             {
-                DialogService.Open<DeleteDocument>($"Delete {Document.Name}",
-                    new Dictionary<string, object>() { { "documentId", Document.Id } },
-                    new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true});
+                DialogService.Open($"Delete {Document.Name}",
+                    ds => @<DeleteDocument DocumentDto="Document" />,
+                    new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true}
+                    );
 
                 break;
             }
@@ -78,8 +79,9 @@
 
     void OnClick()
     {
-        DialogService.Open<ViewDocument>($"Edit {Document.Name}",
-            new Dictionary<string, object>() { { "documentId", Document.Id } },
-            new DialogOptions() { Width = "1000px", Height = "100vh", Resizable = true, Draggable = true });
+        DialogService.Open($"View {Document.Name}",
+            ds => @<ViewDocument DocumentDto="Document" />,
+            new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true, CssClass = "big-dialog"}
+            );
     }
 }

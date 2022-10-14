@@ -1,9 +1,6 @@
-@page "/documents/create"
 @using DocumentsApp.Shared.Dtos.DocumentDtos
 @inject IDocumentService DocumentService
 @inject DialogService DialogService
-
-@attribute [Authorize]
 
 <RadzenTemplateForm
     Data="AddDocumentDto"
@@ -50,20 +47,16 @@
 
     private AddDocumentDto AddDocumentDto { get; set; } = new AddDocumentDto { Content = "",};
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
     private async Task OnSubmit()
     {
         try
         {
-            var newDocId = await DocumentService.AddDocumentAsync(AddDocumentDto);
+            var newDoc = await DocumentService.AddDocumentAsync(AddDocumentDto);
             DialogService.Close();
 
-            DialogService.Open<EditDocument>($"Edit new document",
-                new Dictionary<string, object>() { { "documentId", newDocId } },
-                new DialogOptions() { Width = "1000px", Height = "100vh" });
+            DialogService.Open(
+                "Edit new document",
+                ds => @<EditDocument DocumentDto="newDoc" />);
         }
         catch (Exception e)
         {
@@ -74,7 +67,6 @@
 
     private async Task OnCancel()
     {
-        AddDocumentDto = new AddDocumentDto { Content = ""};
         DialogService.Close();
     }
 

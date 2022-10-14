@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
@@ -17,7 +15,7 @@ public interface IDocumentService
 {
     Task<GetDocumentDto> GetDocumentByIdAsync(string id);
     Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(SieveModel query);
-    Task<string> AddDocumentAsync(AddDocumentDto dto);
+    Task<GetDocumentDto> AddDocumentAsync(AddDocumentDto dto);
     Task UpdateDocumentAsync(string id, UpdateDocumentDto dto);
     Task DeleteDocumentAsync(string id);
 }
@@ -70,13 +68,13 @@ public class DocumentService : IDocumentService
             );
     }
 
-    public async Task<string> AddDocumentAsync(AddDocumentDto dto)
+    public async Task<GetDocumentDto> AddDocumentAsync(AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);
         document.AccountId = await _authenticationStateProvider.GetUserId();
         await _documentRepo.InsertDocumentAsync(document);
         
-        return document.Id;
+        return _mapper.Map<GetDocumentDto>(document);
     }
 
     public async Task UpdateDocumentAsync(string id, UpdateDocumentDto dto)

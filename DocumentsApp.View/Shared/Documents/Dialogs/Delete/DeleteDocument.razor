@@ -1,0 +1,11 @@
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@inject IDocumentService DocumentService
+
+<h3>DeleteDocument</h3>
+
+@code {
+
+    [Parameter]
+    public GetDocumentDto? DocumentDto { get; set; }
+
+}

@@ -44,4 +44,12 @@
       <None Include="wwwroot\css\site.scss" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Shared\Documents\Dialogs\Create\CreateDocument.razor" />
+      <AdditionalFiles Include="Shared\Documents\Dialogs\Delete\DeleteDocument.razor" />
+      <AdditionalFiles Include="Shared\Documents\Dialogs\Edit\EditDocument.razor" />
+      <AdditionalFiles Include="Shared\Documents\Dialogs\Share\ShareDocument.razor" />
+      <AdditionalFiles Include="Shared\Documents\Dialogs\View\ViewDocument.razor" />
+    </ItemGroup>
+
 </Project>
