@@ -16,7 +16,6 @@ public class Document
     public string Description { get; set; }
     
     [Required]
-    [MaxLength(5000)]
     public string Content { get; set; }
 
     [Required] public DateTime DateCreated { get; set; } = DateTime.Now;

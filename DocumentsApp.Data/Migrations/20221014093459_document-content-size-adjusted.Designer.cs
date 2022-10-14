@@ -3,6 +3,7 @@ using System;
 using DocumentsApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsApp.Data.Migrations
 {
     [DbContext(typeof(DocumentsAppDbContext))]
-    partial class DocumentsAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221014093459_document-content-size-adjusted")]
+    partial class documentcontentsizeadjusted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,7 @@ namespace DocumentsApp.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(100000)
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("DateCreated")
