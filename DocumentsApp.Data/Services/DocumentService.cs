@@ -2,10 +2,10 @@
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos;
-using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
+using DocumentsApp.Shared.Dtos.DocumentDtos;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;

@@ -19,20 +19,20 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
 
     public async Task<string?> GetUserId()
     {
-        var idClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
-        return await Task.FromResult(idClaim?.Value);
+        var idClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+        return idClaim?.Value;
     }
 
     public async Task<string?> GetUserEmail()
     {
-        var emailClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.Email);
-        return await Task.FromResult(emailClaim?.Value);
+        var emailClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.Email);
+        return emailClaim?.Value;
     }
 
     public async Task<string?> GetUserName()
     {
-        var nameClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.Name);
-        return await Task.FromResult(nameClaim?.Value);
+        var nameClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.Name);
+        return nameClaim?.Value;
     }
 
     private async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -42,7 +42,7 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
             var userSessionStorageResult = await _sessionStorage.GetAsync<UserSession>("UserSession");
             var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
 
-            if (userSession is null) return await Task.FromResult(new AuthenticationState(_anonymous));
+            if (userSession is null) return new AuthenticationState(_anonymous);
 
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
             {
@@ -50,11 +50,11 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
                 new Claim(ClaimTypes.Name, userSession.Username),
                 new Claim(ClaimTypes.Email, userSession.Email)
             }, "CustomAuth"));
-            return await Task.FromResult(new AuthenticationState(claimsPrincipal));
+            return new AuthenticationState(claimsPrincipal);
         }
         catch
         {
-            return await Task.FromResult(new AuthenticationState(_anonymous));
+            return new AuthenticationState(_anonymous);
         }
 
     }

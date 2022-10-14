@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.DocumentDtos;
+﻿using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;

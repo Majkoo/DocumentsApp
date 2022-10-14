@@ -1,5 +1,10 @@
-@using DocumentsApp.Data.Dtos.DocumentDtos
-<RadzenCard class="w-100 doc-card">
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@using DocumentsApp.Shared.Enums
+
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+
+<RadzenCard class="w-100 doc-card" @onclick="OnClick" ContextMenu="@(ShowContextMenuWithItems)">
     <RadzenText
         TextStyle="TextStyle.H5"
         Text="@Document.Name" />
@@ -17,4 +22,64 @@
     [Parameter]
     public GetDocumentDto Document { get; set; } = new GetDocumentDto();
 
+    private List<ContextMenuItem> _contextMenuItems = new()
+    {
+        new ContextMenuItem() { Text = "View Document", Value = DocumentContextMenuAction.View },
+        new ContextMenuItem() { Text = "Edit Document", Value = DocumentContextMenuAction.Edit },
+        new ContextMenuItem() { Text = "Share Document", Value = DocumentContextMenuAction.Share },
+        new ContextMenuItem() { Text = "Delete Document", Value = DocumentContextMenuAction.Delete },
+    };
+
+
+    void ShowContextMenuWithItems(MouseEventArgs args)
+    {
+        ContextMenuService.Open(args, _contextMenuItems, OnMenuItemClick);
+    }
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        ContextMenuService.Close();
+        switch (args.Value)
+        {
+            case DocumentContextMenuAction.View:
+            {
+                DialogService.Open<ViewDocument>($"View {Document.Name}",
+                    new Dictionary<string, object>() { { "documentId", Document.Id } },
+                    new DialogOptions() { Width = "1000px", Height = "100vh" });
+
+                break;
+            }
+            case DocumentContextMenuAction.Edit:
+            {
+                DialogService.Open<EditDocument>($"Edit {Document.Name}",
+                    new Dictionary<string, object>() { { "documentId", Document.Id } },
+                    new DialogOptions() { Width = "1000px", Height = "100vh" });
+
+                break;
+            }
+            case DocumentContextMenuAction.Share:
+            {
+                DialogService.Open<ShareDocument>($"Share {Document.Name}",
+                    new Dictionary<string, object>() { { "documentId", Document.Id  } },
+                    new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true });
+
+                break;
+            }
+            case DocumentContextMenuAction.Delete:
+            {
+                DialogService.Open<DeleteDocument>($"Delete {Document.Name}",
+                    new Dictionary<string, object>() { { "documentId", Document.Id } },
+                    new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true});
+
+                break;
+            }
+        }
+    }
+
+    void OnClick()
+    {
+        DialogService.Open<ViewDocument>($"Edit {Document.Name}",
+            new Dictionary<string, object>() { { "documentId", Document.Id } },
+            new DialogOptions() { Width = "1000px", Height = "100vh", Resizable = true, Draggable = true });
+    }
 }

@@ -1,7 +1,26 @@
-<RadzenCard class="w-100 doc-card d-flex flex-column justify-content-center align-items-center text-center">
+@using DocumentsApp.View.Pages.Documents.DialogPages.Create
+@inject DialogService DialogService
+
+<RadzenCard class="w-100 doc-card add-doc-card" @onclick="@OnClick">
+
     <RadzenText
+        class="add-doc-card-title"
         TextStyle="TextStyle.H5"
-        Text="Add a new document" />
-    <hr>
-    <span class="oi oi-plus display-2"></span>
+        Text="Add a new document"/>
+
+    <RadzenIcon
+        class="add-doc-card-icon"
+        Icon="add" />
+
 </RadzenCard>
+
+@code {
+
+    private void OnClick()
+    {
+        DialogService.Open<CreateDocument>($"Create a new document",
+            new Dictionary<string, object>(),
+            new DialogOptions() { Width = "700px", Height = "508px", CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true });
+    }
+
+}

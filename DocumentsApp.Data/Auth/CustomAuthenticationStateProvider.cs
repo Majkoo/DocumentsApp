@@ -79,6 +79,24 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         await UpdateAuthenticationState(userSession);
     }
 
+    public async Task<string?> GetUserId()
+    {
+        var idClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+        return await Task.FromResult(idClaim?.Value);
+    }
+
+    public async Task<string?> GetUserEmail()
+    {
+        var emailClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.Email);
+        return await Task.FromResult(emailClaim?.Value);
+    }
+
+    public async Task<string?> GetUserName()
+    {
+        var nameClaim = GetAuthenticationStateAsync().Result.User.FindFirst(c => c.Type == ClaimTypes.Name);
+        return await Task.FromResult(nameClaim?.Value);
+    }
+
 
 
 }

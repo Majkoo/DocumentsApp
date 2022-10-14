@@ -1,0 +1,81 @@
+@page "/documents/create"
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@inject IDocumentService DocumentService
+@inject DialogService DialogService
+
+@attribute [Authorize]
+
+<RadzenTemplateForm
+    Data="AddDocumentDto"
+    TItem="AddDocumentDto"
+    Submit="OnSubmit">
+
+    <div class="container my-3 px-1 px-lg-4">
+
+        <RadzenLabel Text="Document name:" class="fw-bold"/>
+        <RadzenTextBox
+            Placeholder="Enter document name..."
+            Name="DocName"
+            @bind-Value="@AddDocumentDto.Name"
+            class="mb-4"/>
+
+        <RadzenLabel Text="Document description:" class="fw-bold"/>
+        <RadzenTextBox
+            Placeholder="Enter document description..."
+            Name="DocName"
+            @bind-Value="@AddDocumentDto.Description"
+            class="mb-4"/>
+
+        <div class="d-flex justify-content-end gap-3">
+            <RadzenButton
+                ButtonStyle="ButtonStyle.Danger"
+                ButtonType="ButtonType.Button"
+                Click="OnCancel"
+                Text="Cancel"/>
+
+            <RadzenButton
+                ButtonStyle="ButtonStyle.Primary"
+                ButtonType="ButtonType.Submit"
+                Text="Submit"/>
+        </div>
+
+
+
+    </div>
+
+</RadzenTemplateForm>
+
+
+@code {
+
+    private AddDocumentDto AddDocumentDto { get; set; } = new AddDocumentDto { Content = "",};
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task OnSubmit()
+    {
+        try
+        {
+            var newDocId = await DocumentService.AddDocumentAsync(AddDocumentDto);
+            DialogService.Close();
+
+            DialogService.Open<EditDocument>($"Edit new document",
+                new Dictionary<string, object>() { { "documentId", newDocId } },
+                new DialogOptions() { Width = "1000px", Height = "100vh" });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task OnCancel()
+    {
+        AddDocumentDto = new AddDocumentDto { Content = ""};
+        DialogService.Close();
+    }
+
+}

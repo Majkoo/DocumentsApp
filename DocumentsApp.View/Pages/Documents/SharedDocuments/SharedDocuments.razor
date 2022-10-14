@@ -1,5 +1,5 @@
 @page "/documents/shared"
-@using DocumentsApp.Data.Dtos.DocumentDtos
+@using DocumentsApp.Shared.Dtos.DocumentDtos
 
 @attribute [Authorize]
 
@@ -28,7 +28,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var random = new Random().Next(5,15);
+        var random = await Task.FromResult(new Random().Next(5,15));
 
         for (int i = 0; i < random; i++)
         {

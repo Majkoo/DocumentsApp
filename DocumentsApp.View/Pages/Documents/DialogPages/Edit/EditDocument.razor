@@ -1,0 +1,48 @@
+@page "/documents/edit/{documentId}"
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@inject IDocumentService DocumentService
+
+@attribute [Authorize]
+
+@if (DocumentDto is not null)
+{
+    <RadzenText
+        TextStyle="TextStyle.H3"
+        TagName="TagName.H2"
+        Class="my-4">
+        @DocumentDto.Name
+    </RadzenText>
+    <RadzenHtmlEditor
+        @bind-Value=@DocumentDto.Content
+        Change="OnChange"/>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+
+    [Parameter]
+    public string? DocumentId { get; set; }
+
+    private GetDocumentDto? DocumentDto { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        DocumentDto = await DocumentService.GetDocumentByIdAsync(DocumentId);
+    }
+
+    // save on ctrl+S instead of on any change.
+    void OnChange(string html)
+    {
+        DocumentService.UpdateDocumentAsync(DocumentDto!.Id, new UpdateDocumentDto()
+        {
+            Content = DocumentDto.Content
+        });
+    }
+
+
+}

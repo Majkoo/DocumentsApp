@@ -1,6 +1,5 @@
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
-using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
@@ -10,6 +9,7 @@ using DocumentsApp.Data.Services;
 using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -20,6 +20,23 @@ using Radzen;
 using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Frontend Services
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
+
+builder.Services.AddScoped<ProtectedSessionStorage>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContextProvider>();
+
+#endregion
 
 #region Backend Services
 
@@ -52,7 +69,7 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
 
 #region Middleware
 
-builder.Services.AddScoped<ErrorHandlingMiddleWare>();
+// builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 
 #endregion
 
@@ -106,21 +123,7 @@ builder.Services.AddAuthenticationCore();
 
 #endregion
 
-#region Frontend Services
 
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-
-builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<TooltipService>();
-builder.Services.AddScoped<ContextMenuService>();
-
-builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContextProvider>();
-
-#endregion
 
 var app = builder.Build();
 
@@ -136,7 +139,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseMiddleware<ErrorHandlingMiddleWare>();
+// app.UseMiddleware<ErrorHandlingMiddleWare>();
 
 app.UseRouting();
 

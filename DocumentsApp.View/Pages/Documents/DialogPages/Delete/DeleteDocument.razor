@@ -1,0 +1,22 @@
+@page "/documents/delete/{documentId}"
+@using DocumentsApp.Shared.Dtos.DocumentDtos
+@inject IDocumentService DocumentService
+
+@attribute [Authorize]
+
+<h3>DeleteDocument</h3>
+
+@code {
+
+    [Parameter]
+    public string? DocumentId { get; set; }
+
+    private GetDocumentDto? DocumentDto { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        DocumentDto = await DocumentService.GetDocumentByIdAsync(DocumentId);
+    }
+
+}
