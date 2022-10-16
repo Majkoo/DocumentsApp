@@ -1,11 +1,8 @@
-﻿using System.Linq.Dynamic.Core;
-using DocumentsApp.Data.Entities;
+﻿using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsApp.Data.Repos;
-
-
 
 public class DocumentRepo : IDocumentRepo
 {
@@ -18,8 +15,7 @@ public class DocumentRepo : IDocumentRepo
 
     public IQueryable<Document> GetAllUserDocumentsAsQueryable(string accountId)
     {
-        return _dbContext
-            .Documents
+        return _dbContext.Documents
             .Include(d => d.Account)
             .Where(d => d.AccountId == accountId)
             .AsQueryable();
@@ -27,11 +23,20 @@ public class DocumentRepo : IDocumentRepo
 
     public async Task<IEnumerable<Document>> GetAllUserDocumentsAsync(string accountId)
     {
-        return await _dbContext
-            .Documents
+        return await _dbContext.Documents
             .Include(d => d.Account)
             .Where(d => d.AccountId == accountId)
             .ToListAsync();
+    }
+    
+    public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
+    {
+        var accessLevels = _dbContext.DocumentAccessLevels
+            .Where(a => a.AccountId == userId);
+
+        return accessLevels
+            .Select(d => GetDocumentByIdAsync(d.DocumentId).Result)
+            .AsQueryable();
     }
 
     public async Task<Document> GetDocumentByIdAsync(string id)
@@ -63,16 +68,6 @@ public class DocumentRepo : IDocumentRepo
     {
         _dbContext.Documents.Remove(document);
         return await _dbContext.SaveChangesAsync() > 0;
-    }
-
-    public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
-    {
-        var accesslevels = _dbContext.DocumentAccessLevels
-            .Where(a => a.AccountId == userId);
-
-        return accesslevels
-            .Select(d => GetDocumentByIdAsync(d.DocumentId).Result)
-            .AsQueryable();
     }
 
 }

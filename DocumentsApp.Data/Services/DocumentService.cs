@@ -7,6 +7,7 @@ using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services.Interfaces;
+using DocumentsApp.Shared.Dtos.DocumentDtos;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
@@ -19,23 +20,30 @@ public class DocumentService : IDocumentService
 {
     private readonly IMapper _mapper;
     private readonly IDocumentRepo _documentRepo;
+    private readonly IAccessLevelRepo _accessLevelRepo;
     private readonly ISieveProcessor _sieveProcessor;
     private readonly IAuthenticationContextProvider _authenticationStateProvider;
 
-    public DocumentService(IMapper mapper, IDocumentRepo documentRepo, ISieveProcessor sieveProcessor,
+    public DocumentService(IMapper mapper, IDocumentRepo documentRepo, IAccessLevelRepo accessLevelRepo, ISieveProcessor sieveProcessor,
         IAuthenticationContextProvider authenticationStateProvider)
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
+        _accessLevelRepo = accessLevelRepo;
         _sieveProcessor = sieveProcessor;
         _authenticationStateProvider = authenticationStateProvider;
     }
 
     public async Task<GetDocumentDto> GetDocumentByIdAsync(string id)
     {
+        var accountId = await _authenticationStateProvider.GetUserId();
         var document = await SearchDocumentDbAsync(id);
+        var documentAccessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(accountId, document.Id);
+
+        if (documentAccessLevel is null && document.AccountId != accountId)
+            throw new NotAuthorizedException("User does not have access to this file");
+                
         var resultDocument = _mapper.Map<GetDocumentDto>(document);
-        
         return resultDocument;
     }
 
@@ -44,13 +52,29 @@ public class DocumentService : IDocumentService
         var accountId = await _authenticationStateProvider.GetUserId();
         var documents = _documentRepo.GetAllUserDocumentsAsQueryable(accountId);
         
-        if (!documents.Any()) throw new NotFoundException("No documents available for this account");
+        if (!documents.Any()) throw new NotFoundException("No documents available for this user");
 
          var resultDocuments = await _sieveProcessor
             .Apply(query, documents)
             .Select(d => _mapper.Map<GetDocumentDto>(d))
             .ToListAsync();
          
+        return new PagedResults<GetDocumentDto>(resultDocuments, documents.Count(),
+            query.PageSize.GetValueOrDefault(), query.Page.GetValueOrDefault());
+    }
+
+    public async Task<PagedResults<GetDocumentDto>> GetAllSharedDocumentsAsync(SieveModel query)
+    {
+        var accountId = await _authenticationStateProvider.GetUserId();
+        var documents = _documentRepo.GetAllSharedDocumentsAsQueryable(accountId);
+        
+        if (!documents.Any()) throw new NotFoundException("No documents shared for this user");
+        
+        var resultDocuments = await _sieveProcessor
+            .Apply(query, documents)
+            .Select(d => _mapper.Map<GetDocumentDto>(d))
+            .ToListAsync();
+        
         return new PagedResults<GetDocumentDto>(resultDocuments, documents.Count(),
             query.PageSize.GetValueOrDefault(), query.Page.GetValueOrDefault());
     }

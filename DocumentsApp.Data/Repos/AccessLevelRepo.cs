@@ -1,5 +1,4 @@
 ﻿using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Enums;
 using DocumentsApp.Data.Repos.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,12 +20,12 @@ public class AccessLevelRepo : IAccessLevelRepo
             .ToListAsync();
     }
 
-    public async Task<AccessLevelEnum> GetDocumentAccessLevelAsync(string userId, string documentId)
+    public async Task<DocumentAccessLevel> GetDocumentAccessLevelAsync(string userId, string documentId)
     {
         var documentAccessLevel = await _dbContext.DocumentAccessLevels
             .SingleOrDefaultAsync(a => a.AccountId == userId && a.DocumentId == documentId);
 
-        return documentAccessLevel?.AccessLevelEnum ?? AccessLevelEnum.None;
+        return documentAccessLevel;
     }
 
     public async Task<DocumentAccessLevel> InsertDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel)
@@ -40,15 +39,18 @@ public class AccessLevelRepo : IAccessLevelRepo
 
     public async Task<DocumentAccessLevel> UpdateDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel)
     {
-        if (documentAccessLevel.AccessLevelEnum == AccessLevelEnum.None)
-            _dbContext.DocumentAccessLevels.Remove(documentAccessLevel);
-        else
-            _dbContext.DocumentAccessLevels.Update(documentAccessLevel);
-        
+        _dbContext.DocumentAccessLevels.Update(documentAccessLevel);
         await _dbContext.SaveChangesAsync();
 
         return await _dbContext.DocumentAccessLevels
             .SingleOrDefaultAsync(a => a.Id == documentAccessLevel.Id);
     }
-    
+
+    public async Task<bool> RemoveDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel)
+    {
+        _dbContext.DocumentAccessLevels.Remove(documentAccessLevel);
+
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
+
 }

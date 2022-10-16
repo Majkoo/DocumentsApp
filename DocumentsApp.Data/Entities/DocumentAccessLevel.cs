@@ -1,4 +1,5 @@
-﻿using DocumentsApp.Data.Enums;
+﻿
+using DocumentsApp.Shared.Enums;
 
 namespace DocumentsApp.Data.Entities;
 
