@@ -1,5 +1,4 @@
-﻿using DocumentsApp.Data.Dtos.DocumentDtos;
-using DocumentsApp.Data.Services.Interfaces;
+﻿using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using Microsoft.AspNetCore.Mvc;
 using Sieve.Models;

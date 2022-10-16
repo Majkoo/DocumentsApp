@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace DocumentsApp.Data.Dtos.DocumentDtos;
+namespace DocumentsApp.Shared.Dtos.DocumentDtos;
 
 public class GetDocumentDto
 {

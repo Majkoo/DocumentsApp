@@ -1,4 +1,4 @@
-namespace DocumentsApp.Data.Dtos.DocumentDtos;
+namespace DocumentsApp.Shared.Dtos.DocumentDtos;
 
 // ja bym zrobil 3x puta zamiast 1x update tak szczerze,
 // bo name i description bedzie uzytkownik duzo rzadziej zmienial niz sam content

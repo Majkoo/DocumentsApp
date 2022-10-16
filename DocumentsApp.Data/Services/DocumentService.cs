@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Dtos;
-using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
-using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.DocumentDtos;

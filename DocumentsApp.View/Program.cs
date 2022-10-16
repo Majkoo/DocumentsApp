@@ -1,6 +1,5 @@
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
-using DocumentsApp.Data.Dtos.DocumentDtos;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
 using DocumentsApp.Data.MiddleWare;
@@ -11,6 +10,7 @@ using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
