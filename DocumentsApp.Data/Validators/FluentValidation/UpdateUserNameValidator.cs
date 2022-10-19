@@ -21,7 +21,7 @@ public class UpdateUserNameValidator: AbstractValidator<UpdateUserNameDto>
 
                 if (userName == value)
                 {
-                    context.AddFailure("UserName", "New username must have different value");
+                    context.AddFailure("UserName", "New username must be different from the current one");
                 }
             });
 

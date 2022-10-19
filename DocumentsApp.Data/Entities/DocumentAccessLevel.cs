@@ -1,4 +1,5 @@
-﻿using DocumentsApp.Data.Enums;
+﻿
+using DocumentsApp.Shared.Enums;
 
 namespace DocumentsApp.Data.Entities;
 
@@ -10,7 +11,7 @@ public class DocumentAccessLevel
 
     public string DocumentId { get; set; }
 
-    public AccessLevel AccessLevel { get; set; }
+    public AccessLevelEnum AccessLevelEnum { get; set; }
 
     public DateTime AccessLevelGranted { get; set; } = DateTime.Now;
 

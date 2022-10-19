@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace DocumentsApp.Data.MappingProfiles;
 

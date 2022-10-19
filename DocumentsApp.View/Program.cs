@@ -6,6 +6,7 @@ using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
+using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
@@ -85,6 +86,7 @@ builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator
 
 builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
+builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
 
 #endregion
 

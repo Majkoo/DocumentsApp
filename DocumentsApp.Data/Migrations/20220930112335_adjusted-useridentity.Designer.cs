@@ -127,7 +127,7 @@ namespace DocumentsApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("AccessLevel")
+                    b.Property<int>("AccessLevelEnum")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AccessLevelGranted")

@@ -1,8 +1,7 @@
-﻿namespace DocumentsApp.Data.Enums;
+﻿namespace DocumentsApp.Shared.Enums;
 
-public enum AccessLevel
+public enum AccessLevelEnum
 {
     Read,
     Write,
-    Full
 }
