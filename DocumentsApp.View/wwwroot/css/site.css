@@ -15,6 +15,9 @@ h1:focus {
   aspect-ratio: 9/11;
   transition: 0.2s ease-in-out;
   outline: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
