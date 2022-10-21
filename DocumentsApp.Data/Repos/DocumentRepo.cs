@@ -18,6 +18,7 @@ public class DocumentRepo : IDocumentRepo
         return _dbContext.Documents
             .Include(d => d.Account)
             .Where(d => d.AccountId == accountId)
+            .OrderByDescending(d => d.DateCreated)
             .AsQueryable();
     }
 
@@ -26,16 +27,19 @@ public class DocumentRepo : IDocumentRepo
         return await _dbContext.Documents
             .Include(d => d.Account)
             .Where(d => d.AccountId == accountId)
+            .OrderByDescending(d => d.DateCreated)
             .ToListAsync();
     }
     
     public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
     {
         var accessLevels = _dbContext.DocumentAccessLevels
+            .Include(a => a.Document)
             .Where(a => a.AccountId == userId);
 
         return accessLevels
-            .Select(d => GetDocumentByIdAsync(d.DocumentId).Result)
+            .Select(d => d.Document)
+            .OrderByDescending(d => d.DateCreated)
             .AsQueryable();
     }
 

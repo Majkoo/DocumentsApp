@@ -1,4 +1,3 @@
-using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Shared.Notifications;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +21,7 @@ public class ErrorHandlingMiddleWare : IMiddleware
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
+        // doesnt work as i intend to.
         try
         {
             await next.Invoke(context);
@@ -29,8 +29,6 @@ public class ErrorHandlingMiddleWare : IMiddleware
         catch (Exception)
         {
             _notificationService.Notify(new ErrorNotification("Error", "internal server error"));
-            context.Response.StatusCode = 500;
-            throw;
         }
     }
 }

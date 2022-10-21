@@ -70,7 +70,7 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
 
 #region Middleware
 
-// builder.Services.AddScoped<ErrorHandlingMiddleWare>();
+builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 
 #endregion
 
@@ -126,7 +126,6 @@ builder.Services.AddAuthenticationCore();
 #endregion
 
 
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -141,7 +140,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-// app.UseMiddleware<ErrorHandlingMiddleWare>();
+app.UseMiddleware<ErrorHandlingMiddleWare>();
 
 app.UseRouting();
 
