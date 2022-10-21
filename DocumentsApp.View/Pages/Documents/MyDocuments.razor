@@ -13,7 +13,8 @@
 <div class="row p-3 pb-5 mb-5">
 
     <div class="p-2 col-6 col-lg-3 col-xl-2">
-        <AddNewDocumentCard />
+        @* implement a created event which inserts the created doc into the doc list if its on 1st page *@
+        <AddNewDocumentCard/>
     </div>
 
         @foreach (var doc in _documentDtos)
@@ -28,7 +29,7 @@
                 HorizontalAlign="HorizontalAlign.Right"
                 Count="@ItemCount"
                 PageSize="@PageSize"
-                PageNumbersCount="@Page"
+                PageNumbersCount="@((int)Math.Ceiling((decimal)ItemCount/PageSize))"
                 PageChanged="@FetchItems" />
 
         </div>
