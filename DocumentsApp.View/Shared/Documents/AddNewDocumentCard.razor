@@ -1,3 +1,4 @@
+@using DocumentsApp.Shared.Dtos.DocumentDtos
 @inject DialogService DialogService
 
 <RadzenCard class="w-100 doc-card add-doc-card" @onclick="@OnClick">
@@ -15,13 +16,21 @@
 
 @code {
 
+    [Parameter]
+    public EventCallback<GetDocumentDto> OnDocumentCreated { get; set; }
+
     private void OnClick()
     {
         DialogService.Open(
             "Create a new document",
-            ds => @<CreateDocument />,
+            ds => @<CreateDocument OnDocumentCreated="PassDocumentCreated" />,
             new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true}
             );
+    }
+
+    private async Task PassDocumentCreated(GetDocumentDto dto)
+    {
+        await OnDocumentCreated.InvokeAsync(dto);
     }
 
 }

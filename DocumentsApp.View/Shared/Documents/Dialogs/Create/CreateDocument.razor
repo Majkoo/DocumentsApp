@@ -68,6 +68,9 @@
 
 @code {
 
+    [Parameter]
+    public EventCallback<GetDocumentDto> OnDocumentCreated { get; set; }
+
     private AddDocumentDto AddDocumentDto { get; set; } = new AddDocumentDto { Content = "",};
 
     private async Task OnSubmit()
@@ -77,6 +80,8 @@
 
         NotificationService.Notify(new SuccessNotification("Success", $"New document \"{newDoc.Name}\" created successfully!"));
 
+        await OnDocumentCreated.InvokeAsync(newDoc);
+
         DialogService.Open($"Edit {newDoc.Name}",
             ds => @<EditDocument DocumentDto="newDoc" />,
             new DialogOptions(){ CssClass = "big-dialog" }
@@ -85,7 +90,7 @@
 
     private void OnCancel()
     {
-        throw new Exception();
+        AddDocumentDto = new AddDocumentDto();
     }
 
 }

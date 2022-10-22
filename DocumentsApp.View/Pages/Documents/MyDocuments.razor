@@ -14,7 +14,7 @@
 
     <div class="p-2 col-6 col-lg-3 col-xl-2">
         @* implement a created event which inserts the created doc into the doc list if its on 1st page *@
-        <AddNewDocumentCard/>
+        <AddNewDocumentCard OnDocumentCreated="OnDocumentCreated"/>
     </div>
 
         @foreach (var doc in _documentDtos)
@@ -69,6 +69,15 @@
         Page = pageIndex;
         ItemCount = pagedResults.TotalItemsCount;
         _documentDtos = pagedResults.Items;
+    }
+
+    private async Task OnDocumentCreated(GetDocumentDto dto)
+    {
+        if (Page == 1)
+        {
+            _documentDtos.Insert(0, dto);
+            _documentDtos.RemoveAt(_documentDtos.Count - 1);
+        }
     }
 
 }
