@@ -1,7 +1,9 @@
+using AutoMapper;
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
+using DocumentsApp.Data.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
@@ -11,6 +13,7 @@ using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -103,6 +106,10 @@ builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 #endregion
 
 #region Other Services
+
+builder.Services.AddTransient<AccessLevelResolver>();
+builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
+builder.Services.AddTransient<IValueResolver<Document, GetDocumentDto, bool>, IsModifiableResolver>();
 
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
 builder.Services.AddAutoMapper(cfg =>
