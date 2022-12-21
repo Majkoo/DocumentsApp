@@ -13,7 +13,6 @@ using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
-using DocumentsApp.Shared.Enums;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Components.Authorization;

@@ -13,10 +13,13 @@ public class DtoMappingProfile : Profile
         CreateMap<RegisterAccountDto, Account>();
 
         CreateMap<Document, GetDocumentDto>()
-            .ForMember(dest => dest.Description, opt => opt.PreCondition(src => src.Description != null))
-            .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(dest => dest.Description, 
+                opt => opt.PreCondition(src => src.Description != null))
+            .ForMember(dest => dest.AccountName, 
+                opt => opt.MapFrom(src => src.Account.UserName))
             //.ForMember(dest => dest.AccessLevel, opt => opt.MapFrom<AccessLevelResolver>())
-            .ForMember(dest => dest.isCurrentUserACreator, opt => opt.MapFrom<IsCurrentUserACreatorResolver>());
+            .ForMember(dest => dest.isCurrentUserACreator, 
+                opt => opt.MapFrom<IsCurrentUserACreatorResolver>());
             //.ForMember(dest => dest.isModifiable, opt => opt.MapFrom<IsModifiableResolver>());
         
         CreateMap<AddDocumentDto, Document>();

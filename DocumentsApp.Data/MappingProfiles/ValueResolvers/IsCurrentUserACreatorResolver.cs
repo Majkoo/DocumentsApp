@@ -7,20 +7,15 @@ namespace DocumentsApp.Data.MappingProfiles.ValueResolvers;
 
 public class IsCurrentUserACreatorResolver : IValueResolver<Document, GetDocumentDto, bool>
 {
-    private readonly IAuthenticationContextProvider _contextProvider;
+    private readonly string _userId;
 
     public IsCurrentUserACreatorResolver(IAuthenticationContextProvider contextProvider)
     {
-        _contextProvider = contextProvider;
+        _userId = contextProvider.GetUserId().Result;
     }
+    
     public bool Resolve(Document source, GetDocumentDto destination, bool destMember, ResolutionContext context)
     {
-        var userId = _contextProvider.GetUserId().Result;
-        if (source.AccountId == userId)
-        {
-            return true;
-        }
-
-        return false;
+        return source.Id == _userId;
     }
 }

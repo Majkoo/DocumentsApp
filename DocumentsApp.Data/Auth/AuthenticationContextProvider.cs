@@ -23,12 +23,6 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
         return idClaim?.Value;
     }
     
-    public async Task<string?> GetUserIdSync()
-    {
-        var idClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
-        return idClaim?.Value;
-    }
-
     public async Task<string?> GetUserEmail()
     {
         var emailClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.Email);
@@ -65,28 +59,4 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
         
     }
     
-    private AuthenticationState GetAuthenticationState()
-    {
-        try
-        {
-            var userSessionStorageResult = _sessionStorage.GetAsync<UserSession>("UserSession").Result;
-            var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
-
-            if (userSession is null) return new AuthenticationState(_anonymous);
-
-            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, userSession.Id),
-                new Claim(ClaimTypes.Name, userSession.Username),
-                new Claim(ClaimTypes.Email, userSession.Email)
-            }, "CustomAuth"));
-            return new AuthenticationState(claimsPrincipal);
-        }
-        catch
-        {
-            return new AuthenticationState(_anonymous);
-        }
-        
-    }
-
 }
