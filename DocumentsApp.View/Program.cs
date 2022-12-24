@@ -106,11 +106,11 @@ builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
 #region Other Services
 
-builder.Services.AddTransient<AccessLevelResolver>();
-builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
-builder.Services.AddTransient<IValueResolver<Document, GetDocumentDto, bool>, IsModifiableResolver>();
-
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
+
+builder.Services.AddScoped<AccessLevelResolver>();
+builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
+builder.Services.AddScoped<IsModifiableResolver>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<DtoMappingProfile>();
