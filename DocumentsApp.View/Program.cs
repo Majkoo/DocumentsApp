@@ -1,7 +1,9 @@
+using AutoMapper;
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
+using DocumentsApp.Data.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
@@ -105,6 +107,10 @@ builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 #region Other Services
 
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
+
+builder.Services.AddScoped<AccessLevelResolver>();
+builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
+builder.Services.AddScoped<IsModifiableResolver>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<DtoMappingProfile>();

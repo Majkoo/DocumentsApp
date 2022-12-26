@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using DocumentsApp.Shared.Enums;
 
 namespace DocumentsApp.Data.Entities;
 
@@ -22,4 +23,6 @@ public class Document
 
     public string AccountId { get; set; }
     public virtual Account Account { get; set; }
+
+    public virtual IEnumerable<DocumentAccessLevel> AccessLevels { get; set; }
 }

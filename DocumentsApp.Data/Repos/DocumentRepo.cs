@@ -17,6 +17,7 @@ public class DocumentRepo : IDocumentRepo
     {
         return _dbContext.Documents
             .Include(d => d.Account)
+            .Include(d => d.AccessLevels)
             .Where(d => d.AccountId == accountId)
             .OrderByDescending(d => d.DateCreated)
             .AsQueryable();
@@ -26,6 +27,7 @@ public class DocumentRepo : IDocumentRepo
     {
         return await _dbContext.Documents
             .Include(d => d.Account)
+            .Include(d => d.AccessLevels)
             .Where(d => d.AccountId == accountId)
             .OrderByDescending(d => d.DateCreated)
             .ToListAsync();

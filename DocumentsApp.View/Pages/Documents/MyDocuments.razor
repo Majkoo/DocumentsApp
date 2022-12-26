@@ -2,9 +2,12 @@
 
 @using DocumentsApp.Shared.Dtos.DocumentDtos
 @using Sieve.Models
+@using DocumentsApp.Data.Exceptions
+@using DocumentsApp.Shared.Notifications
 
 @inject IJSRuntime JsRuntime
 @inject IDocumentService DocumentService
+@inject NotificationService NotificationService
 
 @attribute [Authorize]
 
@@ -13,7 +16,6 @@
 <div class="row p-3 pb-5 mb-5">
 
     <div class="p-2 col-6 col-lg-3 col-xl-2">
-        @* implement a created event which inserts the created doc into the doc list if its on 1st page *@
         <AddNewDocumentCard OnDocumentCreated="OnDocumentCreated"/>
     </div>
 
@@ -48,7 +50,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetDocs(1);
+        try
+        {
+            await GetDocs(1);
+        }
+        catch (NotFoundException)
+        {
+            NotificationService.Notify(
+                new InfoNotification("You have no documents yet.","Click \"add a new document\" to create your first document!")
+                );
+        }
     }
 
     private async Task FetchItems(PagerEventArgs args)
@@ -76,7 +87,10 @@
         if (Page == 1)
         {
             _documentDtos.Insert(0, dto);
-            _documentDtos.RemoveAt(_documentDtos.Count - 1);
+            if (_documentDtos.Count == PageSize)
+            {
+                _documentDtos.RemoveAt(_documentDtos.Count - 1);
+            }
         }
     }
 
