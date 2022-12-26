@@ -66,6 +66,9 @@ h1:focus {
 a, .btn-link {
   color: #0071c1;
 }
+.square {
+  aspect-ratio: 1 !important;
+}
 
 .sidebar {
   z-index: 10 !important;
