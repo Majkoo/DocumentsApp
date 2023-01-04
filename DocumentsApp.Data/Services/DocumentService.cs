@@ -6,6 +6,7 @@ using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
@@ -35,10 +36,10 @@ public class DocumentService : IDocumentService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task<GetDocumentDto> GetDocumentByIdAsync(string id)
+    public async Task<GetDocumentDto> GetDocumentByIdAsync(string documentId)
     {
         var accountId = await _authenticationStateProvider.GetUserId();
-        var document = await SearchDocumentDbAsync(id);
+        var document = await SearchDocumentDbAsync(documentId);
         var documentAccessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(accountId, document.Id);
 
         if (documentAccessLevel is null && document.AccountId != accountId)
@@ -93,22 +94,28 @@ public class DocumentService : IDocumentService
         return _mapper.Map<GetDocumentDto>(document);
     }
 
-    public async Task UpdateDocumentAsync(string id, UpdateDocumentDto dto)
+    public async Task UpdateDocumentAsync(string documentId, UpdateDocumentDto dto)
     {
-        var document = await SearchDocumentDbAsync(id);
+        var document = await SearchDocumentDbAsync(documentId);
+        var userId = await _authenticationStateProvider.GetUserId();
+        var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(userId, documentId);
+
+        if (accessLevel is null || accessLevel.AccessLevelEnum != AccessLevelEnum.Write)
+            throw new NotAuthorizedException("User is not authorized to edit this document");
+
         _mapper.Map(dto, document);
         await _documentRepo.UpdateDocumentAsync(document);
     }
 
-    public async Task DeleteDocumentAsync(string id)
+    public async Task DeleteDocumentAsync(string documentId)
     {
-        var document = await SearchDocumentDbAsync(id);
+        var document = await SearchDocumentDbAsync(documentId);
         await _documentRepo.DeleteDocumentAsync(document);
     }
 
-    private async Task<Document> SearchDocumentDbAsync(string id)
+    private async Task<Document> SearchDocumentDbAsync(string documentId)
     {
-        var foundDocument = await _documentRepo.GetDocumentByIdAsync(id);
+        var foundDocument = await _documentRepo.GetDocumentByIdAsync(documentId);
         if (foundDocument is null) throw new NotFoundException("Document does not exist");
 
         return foundDocument;
