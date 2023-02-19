@@ -18,6 +18,9 @@ public class AccessLevelResolver : IValueResolver<Document, GetDocumentDto, Acce
     public AccessLevelEnum? Resolve(Document source, GetDocumentDto destination, AccessLevelEnum? destMember,
         ResolutionContext context)
     {
+        if (source.AccountId == _userId)
+            return AccessLevelEnum.Write;
+        
         var accessLevel = source.AccessLevels?.SingleOrDefault(a => a.AccountId == _userId && a.DocumentId == source.Id);
         return accessLevel?.AccessLevelEnum;
     }

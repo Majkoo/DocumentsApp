@@ -100,7 +100,7 @@ public class DocumentService : IDocumentService
         var userId = await _authenticationStateProvider.GetUserId();
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(userId, documentId);
 
-        if (accessLevel is null || accessLevel.AccessLevelEnum != AccessLevelEnum.Write)
+        if (document.AccountId != userId && accessLevel?.AccessLevelEnum != AccessLevelEnum.Write)
             throw new NotAuthorizedException("User is not authorized to edit this document");
 
         _mapper.Map(dto, document);
@@ -110,6 +110,11 @@ public class DocumentService : IDocumentService
     public async Task DeleteDocumentAsync(string documentId)
     {
         var document = await SearchDocumentDbAsync(documentId);
+        var userId = await _authenticationStateProvider.GetUserId();
+        
+        if (document.AccountId != userId)
+            throw new NotAuthorizedException("User is not authorized to delete this document");
+        
         await _documentRepo.DeleteDocumentAsync(document);
     }
 
