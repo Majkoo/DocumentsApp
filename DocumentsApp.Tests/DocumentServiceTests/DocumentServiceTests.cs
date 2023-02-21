@@ -6,7 +6,10 @@ using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace DocumentsApp.Tests.DocumentServiceTests;
 
@@ -102,6 +105,7 @@ public class DocumentServiceTests
 
         await result.Should().ThrowAsync<NotFoundException>();
     }
+    
 
     [Theory]
     [ClassData(typeof(UpdateDocumentTestData.DocumentNoThrowTestData))]
@@ -288,6 +292,121 @@ public class DocumentServiceTests
 
         await result.Should().ThrowAsync<NotFoundException>();
     }
+
+    [Fact]
+    public async void AddDocument_ForSuccessfulAdd_ReturnGetDocumentDto()
+    {
+        // arrange
+
+        var addDocument = new AddDocumentDto()
+        {
+            Name = "name",
+            Description = "description",
+            Content = "content"
+        };
+
+        var document = new Document();
+
+        var expected = new GetDocumentDto()
+        {
+            Name = "name",
+            Description = "description",
+            Content = "content"
+        };
+
+        // init mocks
+        var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(expected);
+        var authProviderMock = GetAuthProviderMock(null);
+        var documentRepoMock = new Mock<IDocumentRepo>();
+        
+        //setup mocks
+        documentRepoMock.Setup(m => m.GetDocumentByIdAsync(It.IsAny<string>())).ReturnsAsync(value: null);
+        autoMapperMock.Setup(m => m.Map<Document>(It.IsAny<AddDocumentDto>())).Returns(document);
+        
+        //tested service
+        var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
+            null, authProviderMock.Object);
+        
+        //act 
+
+        var result = await documentService.AddDocumentAsync(addDocument);
+
+        // assert
+
+        result.Name.Should().Be(expected.Name);
+    }
+    
+    [Fact]
+    public async void GetAllDocuments_ForAnyDocuments_NoExceptionThrown()
+    {
+        // arrange
+
+        var documents = new List<Document>()
+        {
+            new Document()
+        };
+
+        // MockQueryable extension 
+        var dataMock = documents.BuildMock();
+        
+        // init mocks
+        var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(new GetDocumentDto());
+        var authProviderMock = GetAuthProviderMock(null);
+        var documentRepoMock = new Mock<IDocumentRepo>();
+        var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
+        var sieveMock = new Mock<ISieveProcessor>();
+        
+        //setup mocks
+        documentRepoMock.Setup(m => m.GetAllUserDocumentsAsQueryable(It.IsAny<string>())).Returns(dataMock);
+        sieveMock.Setup(m => m.Apply(It.IsAny<SieveModel>(), It.IsAny<IQueryable<Document>>(), null, true, true, true))
+            .Returns(dataMock);
+        
+        //tested service
+        var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, sieveMock.Object,
+            accessLevelRepoMock.Object, authProviderMock.Object);
+        
+        // act
+
+        var result = async () => await documentService.GetAllDocumentsAsync(new SieveModel());
+        
+        // assert
+
+        await result.Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async void GetAllDocuments_ForNoDocuments_ThrowNotFoundException()
+    {
+        // arrange
+
+        var documents = new List<Document>().AsQueryable();
+        
+        // init mocks
+        var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
+        var authProviderMock = GetAuthProviderMock(null);
+        var documentRepoMock = new Mock<IDocumentRepo>();
+        var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
+        var sieveMock = new Mock<ISieveProcessor>();
+        
+        //setup mocks
+        documentRepoMock.Setup(m => m.GetAllUserDocumentsAsQueryable(It.IsAny<string>())).Returns(documents);
+        sieveMock.Setup(m => m.Apply(It.IsAny<SieveModel>(), It.IsAny<IQueryable<Document>>(), null, true, true, true))
+            .Returns(value: null);
+        
+        //tested service
+        var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, sieveMock.Object,
+            accessLevelRepoMock.Object, authProviderMock.Object);
+        
+        // act
+
+        var result = async () => await documentService.GetAllDocumentsAsync(new SieveModel());
+        
+        // assert
+
+        await result.Should().ThrowAsync<NotFoundException>();
+    }
+    
+    
     
     private Mock<IMapper> GetMapperMock<TA,TB>(TA returnValue)
     {

@@ -12,5 +12,4 @@ public interface IDocumentRepo
     Task<Document> UpdateDocumentAsync(Document document);
     Task<bool> DeleteDocumentAsync(Document document);
     
-
 }
