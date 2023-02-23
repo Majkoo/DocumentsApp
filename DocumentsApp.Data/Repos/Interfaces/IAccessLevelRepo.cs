@@ -9,4 +9,5 @@ public interface IAccessLevelRepo
     Task<DocumentAccessLevel> InsertDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel);
     Task<DocumentAccessLevel> UpdateDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel);
     Task<bool> RemoveDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel);
+    Task<bool> RemoveAllDocumentAccessLevelsAsync(string documentId);
 }

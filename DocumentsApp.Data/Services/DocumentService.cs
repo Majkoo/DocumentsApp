@@ -102,7 +102,8 @@ public class DocumentService : IDocumentService
         
         if (document.AccountId != userId)
             throw new NotAuthorizedException("User is not authorized to delete this document");
-        
+
+        await _accessLevelRepo.RemoveAllDocumentAccessLevelsAsync(documentId);
         var result = await _documentRepo.DeleteDocumentAsync(document);
         
         return result;

@@ -53,4 +53,11 @@ public class AccessLevelRepo : IAccessLevelRepo
         return await _dbContext.SaveChangesAsync() > 0;
     }
 
+    public async Task<bool> RemoveAllDocumentAccessLevelsAsync(string documentId)
+    {
+        var toRemove = _dbContext.DocumentAccessLevels.Where(a => a.DocumentId == documentId);
+        _dbContext.RemoveRange(toRemove);
+        
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
 }

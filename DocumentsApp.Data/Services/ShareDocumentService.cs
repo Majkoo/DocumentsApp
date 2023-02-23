@@ -120,7 +120,8 @@ public class ShareDocumentService : IShareDocumentService
     private async Task<Document> SearchDocumentDbAsync(string documentId)
     {
         var foundDocument = await _documentRepo.GetDocumentByIdAsync(documentId);
-        if (foundDocument is null) throw new NotFoundException("Document does not exist");
+        if (foundDocument is null) 
+            throw new NotFoundException("Document does not exist");
 
         return foundDocument;
     }
