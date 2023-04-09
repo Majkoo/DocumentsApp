@@ -16,6 +16,6 @@ public class IsCurrentUserACreatorResolver : IValueResolver<Document, GetDocumen
     
     public bool Resolve(Document source, GetDocumentDto destination, bool destMember, ResolutionContext context)
     {
-        return source.Id == _userId;
+        return source.AccountId == _userId;
     }
 }

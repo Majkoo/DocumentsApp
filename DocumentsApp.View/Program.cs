@@ -1,4 +1,3 @@
-using AutoMapper;
 using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
@@ -95,6 +94,8 @@ builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
 #region Business Logic Services
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IShareDocumentService, ShareDocumentService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 #endregion
 
