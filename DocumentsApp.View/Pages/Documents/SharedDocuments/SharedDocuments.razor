@@ -3,10 +3,9 @@
 @using DocumentsApp.Shared.Dtos.DocumentDtos
 @using Sieve.Models
 @using DocumentsApp.Data.Exceptions
-@using DocumentsApp.Shared.Notifications
 
 @inject IJSRuntime JsRuntime
-@inject IDocumentService DocumentService
+@inject IShareDocumentService ShareDocumentService
 @inject NotificationService NotificationService
 
 @attribute [Authorize]
@@ -86,7 +85,7 @@
             PageSize = PageSize,
         };
 
-        var pagedResults = await DocumentService.GetAllSharedDocumentsAsync(sieveModel);
+        var pagedResults = await ShareDocumentService.GetAllSharedDocumentsAsync(sieveModel);
         Page = pageIndex;
         ItemCount = pagedResults.TotalItemsCount;
         _documentDtos = pagedResults.Items;
