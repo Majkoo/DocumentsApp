@@ -31,21 +31,6 @@
 
         </div>
 
-        <div class="mb-4">
-            <RadzenLabel Text="Document description:" class="fw-bold"/>
-            <RadzenTextBox
-                Placeholder="Enter document description..."
-                Name="DocDesc"
-                @bind-Value="@AddDocumentDto.Description"
-                class="mb-4"/>
-            <RadzenLengthValidator
-                Component="DocDesc"
-                Popup="true"
-                Text="Document description should be equal or less than 255 characters"
-                Max="255"
-                Style="position: absolute; display: block"/>
-        </div>
-
         <div class="d-flex justify-content-end gap-3">
             <RadzenButton
                 ButtonStyle="ButtonStyle.Danger"

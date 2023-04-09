@@ -3,9 +3,9 @@
 
 @if (DocumentDto is not null)
 {
-    <div class="p-3">
-        @StringToHtml(DocumentDto.Content)
-    </div>
+    <RadzenHtmlEditor
+        disabled="@true"
+        @bind-Value=@DocumentDto.Content/>
 }
 else
 {

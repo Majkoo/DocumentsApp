@@ -1,11 +1,50 @@
 @using DocumentsApp.Shared.Dtos.DocumentDtos
+@using DocumentsApp.Shared.Notifications
+@using Radzen.Blazor.Rendering
 @inject IDocumentService DocumentService
+@inject DialogService DialogService
+@inject NotificationService NotificationService
 
-<h3>DeleteDocument</h3>
+<div class="p-3 text-center">
+    <RadzenText Text="Are you sure?" TextStyle="TextStyle.H3" class="mb-3"></RadzenText>
+    
+    <div class="d-flex justify-content-center gap-3 align-items-center">
+        <RadzenButton
+            ButtonStyle="ButtonStyle.Success"
+            Text="No"
+            Size="ButtonSize.Large" 
+            Click="@(Close)">
+        </RadzenButton>
+        <RadzenButton
+            ButtonStyle="ButtonStyle.Danger"
+            Text="Yes"
+            Size="ButtonSize.Large" Click="@(Delete)">
+        </RadzenButton>
+    </div>
+</div>
 
 @code {
 
     [Parameter]
     public GetDocumentDto? DocumentDto { get; set; }
+    
+    void Close()
+    {
+        DialogService.Close();
+    }
 
+    async Task Delete()
+    {
+        var res = await DocumentService.DeleteDocumentAsync(DocumentDto!.Id);
+        if (res)
+        {
+            NotificationService.Notify(new WarningNotification("Success", "Document successfully deleted"));
+            DialogService.Close();
+        }
+        else
+        {
+            NotificationService.Notify(new ErrorNotification("Failure", "Something went wrong"));
+        }
+    }
+    
 }

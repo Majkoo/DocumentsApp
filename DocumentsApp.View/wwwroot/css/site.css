@@ -11,7 +11,6 @@ h1:focus {
 }
 
 .doc-card {
-  cursor: pointer;
   aspect-ratio: 9/11;
   transition: 0.2s ease-in-out;
   outline: 1px solid rgba(0, 0, 0, 0.1);
@@ -22,11 +21,23 @@ h1:focus {
   -khtml-user-select: none;
   -webkit-user-select: none;
 }
+.doc-card .icon, .doc-card .icon > * {
+  cursor: pointer;
+  transition: 100ms ease-in-out;
+  font-size: clamp(20px, 1.5rem, 30px);
+}
+.doc-card .icon:hover, .doc-card .icon > *:hover {
+  scale: 1.1;
+}
 .doc-card.add-doc-card {
+  cursor: pointer;
   display: flex;
   flex-flow: column;
   justify-content: space-between;
   align-items: center;
+}
+.doc-card.add-doc-card:hover {
+  scale: 1.025;
 }
 .doc-card.add-doc-card .add-doc-card-title {
   text-align: center;
@@ -41,33 +52,31 @@ h1:focus {
     font-size: 150px;
   }
 }
-.doc-card:hover {
-  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.05) inset;
-  outline: 1px solid rgba(0, 0, 0, 0.2);
-  scale: 1.02;
-}
-.doc-card:hover:active {
-  transition: 0.02s ease-in-out;
-  scale: 1;
-  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.07) inset;
-  outline: 1px solid rgba(0, 0, 0, 0.25);
+
+.square {
+  aspect-ratio: 1 !important;
 }
 
 .big-dialog {
   height: 100vh;
   width: 100% !important;
-  max-width: 900px;
+  max-width: 700px;
+  padding: 0;
+}
+
+.small-dialog {
+  width: 100% !important;
+  max-width: 425px;
+  padding: 0;
 }
 
 .rz-dialog-content {
   height: 100%;
+  padding: 0 !important;
 }
 
 a, .btn-link {
   color: #0071c1;
-}
-.square {
-  aspect-ratio: 1 !important;
 }
 
 .sidebar {
@@ -123,6 +132,14 @@ a, .btn-link {
   content: "An error has occurred.";
 }
 
-/*# sourceMappingURL=site.css.map */
+.rz-html-editor {
+  border: none !important;
+}
+
+.rz-html-editor-content {
+  padding: 0.5rem 1rem !important;
+}
+
+
 
 /*# sourceMappingURL=site.css.map */
