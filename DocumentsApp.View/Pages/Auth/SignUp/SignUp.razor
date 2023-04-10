@@ -1,13 +1,14 @@
 @page "/auth/signup"
-@using DocumentsApp.Shared.Dtos.AccountDtos
 @using DocumentsApp.Data.Entities
-@using DocumentsApp.Shared.Notifications
 @using Microsoft.AspNetCore.Identity
+@using DocumentsApp.Shared.Dtos.AccountDtos
+@using DocumentsApp.Shared.Notifications
 @using System.Text
 
 @inject UserManager<Account> UserManager
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
+@inject IMailService MailService
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -100,7 +101,7 @@
                     Component="ConfirmPassword"
                     Text="Repeat your password"
                     Popup="@true"
-                    Style="position: absolute" />
+                    Style="position: absolute"/>
 
                 <RadzenCompareValidator
                     Visible="@(!string.IsNullOrEmpty(_registerAccountDto.ConfirmPassword))"
@@ -108,7 +109,7 @@
                     Component="ConfirmPassword"
                     Text="Passwords should be the same"
                     Popup="@true"
-                    Style="position: absolute" />
+                    Style="position: absolute"/>
 
 
             </div>
@@ -132,11 +133,11 @@
 
 @code {
 
-    readonly RegisterAccountDto _registerAccountDto = new RegisterAccountDto();
+    readonly RegisterAccountDto _registerAccountDto = new();
 
     private async Task OnSubmit(RegisterAccountDto registerDto)
     {
-        var newAccount = new Account()
+        var newAccount = new Account
         {
             UserName = _registerAccountDto.UserName,
             Email = _registerAccountDto.Email
@@ -147,7 +148,14 @@
         if (result.Succeeded)
         {
             NotificationService.Notify(new SuccessNotification("Success", "Successfully registered an account."));
-            NavigationManager.NavigateTo("/auth/signin", false);
+            NotificationService.Notify(new InfoNotification("Email confirmation", "Confirm your email before you sign in"));
+
+            var user = await UserManager.FindByEmailAsync(_registerAccountDto.Email);
+            var token = Uri.EscapeDataString(await UserManager.GenerateEmailConfirmationTokenAsync(user));
+
+            var html = NavigationManager.ToAbsoluteUri($"/auth/confirmemail?token={token}&email={_registerAccountDto.Email}").ToString();
+            
+            MailService.SendMessageAsync(_registerAccountDto.Email, "Account Confirmation", html);
         }
         else
         {
@@ -158,10 +166,9 @@
                 sb.Append($"{identityError.Description}\n");
             }
             NotificationService.Notify(new ErrorNotification("Could not sign up", sb.ToString()));
-
         }
-
-
     }
+
+    
 
 }

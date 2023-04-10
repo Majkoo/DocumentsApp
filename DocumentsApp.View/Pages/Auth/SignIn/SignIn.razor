@@ -62,11 +62,17 @@
                     Popup="@true" Style="position: absolute"/>
 
             </div>
+            
+            <div class="w-100 text-start">
+                <a href="auth/submitpasswordreset">
+                    <RadzenText TextStyle="TextStyle.Caption" Text="Reset your password."/>
+                </a>
+            </div>
 
             <div class="w-100 text-end">
                 <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Submit"></RadzenButton>
             </div>
-
+            
         </RadzenFieldset>
 
         <div class="w-100 text-start">
@@ -97,16 +103,16 @@
         }
 
         var signInResult = await SignInManager.CheckPasswordSignInAsync(userAccount, loginDto.Password, false);
-
-        if (!signInResult.Succeeded)
-        {
-            NotificationService.Notify(new ErrorNotification("Auth failed", "Invalid login credentials"));
-            return;
-        }
-
+        
         if (signInResult.IsLockedOut || signInResult.IsNotAllowed)
         {
             NotificationService.Notify(new ErrorNotification("Auth failed", "Account locked out. check your e-mail for details."));
+            return;
+        }
+        
+        if (!signInResult.Succeeded)
+        {
+            NotificationService.Notify(new ErrorNotification("Auth failed", "Invalid login credentials"));
             return;
         }
 

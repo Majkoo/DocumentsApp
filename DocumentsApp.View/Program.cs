@@ -10,6 +10,7 @@ using DocumentsApp.Data.Services;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
+using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
@@ -59,7 +60,7 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
     opts.Password.RequiredLength = 8;
     opts.User.RequireUniqueEmail = true;
 
-    opts.SignIn.RequireConfirmedEmail = false;
+    opts.SignIn.RequireConfirmedEmail = true;
     opts.SignIn.RequireConfirmedAccount = false;
     opts.SignIn.RequireConfirmedPhoneNumber = false;
 
@@ -102,6 +103,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 #region Helper Services
 
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
 #endregion
 

@@ -1,0 +1,48 @@
+@page "/auth/confirmemail"
+@using Microsoft.AspNetCore.Identity
+@using DocumentsApp.Shared.Notifications
+@using System.Text
+@using DocumentsApp.Data.Entities
+
+@inject UserManager<Account> UserManager
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+<div class="w-100 text-center d-flex justify-content-center align-items-center my-4">
+    <div class="w-100">
+        <RadzenButton Click="Confirm" ButtonStyle="ButtonStyle.Primary" Text="Confirm email"></RadzenButton>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = nameof(Token))]
+    public string? Token { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = nameof(Email))]
+    public string? Email { get; set; }
+
+    private async Task Confirm()
+    {
+        var user = await UserManager.FindByEmailAsync(Email);
+        var result = await UserManager.ConfirmEmailAsync(user, Token);
+
+        if (result.Succeeded)
+        {
+            NotificationService.Notify(new SuccessNotification("Success", "Successfully confirmed your email"));
+            NavigationManager.NavigateTo("/auth/signin");
+        }
+        else
+        {
+            var sb = new StringBuilder();
+
+            foreach (var identityError in result.Errors)
+            {
+                sb.Append($"{identityError.Description}\n");
+            }
+            NotificationService.Notify(new ErrorNotification("Could not confirm email", sb.ToString()));
+        }
+    }
+}
