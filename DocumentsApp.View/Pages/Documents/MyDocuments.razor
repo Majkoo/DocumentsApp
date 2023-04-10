@@ -60,7 +60,6 @@
             Page = pageIndex,
             PageSize = PageSize,
         };
-
         
         var pagedResults = await DocumentService.GetAllDocumentsAsync(sieveModel);
         Page = pageIndex;
