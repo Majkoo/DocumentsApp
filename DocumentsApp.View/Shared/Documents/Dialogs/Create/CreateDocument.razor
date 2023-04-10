@@ -67,7 +67,7 @@
 
         await OnDocumentCreated.InvokeAsync(newDoc);
 
-        DialogService.Open($"Edit {newDoc.Name}",
+        DialogService.Open($"{newDoc.Name}",
             ds => @<EditDocument DocumentDto="newDoc" />,
             new DialogOptions(){ CssClass = "big-dialog" }
             );

@@ -6,7 +6,7 @@
 
 @if (Document is not null)
 {
-    <RadzenCard class="w-100 doc-card" ContextMenu="@(ShowContextMenuWithItems)">
+    <RadzenCard class="w-100 doc-card" ContextMenu="@ShowContextMenuWithItems">
         <div>
             <RadzenText
                 TextStyle="TextStyle.H5"
@@ -30,12 +30,12 @@
         </div>
         <div class="d-flex justify-content-end flex-wrap">
             <div class="d-flex">
-                <RadzenIcon Icon="visibility" class="icon" @onclick="@(OnViewClick)"/>
-                <RadzenIcon Icon="edit" class="icon" @onclick="@(OnEditClick)"/>
+                <RadzenIcon Icon="visibility" class="icon" @onclick="@OnViewClick"/>
+                <RadzenIcon Icon="edit" class="icon" @onclick="@OnEditClick"/>
             </div>
             <div class="d-flex">
-                <RadzenIcon Icon="share" class="icon" @onclick="@(OnShareClick)"/>
-                <RadzenIcon Icon="delete" class="icon" @onclick="@(OnDeleteClick)"/>
+                <RadzenIcon Icon="share" class="icon" @onclick="@OnShareClick"/>
+                <RadzenIcon Icon="delete" class="icon" @onclick="@OnDeleteClick"/>
             </div>
         </div>
     </RadzenCard>
@@ -45,6 +45,9 @@
 
     [Parameter]
     public GetDocumentDto? Document { get; set; }
+    
+    [Parameter]
+    public EventCallback Deleted { get; set; }
 
     private List<ContextMenuItem> _contextMenuItems = new()
     {
@@ -107,9 +110,14 @@
     void OnDeleteClick()
     {
         DialogService.Open($"Delete \"{Document!.Name}\"?",
-            _ => @<DeleteDocument DocumentDto="Document" />,
+            _ => @<DeleteDocument DocumentDto="Document" OnDelete="@DocumentDeleted" />,
             new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true, CssClass = "small-dialog"}
             );
     }
 
+    async Task DocumentDeleted()
+    {
+        await Deleted.InvokeAsync();
+    }
+    
 }

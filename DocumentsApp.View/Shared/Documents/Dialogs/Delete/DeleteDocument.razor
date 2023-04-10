@@ -18,7 +18,7 @@
         <RadzenButton
             ButtonStyle="ButtonStyle.Danger"
             Text="Yes"
-            Size="ButtonSize.Large" Click="@(Delete)">
+            Size="ButtonSize.Large" Click="@Delete">
         </RadzenButton>
     </div>
 </div>
@@ -27,6 +27,9 @@
 
     [Parameter]
     public GetDocumentDto? DocumentDto { get; set; }
+    
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
     
     void Close()
     {
@@ -39,6 +42,7 @@
         if (res)
         {
             NotificationService.Notify(new WarningNotification("Success", "Document successfully deleted"));
+            await OnDelete.InvokeAsync();
             DialogService.Close();
         }
         else
