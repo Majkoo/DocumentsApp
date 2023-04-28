@@ -23,7 +23,7 @@
     {
         DialogService.Open(
             "Create a new document",
-            ds => @<CreateDocument OnDocumentCreated="PassDocumentCreated" />,
+            ds => @<CreateDocument OnDocumentCreated="@PassDocumentCreated" />,
             new DialogOptions(){ CloseDialogOnEsc = true, CloseDialogOnOverlayClick = true}
             );
     }
