@@ -30,4 +30,8 @@
       <ProjectReference Include="..\DocumentsApp.View\DocumentsApp.View.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DocumentsApp.Data" />
+    </ItemGroup>
+
 </Project>

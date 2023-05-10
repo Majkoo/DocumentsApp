@@ -135,7 +135,6 @@ builder.Services.AddAuthenticationCore();
 
 #endregion
 
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

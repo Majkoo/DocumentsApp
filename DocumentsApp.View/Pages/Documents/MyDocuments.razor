@@ -1,11 +1,10 @@
 @page "/documents"
 
 @using DocumentsApp.Shared.Dtos.DocumentDtos
+@using DocumentsApp.Shared.Notifications
 @using Sieve.Models
 @using DocumentsApp.Data.Exceptions
-@using DocumentsApp.Shared.Notifications
 
-@inject IJSRuntime JsRuntime
 @inject IDocumentService DocumentService
 @inject NotificationService NotificationService
 
@@ -22,13 +21,14 @@
         @foreach (var doc in _documentDtos)
         {
             <div class="p-2 col-6 col-lg-3 col-xl-2">
-                <DocumentCard Document="@doc" />
+                <DocumentCard Document="@doc" Deleted="@OnDocumentDeleted" />
             </div>
         }
 
         <div class="fixed-bottom border-top bg-white pagin-footer">
             <RadzenPager
                 HorizontalAlign="HorizontalAlign.Right"
+                AlwaysVisible="@true"
                 Count="@ItemCount"
                 PageSize="@PageSize"
                 PageNumbersCount="@((int)Math.Ceiling((decimal)ItemCount/PageSize))"
@@ -43,11 +43,66 @@
     [CascadingParameter]
     private Task<AuthenticationState>? AuthState { get; set; }
 
-    private List<GetDocumentDto> _documentDtos = new List<GetDocumentDto>();
+    private List<GetDocumentDto> _documentDtos = new();
     private int Page { get; set; } = 1;
     private int PageSize { get; set; } = 11;
-    private int ItemCount { get; set; } = 1;
+    private int ItemCount { get; set; }
 
+    private async Task FetchItems(PagerEventArgs args)
+    {
+        await GetDocs(args.PageIndex + 1);
+    }
+
+    private async Task GetDocs(int pageIndex)
+    {
+        var sieveModel = new SieveModel()
+        {
+            Page = pageIndex,
+            PageSize = PageSize,
+        };
+        
+        var pagedResults = await DocumentService.GetAllDocumentsAsync(sieveModel);
+        Page = pageIndex;
+        ItemCount = pagedResults.TotalItemsCount;
+        _documentDtos = pagedResults.Items;
+        StateHasChanged();
+    }
+
+    private void OnDocumentCreated(GetDocumentDto dto)
+    {
+        if (ItemCount == 0)
+        {
+            _documentDtos = new List<GetDocumentDto>() { dto };
+            StateHasChanged();
+        }
+        else if (Page == 1)
+        {
+            _documentDtos.Insert(0, dto);
+            StateHasChanged();
+        }
+        if (_documentDtos.Count > PageSize)
+        {
+            _documentDtos.RemoveAt(_documentDtos.Count - 1);
+            ItemCount += 1;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnDocumentDeleted()
+    {
+        try
+        {
+            await GetDocs(Page);
+        }
+        catch (NotFoundException)
+        {
+            _documentDtos = new List<GetDocumentDto>();
+            ItemCount = 0;
+            Page = 1;
+            PageSize = 11;
+        }
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         try
@@ -61,37 +116,7 @@
                 );
         }
     }
-
-    private async Task FetchItems(PagerEventArgs args)
-    {
-        await GetDocs(args.PageIndex + 1);
-    }
-
-    private async Task GetDocs(int pageIndex)
-    {
-        await JsRuntime.InvokeVoidAsync("OnScrollEvent");
-        var sieveModel = new SieveModel()
-        {
-            Page = pageIndex,
-            PageSize = PageSize,
-        };
-
-        var pagedResults = await DocumentService.GetAllDocumentsAsync(sieveModel);
-        Page = pageIndex;
-        ItemCount = pagedResults.TotalItemsCount;
-        _documentDtos = pagedResults.Items;
-    }
-
-    private async Task OnDocumentCreated(GetDocumentDto dto)
-    {
-        if (Page == 1)
-        {
-            _documentDtos.Insert(0, dto);
-            if (_documentDtos.Count == PageSize)
-            {
-                _documentDtos.RemoveAt(_documentDtos.Count - 1);
-            }
-        }
-    }
+    
+    
 
 }
