@@ -4,16 +4,16 @@
 @using System.Text
 @using DocumentsApp.Data.Entities
 
+@inject IAccountService AccountService
 @inject UserManager<Account> UserManager
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
 
 <div class="w-100 text-center d-flex justify-content-center align-items-center my-4">
     <div class="w-100">
-        <RadzenButton Click="Confirm" ButtonStyle="ButtonStyle.Primary" Text="Confirm email"></RadzenButton>
+        <RadzenButton Click="Confirm" ButtonStyle="ButtonStyle.Primary" Text="Confirm your email"></RadzenButton>
     </div>
 </div>
-
 
 @code {
     [Parameter]
@@ -26,9 +26,8 @@
 
     private async Task Confirm()
     {
-        var user = await UserManager.FindByEmailAsync(Email);
-        var result = await UserManager.ConfirmEmailAsync(user, Token);
-
+        var result = await AccountService.ConfirmEmailAsync(Token, Email);
+        
         if (result.Succeeded)
         {
             NotificationService.Notify(new SuccessNotification("Success", "Successfully confirmed your email"));

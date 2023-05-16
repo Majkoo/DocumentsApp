@@ -11,13 +11,19 @@ public class AccountService : IAccountService
 {
     private readonly IAuthenticationContextProvider _authenticationContextProvider;
     private readonly UserManager<Account> _userManager;
+    private readonly IMailHelper _mailHelper;
+    private readonly IMailService _mailService;
 
     public AccountService(
-        IAuthenticationContextProvider authenticationContextProvider, 
-        UserManager<Account> userManager)
+        IAuthenticationContextProvider authenticationContextProvider,
+        UserManager<Account> userManager,
+        IMailHelper mailHelper,
+        IMailService mailService)
     {
         _authenticationContextProvider = authenticationContextProvider;
         _userManager = userManager;
+        _mailHelper = mailHelper;
+        _mailService = mailService;
     }
 
     public async Task<IdentityResult> UpdateUserNameAsync(UpdateUserNameDto dto)
@@ -40,14 +46,56 @@ public class AccountService : IAccountService
         return await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
     }
 
-    public Task<IdentityResult> ConfirmEmailAsync()
+    public async Task<bool> SubmitEmailConfirmationAsync(string email)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByEmailAsync(email);
+        
+        if (user is null)
+            return false;
+        
+        var message = await _mailHelper.GetEmailConfirmationMessageAsync(email);
+        _mailService.SendMessageAsync(message);
+
+        return true;
     }
 
-    public Task<IdentityResult> ResetPasswordAsync(UpdatePasswordDto dto)
+    public async Task<bool> SubmitPasswordResetAsync(string email)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByEmailAsync(email);
+        
+        if (user is null)
+            return false;
+        
+        var message = await _mailHelper.GetPasswordResetMessageAsync(email);
+        _mailService.SendMessageAsync(message);
+
+        return true;
+    }
+
+    public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string token, string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        var isSameAsOld = await _userManager.CheckPasswordAsync(user, dto.NewPassword);
+
+        if (isSameAsOld)
+        {
+            return IdentityResult.Failed(
+                new IdentityError
+                {
+                    Code = nameof(IdentityErrorDescriber.DefaultError),
+                    Description = "New password cannot be the same as the old one" 
+                });
+        }
+
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+        return result;
+    }
+
+    public async Task<IdentityResult> ConfirmEmailAsync(string token, string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        return await _userManager.ConfirmEmailAsync(user, token);
     }
 
     private async Task<Account> GetUserFromContext()
@@ -60,5 +108,4 @@ public class AccountService : IAccountService
 
         return user;
     }
-
 }

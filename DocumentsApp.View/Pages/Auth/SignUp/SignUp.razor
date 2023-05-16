@@ -6,9 +6,8 @@
 @using System.Text
 
 @inject UserManager<Account> UserManager
-@inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
-@inject IMailService MailService
+@inject IAccountService AccountService
 
 <PageTitle>DocumentsApp - Sign Up</PageTitle>
 
@@ -150,12 +149,7 @@
             NotificationService.Notify(new SuccessNotification("Success", "Successfully registered an account."));
             NotificationService.Notify(new InfoNotification("Email confirmation", "Confirm your email before you sign in"));
 
-            var user = await UserManager.FindByEmailAsync(_registerAccountDto.Email);
-            var token = Uri.EscapeDataString(await UserManager.GenerateEmailConfirmationTokenAsync(user));
-
-            var html = NavigationManager.ToAbsoluteUri($"/auth/confirmemail?token={token}&email={_registerAccountDto.Email}").ToString();
-            
-            MailService.SendMessageAsync(_registerAccountDto.Email, "Account Confirmation", html);
+            await AccountService.SubmitEmailConfirmationAsync(_registerAccountDto.Email);
         }
         else
         {
