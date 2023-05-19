@@ -3,6 +3,7 @@ using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace DocumentsApp.Data.Services;
@@ -13,17 +14,23 @@ public class AccountService : IAccountService
     private readonly UserManager<Account> _userManager;
     private readonly IMailHelper _mailHelper;
     private readonly IMailService _mailService;
+    private readonly IAesCipher _aesCipher;
+    private readonly IEncryptionKeyService _keyService;
 
     public AccountService(
         IAuthenticationContextProvider authenticationContextProvider,
         UserManager<Account> userManager,
         IMailHelper mailHelper,
-        IMailService mailService)
+        IMailService mailService,
+        IAesCipher aesCipher,
+        IEncryptionKeyService keyService)
     {
         _authenticationContextProvider = authenticationContextProvider;
         _userManager = userManager;
         _mailHelper = mailHelper;
         _mailService = mailService;
+        _aesCipher = aesCipher;
+        _keyService = keyService;
     }
 
     public async Task<IdentityResult> UpdateUserNameAsync(UpdateUserNameDto dto)
@@ -91,9 +98,28 @@ public class AccountService : IAccountService
         return result;
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string token, string email)
+    public async Task<IdentityResult> ConfirmEmailAsync(string encryptedString)
     {
+        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
+        
+        if(encryptedKey is null)
+            return IdentityResult.Failed(
+                new IdentityError
+                {
+                    Code = nameof(IdentityErrorDescriber.DefaultError),
+                    Description = "Invalid operation, try resetting your password again" 
+                });
+            
+        var encrypted = Convert.FromBase64String(encryptedString);
+        var decrypted = _aesCipher.DecryptString(encrypted, encryptedKey.Key, encryptedKey.Vector);
+
+        var email = decrypted.Split('&')[0];
+        var token = decrypted.Split('&')[1];
+
         var user = await _userManager.FindByEmailAsync(email);
+
+        if (user is null)
+            throw new NotFoundException("No user with such id");
 
         return await _userManager.ConfirmEmailAsync(user, token);
     }

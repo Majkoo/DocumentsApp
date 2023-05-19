@@ -12,7 +12,7 @@ public interface IAccountService
     Task<bool> SubmitPasswordResetAsync(string email);
     
     Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string token, string email);
-    Task<IdentityResult> ConfirmEmailAsync(string token, string email);
+    Task<IdentityResult> ConfirmEmailAsync(string encryptedString);
 
 }
 

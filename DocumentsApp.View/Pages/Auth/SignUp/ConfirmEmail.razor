@@ -1,11 +1,8 @@
 @page "/auth/confirmemail"
-@using Microsoft.AspNetCore.Identity
 @using DocumentsApp.Shared.Notifications
 @using System.Text
-@using DocumentsApp.Data.Entities
 
 @inject IAccountService AccountService
-@inject UserManager<Account> UserManager
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
 
@@ -17,16 +14,12 @@
 
 @code {
     [Parameter]
-    [SupplyParameterFromQuery(Name = nameof(Token))]
-    public string? Token { get; set; }
-
-    [Parameter]
-    [SupplyParameterFromQuery(Name = nameof(Email))]
-    public string? Email { get; set; }
-
+    [SupplyParameterFromQuery(Name = nameof(Encrypted))]
+    public string? Encrypted { get; set; }
+    
     private async Task Confirm()
     {
-        var result = await AccountService.ConfirmEmailAsync(Token, Email);
+        var result = await AccountService.ConfirmEmailAsync(Encrypted);
         
         if (result.Succeeded)
         {

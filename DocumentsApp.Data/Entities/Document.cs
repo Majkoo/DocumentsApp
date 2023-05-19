@@ -8,16 +8,11 @@ public class Document
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [Required]
-    [MaxLength(20)]
-    public string Name { get; set; }
+    [Required] [MaxLength(20)] public string Name { get; set; }
 
-    [AllowNull]
-    [MaxLength(255)]
-    public string Description { get; set; }
-    
-    [Required]
-    public string Content { get; set; }
+    [AllowNull] [MaxLength(255)] public string Description { get; set; }
+
+    [Required] public string Content { get; set; }
 
     [Required] public DateTime DateCreated { get; set; } = DateTime.Now;
 
