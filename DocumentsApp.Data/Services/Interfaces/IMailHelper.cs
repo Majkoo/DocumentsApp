@@ -4,6 +4,6 @@ namespace DocumentsApp.Data.Services.Interfaces;
 
 public interface IMailHelper
 {
-    Task<MimeMessage> GetEmailConfirmationMessageAsync(string userEmail);
-    Task<MimeMessage> GetPasswordResetMessageAsync(string userEmail);
+    MimeMessage GetEmailConfirmationMessage(string userEmail, string encryptedCredentials);
+    MimeMessage GetPasswordResetMessage(string userEmail, string encryptedCredentials);
 }

@@ -35,7 +35,7 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> UpdateUserNameAsync(UpdateUserNameDto dto)
     {
-        var user = await GetUserFromContext();
+        var user = await GetUserFromContextAsync();
 
         var passwordCheck = await _userManager.CheckPasswordAsync(user, dto.Password);
         if (!passwordCheck)
@@ -48,7 +48,7 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> UpdatePasswordAsync(UpdatePasswordDto dto)
     {
-        var user = await GetUserFromContext();
+        var user = await GetUserFromContextAsync();
 
         return await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
     }
@@ -56,11 +56,13 @@ public class AccountService : IAccountService
     public async Task<bool> SubmitEmailConfirmationAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        
+
         if (user is null)
             return false;
-        
-        var message = await _mailHelper.GetEmailConfirmationMessageAsync(email);
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encrypted = await EncryptCredentialsAsync(email, token);
+        var message = _mailHelper.GetEmailConfirmationMessage(email, encrypted);
         _mailService.SendMessageAsync(message);
 
         return true;
@@ -69,62 +71,70 @@ public class AccountService : IAccountService
     public async Task<bool> SubmitPasswordResetAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        
+
         if (user is null)
             return false;
-        
-        var message = await _mailHelper.GetPasswordResetMessageAsync(email);
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var encrypted = await EncryptCredentialsAsync(email, token);
+        var message = _mailHelper.GetPasswordResetMessage(email, encrypted);
         _mailService.SendMessageAsync(message);
 
         return true;
     }
 
-    public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string token, string email)
+    public async Task<IdentityResult> ConfirmEmailAsync(string encryptedString)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        var isSameAsOld = await _userManager.CheckPasswordAsync(user, dto.NewPassword);
+        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString);
 
-        if (isSameAsOld)
+        if (decryptedCredentials is null)
+            return IdentityResult.Failed(
+                new IdentityError
+                {
+                    Code = nameof(IdentityErrorDescriber.DefaultError),
+                    Description = "Invalid operation, try resetting your password again"
+                });
+
+        var user = await _userManager.FindByEmailAsync(decryptedCredentials.Email);
+
+        if (user is null)
+            throw new NotFoundException("No user with such id");
+
+        return await _userManager.ConfirmEmailAsync(user, decryptedCredentials.Token);
+    }
+
+    public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString)
+    {
+        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString);
+
+        if (decryptedCredentials is null)
+            return IdentityResult.Failed(
+                new IdentityError
+                {
+                    Code = nameof(IdentityErrorDescriber.DefaultError),
+                    Description = "Invalid operation, try resetting your password again"
+                });
+
+        var user = await _userManager.FindByEmailAsync(decryptedCredentials.Email);
+
+        if (user is null)
+            throw new NotFoundException("No user with such id");
+
+        // check if the new password is same as the old one
+        if (await _userManager.CheckPasswordAsync(user, dto.NewPassword))
         {
             return IdentityResult.Failed(
                 new IdentityError
                 {
                     Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "New password cannot be the same as the old one" 
+                    Description = "New password cannot be the same as the old one"
                 });
         }
 
-        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
-        return result;
+        return await _userManager.ResetPasswordAsync(user, decryptedCredentials.Token, dto.NewPassword);
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string encryptedString)
-    {
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
-        
-        if(encryptedKey is null)
-            return IdentityResult.Failed(
-                new IdentityError
-                {
-                    Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "Invalid operation, try resetting your password again" 
-                });
-            
-        var encrypted = Convert.FromBase64String(encryptedString);
-        var decrypted = _aesCipher.DecryptString(encrypted, encryptedKey.Key, encryptedKey.Vector);
-
-        var email = decrypted.Split('&')[0];
-        var token = decrypted.Split('&')[1];
-
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user is null)
-            throw new NotFoundException("No user with such id");
-
-        return await _userManager.ConfirmEmailAsync(user, token);
-    }
-
-    private async Task<Account> GetUserFromContext()
+    private async Task<Account> GetUserFromContextAsync()
     {
         var userId = await _authenticationContextProvider.GetUserId();
         var user = await _userManager.FindByIdAsync(userId);
@@ -133,5 +143,36 @@ public class AccountService : IAccountService
             throw new NotFoundException("No user found in context");
 
         return user;
+    }
+
+    private async Task<string> EncryptCredentialsAsync(string email, string token)
+    {
+        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
+        var toEncrypt = $"{email}&{token}";
+
+        return Convert.ToBase64String(_aesCipher.EncryptString(toEncrypt, encryptedKey.Key, encryptedKey.Vector));
+    }
+
+    private async Task<DecryptedCredentials> DecryptCredentialsAsync(string encryptedCredentials)
+    {
+        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
+
+        if (encryptedKey is null)
+            return null;
+
+        var encrypted = Convert.FromBase64String(encryptedCredentials);
+        var decrypted = _aesCipher.DecryptString(encrypted, encryptedKey.Key, encryptedKey.Vector);
+
+        return new DecryptedCredentials
+        {
+            Email = decrypted.Split('&')[0],
+            Token = decrypted.Split('&')[1]
+        };
+    }
+
+    private class DecryptedCredentials
+    {
+        public string Email;
+        public string Token;
     }
 }

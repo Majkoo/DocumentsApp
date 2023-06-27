@@ -1,9 +1,6 @@
-using System.Security.Cryptography;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Configurations;
-using DocumentsApp.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -14,38 +11,20 @@ namespace DocumentsApp.Data.Services;
 
 public class MailHelper : IMailHelper
 {
-    private readonly UserManager<Account> _userManager;
     private readonly NavigationManager _navigationManager;
-    private readonly IAesCipher _aesCipher;
-    private readonly IEncryptionKeyService _keyService;
     private readonly MailSettings _settings;
 
     public MailHelper(IOptions<MailSettings> settings, UserManager<Account> userManager,
-        NavigationManager navigationManager, IAesCipher aesCipher, IEncryptionKeyService keyService)
+        NavigationManager navigationManager)
     {
-        _userManager = userManager;
         _navigationManager = navigationManager;
-        _aesCipher = aesCipher;
-        _keyService = keyService;
         _settings = settings.Value;
     }
 
-    public async Task<MimeMessage> GetEmailConfirmationMessageAsync(string userEmail)
+    public MimeMessage GetEmailConfirmationMessage(string userEmail, string encryptedCredentials)
     {
-        //TODO move encryption to AccountService
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
-        var toEncrypt = $"{userEmail}&{token}";
-        
-        if (user is null)
-            throw new NotFoundException("No user with such id");
-        
-        var encrypted =
-            Uri.EscapeDataString(Convert.ToBase64String(_aesCipher.EncryptString(toEncrypt, encryptedKey.Key, encryptedKey.Vector)));
-
         var link = _navigationManager.ToAbsoluteUri(
-            $"/auth/confirmemail?encrypted={encrypted}");
+            $"/auth/confirmemail?encrypted={Uri.EscapeDataString(encryptedCredentials)}");
 
         const string subject = "DocumentsApp Email Confirmation";
         var html =
@@ -68,15 +47,10 @@ public class MailHelper : IMailHelper
         return CreateMessage(userEmail, html, subject);
     }
 
-    public async Task<MimeMessage> GetPasswordResetMessageAsync(string userEmail)
+    public MimeMessage GetPasswordResetMessage(string userEmail, string encryptedCredentials)
     {
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        
-        if (user is null)
-            throw new NotFoundException("No user with such id");
-        
-        var token = Uri.EscapeDataString(await _userManager.GeneratePasswordResetTokenAsync(user));
-        var link = _navigationManager.ToAbsoluteUri($"/auth/resetpassword?token={token}&email={userEmail}");
+        var link = _navigationManager.ToAbsoluteUri(
+            $"/auth/resetpassword?encrypted={Uri.EscapeDataString(encryptedCredentials)}");
 
         const string subject = "DocumentsApp Password Reset";
         var html =
