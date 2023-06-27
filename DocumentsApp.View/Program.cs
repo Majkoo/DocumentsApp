@@ -56,15 +56,14 @@ builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 });
 
 builder.Services.AddIdentity<Account, IdentityRole>(opts =>
-{
-    opts.Password.RequiredLength = 8;
-    opts.User.RequireUniqueEmail = true;
+    {
+        opts.Password.RequiredLength = 8;
+        opts.User.RequireUniqueEmail = true;
 
-    opts.SignIn.RequireConfirmedEmail = true;
-    opts.SignIn.RequireConfirmedAccount = false;
-    opts.SignIn.RequireConfirmedPhoneNumber = false;
-
-})
+        opts.SignIn.RequireConfirmedEmail = true;
+        opts.SignIn.RequireConfirmedAccount = false;
+        opts.SignIn.RequireConfirmedPhoneNumber = false;
+    })
     .AddEntityFrameworkStores<DocumentsAppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -89,6 +88,9 @@ builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator
 builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
+builder.Services.AddScoped<IEncryptionKeyRepo, EncryptionKeyRepo>();
+
+builder.Services.Configure<EncryptionKeySettings>(builder.Configuration.GetSection(nameof(EncryptionKeySettings)));
 
 #endregion
 
@@ -97,6 +99,7 @@ builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IShareDocumentService, ShareDocumentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IEncryptionKeyService, EncryptionKeyService>();
 
 #endregion
 
@@ -105,6 +108,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddScoped<IAesCipher, AesCipher>();
+
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
 #endregion
@@ -116,10 +121,7 @@ builder.Services.AddScoped<DocumentsAppDbSeeder>();
 builder.Services.AddScoped<AccessLevelResolver>();
 builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
 builder.Services.AddScoped<IsModifiableResolver>();
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<DtoMappingProfile>();
-});
+builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<DtoMappingProfile>(); });
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
@@ -165,5 +167,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-

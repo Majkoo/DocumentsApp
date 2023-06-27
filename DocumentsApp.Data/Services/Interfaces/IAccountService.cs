@@ -10,9 +10,8 @@ public interface IAccountService
 
     Task<bool> SubmitEmailConfirmationAsync(string email);
     Task<bool> SubmitPasswordResetAsync(string email);
-    
-    Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string token, string email);
-    Task<IdentityResult> ConfirmEmailAsync(string token, string email);
+    Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString);
+    Task<IdentityResult> ConfirmEmailAsync(string encryptedString);
 
 }
 

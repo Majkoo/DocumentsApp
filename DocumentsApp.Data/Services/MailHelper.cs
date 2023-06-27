@@ -11,23 +11,20 @@ namespace DocumentsApp.Data.Services;
 
 public class MailHelper : IMailHelper
 {
-    private readonly UserManager<Account> _userManager;
     private readonly NavigationManager _navigationManager;
     private readonly MailSettings _settings;
-    
+
     public MailHelper(IOptions<MailSettings> settings, UserManager<Account> userManager,
         NavigationManager navigationManager)
     {
-        _userManager = userManager;
         _navigationManager = navigationManager;
         _settings = settings.Value;
     }
 
-    public async Task<MimeMessage> GetEmailConfirmationMessageAsync(string userEmail)
+    public MimeMessage GetEmailConfirmationMessage(string userEmail, string encryptedCredentials)
     {
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        var token = Uri.EscapeDataString(await _userManager.GenerateEmailConfirmationTokenAsync(user));
-        var link = _navigationManager.ToAbsoluteUri($"/auth/confirmemail?token={token}&email={userEmail}");
+        var link = _navigationManager.ToAbsoluteUri(
+            $"/auth/confirmemail?encrypted={Uri.EscapeDataString(encryptedCredentials)}");
 
         const string subject = "DocumentsApp Email Confirmation";
         var html =
@@ -50,11 +47,10 @@ public class MailHelper : IMailHelper
         return CreateMessage(userEmail, html, subject);
     }
 
-    public async Task<MimeMessage> GetPasswordResetMessageAsync(string userEmail)
+    public MimeMessage GetPasswordResetMessage(string userEmail, string encryptedCredentials)
     {
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        var token = Uri.EscapeDataString(await _userManager.GeneratePasswordResetTokenAsync(user));
-        var link = _navigationManager.ToAbsoluteUri($"/auth/resetpassword?token={token}&email={userEmail}");
+        var link = _navigationManager.ToAbsoluteUri(
+            $"/auth/resetpassword?encrypted={Uri.EscapeDataString(encryptedCredentials)}");
 
         const string subject = "DocumentsApp Password Reset";
         var html =
