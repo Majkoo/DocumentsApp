@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
@@ -61,7 +62,7 @@ public class AccountService : IAccountService
             return false;
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encrypted = await EncryptCredentialsAsync(email, token);
+        var encrypted = await EncryptCredentialsAsync(email, token, EncryptionKeyTypeEnum.EmailConfirmation);
         var message = _mailHelper.GetEmailConfirmationMessage(email, encrypted);
         _mailService.SendMessageAsync(message);
 
@@ -76,7 +77,7 @@ public class AccountService : IAccountService
             return false;
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var encrypted = await EncryptCredentialsAsync(email, token);
+        var encrypted = await EncryptCredentialsAsync(email, token, EncryptionKeyTypeEnum.PasswordReset);
         var message = _mailHelper.GetPasswordResetMessage(email, encrypted);
         _mailService.SendMessageAsync(message);
 
@@ -85,14 +86,15 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> ConfirmEmailAsync(string encryptedString)
     {
-        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString);
+        var decryptedCredentials =
+            await DecryptCredentialsAsync(encryptedString, EncryptionKeyTypeEnum.EmailConfirmation);
 
         if (decryptedCredentials is null)
             return IdentityResult.Failed(
                 new IdentityError
                 {
                     Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "Invalid operation, try resetting your password again"
+                    Description = "Invalid operation, try confirming your email again"
                 });
 
         var user = await _userManager.FindByEmailAsync(decryptedCredentials.Email);
@@ -105,7 +107,7 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString)
     {
-        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString);
+        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString, EncryptionKeyTypeEnum.PasswordReset);
 
         if (decryptedCredentials is null)
             return IdentityResult.Failed(
@@ -145,32 +147,38 @@ public class AccountService : IAccountService
         return user;
     }
 
-    private async Task<string> EncryptCredentialsAsync(string email, string token)
+    private async Task<string> EncryptCredentialsAsync(string email, string token, EncryptionKeyTypeEnum keyType)
     {
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
+        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(keyType);
         var toEncrypt = $"{email}&{token}";
 
         return Convert.ToBase64String(_aesCipher.EncryptString(toEncrypt, encryptedKey.Key, encryptedKey.Vector));
     }
 
-    private async Task<DecryptedCredentials> DecryptCredentialsAsync(string encryptedCredentials)
+    private async Task<EncryptionCredentials> DecryptCredentialsAsync(string encryptedCredentials,
+        EncryptionKeyTypeEnum keyType)
     {
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
-
-        if (encryptedKey is null)
+        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(keyType);
+        string decrypted;
+        
+        try
+        {
+            decrypted = _aesCipher.DecryptString(Convert.FromBase64String(encryptedCredentials), encryptedKey.Key,
+                encryptedKey.Vector);
+        }
+        catch(CryptographicException e)
+        {
             return null;
-
-        var encrypted = Convert.FromBase64String(encryptedCredentials);
-        var decrypted = _aesCipher.DecryptString(encrypted, encryptedKey.Key, encryptedKey.Vector);
-
-        return new DecryptedCredentials
+        }
+        
+        return new EncryptionCredentials
         {
             Email = decrypted.Split('&')[0],
             Token = decrypted.Split('&')[1]
         };
     }
 
-    private class DecryptedCredentials
+    private class EncryptionCredentials
     {
         public string Email;
         public string Token;

@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Configurations;
@@ -25,16 +24,13 @@ public class EncryptionKeyService : IEncryptionKeyService
         var key =
             (await _keyRepo.GetUserEncryptedKeysAsync()).SingleOrDefault(e => e.EncryptionKeyType == keyType);
 
+        // TODO add event scheduler
         if (key is null)
             return await CreateEncryptionKeyByType(keyType, false);
 
-        if (key.DateExpired > DateTime.Now) 
-            return key;
-        
-        await CreateEncryptionKeyByType(keyType, true);
-        
-        //indicate that new key was created, as expiration might take place after submit
-        return null;
+        if(key.DateExpired < DateTime.Now)
+            return await CreateEncryptionKeyByType(keyType, true);
+        return key;
     }
 
     private async Task<EncryptionKey> CreateEncryptionKeyByType(EncryptionKeyTypeEnum keyType, bool isRecreated)
