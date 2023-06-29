@@ -123,6 +123,8 @@ builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
 builder.Services.AddScoped<IsModifiableResolver>();
 builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<DtoMappingProfile>(); });
 
+builder.Services.AddHostedService<EncryptionKeyGenerator>();
+
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 builder.Services.AddHttpContextAccessor();
