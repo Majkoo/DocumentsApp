@@ -8,7 +8,10 @@ public interface IAccountService
     Task<IdentityResult> UpdateUserNameAsync(UpdateUserNameDto dto);
     Task<IdentityResult> UpdatePasswordAsync(UpdatePasswordDto dto);
 
-    Task<IdentityResult> ConfirmEmailAsync();
-    Task<IdentityResult> ResetPasswordAsync(UpdatePasswordDto dto);
+    Task<bool> SubmitEmailConfirmationAsync(string email);
+    Task<bool> SubmitPasswordResetAsync(string email);
+    Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString);
+    Task<IdentityResult> ConfirmEmailAsync(string encryptedString);
+
 }
 

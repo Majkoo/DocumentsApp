@@ -1,0 +1,40 @@
+@page "/auth/confirmemail"
+@using DocumentsApp.Shared.Notifications
+@using System.Text
+
+@inject IAccountService AccountService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+<div class="w-100 text-center d-flex justify-content-center align-items-center my-4">
+    <div class="w-100">
+        <RadzenButton Click="Confirm" ButtonStyle="ButtonStyle.Primary" Text="Confirm your email"></RadzenButton>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = nameof(Encrypted))]
+    public string? Encrypted { get; set; }
+    
+    private async Task Confirm()
+    {
+        var result = await AccountService.ConfirmEmailAsync(Encrypted);
+        
+        if (result.Succeeded)
+        {
+            NotificationService.Notify(new SuccessNotification("Success", "Successfully confirmed your email"));
+            NavigationManager.NavigateTo("/auth/signin");
+        }
+        else
+        {
+            var sb = new StringBuilder();
+
+            foreach (var identityError in result.Errors)
+            {
+                sb.Append($"{identityError.Description}\n");
+            }
+            NotificationService.Notify(new ErrorNotification("Could not confirm email", sb.ToString()));
+        }
+    }
+}

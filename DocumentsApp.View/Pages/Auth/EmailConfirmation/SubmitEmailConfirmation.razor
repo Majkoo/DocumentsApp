@@ -1,0 +1,69 @@
+﻿@page "/auth/submitemailconfirmation"
+@using DocumentsApp.Shared.Notifications
+
+@inject IAccountService AccountService
+@inject NotificationService NotificationService
+
+<div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
+
+    <RadzenTemplateForm
+        TItem="string"
+        Data="@_email"
+        Style="width: 100%; max-width: 450px"
+        Submit="() => OnSubmit(_email)">
+
+        <RadzenFieldset>
+
+            <h2 class="text-center mt-2 mb-4">
+                <strong>Send account confirmation email</strong>
+            </h2>
+
+            <div class="mb-4">
+
+                <RadzenTextBox
+                    Placeholder="Enter email..."
+                    Name="Email"
+                    Style="display: block"
+                    @bind-Value="@_email"/>
+
+                <RadzenRequiredValidator
+                    Component="Email"
+                    Text="Email is required"
+                    Popup="@true"
+                    Style="position: absolute"/>
+
+                <RadzenEmailValidator
+                    Component="Email"
+                    Text="Provide a valid email address"
+                    Popup="@true"
+                    Style="position: absolute"/>
+            </div>
+
+            <div class="w-100 text-end">
+                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Submit"></RadzenButton>
+            </div>
+
+        </RadzenFieldset>
+ 
+    </RadzenTemplateForm>
+
+</div>
+
+
+@code {
+
+    private string _email;
+
+    private async Task OnSubmit(string email)
+    {
+        var result = await AccountService.SubmitEmailConfirmationAsync(email);
+        
+        if(result is false)
+            NotificationService.Notify(new ErrorNotification("Email", "No user with such email"));
+        else
+        {
+            
+            NotificationService.Notify(new InfoNotification("Email", "Confirmation email sent"));    
+        }
+    }
+}
