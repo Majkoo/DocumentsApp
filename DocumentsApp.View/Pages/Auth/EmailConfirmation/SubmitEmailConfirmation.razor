@@ -1,5 +1,6 @@
 ﻿@page "/auth/submitemailconfirmation"
 @using DocumentsApp.Shared.Notifications
+@using DocumentsApp.Shared.Dtos.AccountDtos
 
 @inject IAccountService AccountService
 @inject NotificationService NotificationService
@@ -7,10 +8,10 @@
 <div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
 
     <RadzenTemplateForm
-        TItem="string"
-        Data="@_email"
+        TItem="SubmitEmailDto"
+        Data="@_emailDto"
         Style="width: 100%; max-width: 450px"
-        Submit="() => OnSubmit(_email)">
+        Submit="() => OnSubmit(_emailDto)">
 
         <RadzenFieldset>
 
@@ -24,7 +25,7 @@
                     Placeholder="Enter email..."
                     Name="Email"
                     Style="display: block"
-                    @bind-Value="@_email"/>
+                    @bind-Value="@_emailDto.Email"/>
 
                 <RadzenRequiredValidator
                     Component="Email"
@@ -52,11 +53,11 @@
 
 @code {
 
-    private string _email;
+    private SubmitEmailDto _emailDto = new();
 
-    private async Task OnSubmit(string email)
+    private async Task OnSubmit(SubmitEmailDto emailDto)
     {
-        var result = await AccountService.SubmitEmailConfirmationAsync(email);
+        var result = await AccountService.SubmitEmailConfirmationAsync(emailDto.Email);
         
         if(result is false)
             NotificationService.Notify(new ErrorNotification("Email", "No user with such email"));

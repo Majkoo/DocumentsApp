@@ -102,7 +102,21 @@ public class AccountService : IAccountService
         if (user is null)
             throw new NotFoundException("No user with such id");
 
-        return await _userManager.ConfirmEmailAsync(user, decryptedCredentials.Token);
+        if (user.EmailConfirmed)
+            return IdentityResult.Failed(
+                new IdentityError()
+                {
+                    Code = nameof(IdentityErrorDescriber.DefaultError),
+                    Description = "Invalid operation, your email is already confirmed"
+                });
+
+        var emailResult = await _userManager.ConfirmEmailAsync(user, decryptedCredentials.Token);
+
+        if (emailResult != IdentityResult.Success)
+            return emailResult;
+
+        user.LockoutEnabled = false;
+        return await _userManager.UpdateAsync(user);
     }
 
     public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString)
@@ -160,17 +174,17 @@ public class AccountService : IAccountService
     {
         var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(keyType);
         string decrypted;
-        
+
         try
         {
             decrypted = _aesCipher.DecryptString(Convert.FromBase64String(encryptedCredentials), encryptedKey.Key,
                 encryptedKey.Vector);
         }
-        catch(CryptographicException e)
+        catch (CryptographicException e)
         {
             return null;
         }
-        
+
         return new EncryptionCredentials
         {
             Email = decrypted.Split('&')[0],
