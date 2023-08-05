@@ -5,6 +5,7 @@ using DocumentsApp.Api.Model;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos;
+using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -16,20 +17,20 @@ public class AuthHelper : IAuthHelper
 {
     private readonly SignInManager<Account> _signInManager;
     private readonly UserManager<Account> _userManager;
-    private readonly AccountRepo _accountRepo;
+    private readonly IAccountRepo _accountRepo;
     private readonly JwtConfig _jwtConfig;
 
     public AuthHelper(
         SignInManager<Account> signInManager,
         UserManager<Account> userManager,
-        AccountRepo accountRepo,
-        IOptions<JwtConfig> jwtConfig
-    )
+        IAccountRepo accountRepo,
+        JwtConfig options
+        )
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _accountRepo = accountRepo;
-        _jwtConfig = jwtConfig.Value;
+        _jwtConfig = options;
     }
     
     public async Task<JwtDataDto> SignIn(LoginDto loginDto)
@@ -87,19 +88,14 @@ public class AuthHelper : IAuthHelper
     
     public async Task<JwtDataDto> SignUp(RegisterDto registerDto)
         {
-            // Check if the user with the given email or username already exists.
-            var existingUser = await _accountRepo.GetAccountByEmailAsync(registerDto.Email);
-            if (existingUser != null)
-            {
-                throw new BadRequestException("User with this email already exists.");
-            }
-
             // Create a new user account.
             var newUser = new Account
             {
                 UserName = registerDto.UserName,
-                Email = registerDto.Email
+                Email = registerDto.Email,
             };
+
+            newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
             
             var createResult = await _userManager.CreateAsync(newUser);
             if (createResult.Errors.Any()) throw new BadRequestException(createResult.Errors.First().Description);
@@ -118,7 +114,7 @@ public class AuthHelper : IAuthHelper
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+            var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

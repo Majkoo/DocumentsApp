@@ -7,12 +7,10 @@ namespace DocumentsApp.Data.Repos;
 public class AccountRepo : IAccountRepo
 {
     private readonly DocumentsAppDbContext _dbContext;
-    private readonly IAccessLevelRepo _accessLevelRepo;
 
-    public AccountRepo(DocumentsAppDbContext dbContext, IAccessLevelRepo accessLevelRepo)
+    public AccountRepo(DocumentsAppDbContext dbContext)
     {
         _dbContext = dbContext;
-        _accessLevelRepo = accessLevelRepo;
     }
 
     public async Task<IEnumerable<Account>> GetAllAccountsAsync()

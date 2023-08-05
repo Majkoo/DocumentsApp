@@ -38,18 +38,30 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
       <_ContentIncludedByDefault Remove="Shared\Documents\AddNewDocumentCard\AddNewDocumentCard.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="wwwroot\css\site.scss" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Shared\Documents\Dialogs\Create\CreateDocument.razor" />
-      <AdditionalFiles Include="Shared\Documents\Dialogs\Delete\DeleteDocument.razor" />
-      <AdditionalFiles Include="Shared\Documents\Dialogs\Edit\EditDocument.razor" />
-      <AdditionalFiles Include="Shared\Documents\Dialogs\Share\ShareDocument.razor" />
-      <AdditionalFiles Include="Shared\Documents\Dialogs\View\ViewDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\AddNewDocumentCard.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\Dialogs\Create\CreateDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\Dialogs\Delete\DeleteDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\Dialogs\Edit\EditDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\Dialogs\Share\ShareDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\Dialogs\View\ViewDocument.razor" />
+      <_ContentIncludedByDefault Remove="Shared\Documents\DocumentCard.razor" />
+      <_ContentIncludedByDefault Remove="Shared\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Shared\NavMenu.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Error.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\_Host.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\EmailConfirmation\ConfirmEmail.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\EmailConfirmation\SubmitEmailConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\PasswordReset\ResetPassword.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\PasswordReset\SubmitPasswordReset.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\SignIn\SignIn.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\SignOut\SignOut.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Auth\SignUp\SignUp.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Documents\MyDocuments.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Documents\SharedDocuments\SharedDocuments.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Index.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.css.map" />
     </ItemGroup>
 
 </Project>
