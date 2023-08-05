@@ -108,14 +108,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
         };
     });
-var signInConfig = new AuthConfig();
-builder.Configuration.GetSection("SignInConfig").Bind(signInConfig);
-builder.Services.AddSingleton(signInConfig);
+var authConfig = new AuthConfig();
+builder.Configuration.GetSection("SignInConfig").Bind(authConfig);
+builder.Services.AddSingleton(authConfig);
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = signInConfig.RequireConfirmedAccount;
-    options.SignIn.RequireConfirmedPhoneNumber = signInConfig.RequireConfirmedPhoneNumber;
-    options.SignIn.RequireConfirmedEmail = signInConfig.RequireConfirmedEmail;
+    options.Lockout.AllowedForNewUsers = authConfig.LockOutEnabledOnSignUp;
+    options.SignIn.RequireConfirmedAccount = authConfig.RequireConfirmedAccount;
+    options.SignIn.RequireConfirmedPhoneNumber = authConfig.RequireConfirmedPhoneNumber;
+    options.SignIn.RequireConfirmedEmail = authConfig.RequireConfirmedEmail;
 });
 
 builder.Services.AddAuthorization();

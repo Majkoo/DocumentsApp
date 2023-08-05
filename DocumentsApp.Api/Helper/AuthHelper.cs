@@ -17,21 +17,18 @@ public class AuthHelper : IAuthHelper
     private readonly UserManager<Account> _userManager;
     private readonly IAccountRepo _accountRepo;
     private readonly JwtConfig _jwtConfig;
-    private readonly AuthConfig _authConfig;
 
     public AuthHelper(
         SignInManager<Account> signInManager,
         UserManager<Account> userManager,
         IAccountRepo accountRepo,
-        JwtConfig jwtConfig,
-        AuthConfig authConfig
+        JwtConfig jwtConfig
         )
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _accountRepo = accountRepo;
         _jwtConfig = jwtConfig;
-        _authConfig = authConfig;
     }
     
     public async Task<JwtDataDto> SignIn(LoginDto loginDto)
@@ -59,7 +56,6 @@ public class AuthHelper : IAuthHelper
             {
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
-                LockoutEnabled = _authConfig.LockOutEnabledOnSignUp
             };
 
             newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
