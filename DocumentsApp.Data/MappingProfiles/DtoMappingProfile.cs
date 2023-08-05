@@ -2,6 +2,7 @@
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles.ValueResolvers;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 
 namespace DocumentsApp.Data.MappingProfiles;
@@ -10,7 +11,7 @@ public class DtoMappingProfile : Profile
 {
     public DtoMappingProfile()
     {
-        CreateMap<RegisterAccountDto, Account>();
+        CreateMap<RegisterDto, Account>();
 
         CreateMap<Document, GetDocumentDto>()
             .ForMember(dest => dest.Description,

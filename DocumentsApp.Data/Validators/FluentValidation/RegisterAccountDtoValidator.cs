@@ -1,12 +1,13 @@
 ﻿using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Auth;
 using FluentValidation;
 using Sieve.Extensions;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
 
-public class RegisterAccountDtoValidator : AbstractValidator<RegisterAccountDto>
+public class RegisterAccountDtoValidator : AbstractValidator<RegisterDto>
 {
     public RegisterAccountDtoValidator(IAccountRepo accountRepo)
     {

@@ -4,6 +4,7 @@
 @using DocumentsApp.Data.Entities
 @using DocumentsApp.Data.Auth
 @using DocumentsApp.Data.Repos.Interfaces
+@using DocumentsApp.Shared.Dtos.Auth
 @using DocumentsApp.Shared.Notifications
 
 @inject IAccountRepo AccountRepo
@@ -17,10 +18,10 @@
 <div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
 
     <RadzenTemplateForm
-        TItem="LoginAccountDto"
-        Data="@_loginAccountDto"
+        TItem="LoginDto"
+        Data="@_loginDto"
         Style="width: 100%; max-width: 450px"
-        Submit="() => OnSubmit(_loginAccountDto)">
+        Submit="() => OnSubmit(_loginDto)">
 
         <RadzenFieldset>
 
@@ -36,7 +37,7 @@
                     Placeholder="Enter email or username..."
                     Name="Email/Username"
                     Style="display: block"
-                    @bind-Value="@_loginAccountDto.Email"/>
+                    @bind-Value="@_loginDto.Email"/>
 
                 <RadzenRequiredValidator
                     Component="Email/Username"
@@ -54,7 +55,7 @@
                     Placeholder="Enter password..."
                     Name="Password"
                     Style="display: block"
-                    @bind-Value="@_loginAccountDto.Password"/>
+                    @bind-Value="@_loginDto.Password"/>
 
                 <RadzenRequiredValidator
                     Component="Password"
@@ -94,9 +95,9 @@
 
 @code {
 
-    private readonly LoginAccountDto _loginAccountDto = new LoginAccountDto();
+    private readonly LoginDto _loginDto = new LoginDto();
 
-    private async Task OnSubmit(LoginAccountDto loginDto)
+    private async Task OnSubmit(LoginDto loginDto)
     {
         // implement better error handling
         var userAccount = await AccountRepo.GetAccountByEmailAsync(loginDto.Email) ??

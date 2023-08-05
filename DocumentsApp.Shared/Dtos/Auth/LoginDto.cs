@@ -1,6 +1,6 @@
-﻿namespace DocumentsApp.Shared.Dtos.AccountDtos;
+﻿namespace DocumentsApp.Shared.Dtos.Auth;
 
-public class LoginAccountDto
+public class LoginDto
 {
     public string Email { get; set; }
     public string Password { get; set; }

@@ -34,7 +34,7 @@ public class EncryptionKeyGenerator : BackgroundService
         {
             var passwordResetKey = await keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.PasswordReset);
             var emailConfirmationKey = await keyService.GetEncryptionKeyByTypeAsync(EncryptionKeyTypeEnum.EmailConfirmation);
-            
+        
             if (passwordResetKey.DateExpired < DateTime.Now)
                 await CreateEncryptionKeyByType(EncryptionKeyTypeEnum.PasswordReset);
 

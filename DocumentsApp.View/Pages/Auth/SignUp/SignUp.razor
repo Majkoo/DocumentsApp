@@ -4,6 +4,7 @@
 @using DocumentsApp.Shared.Dtos.AccountDtos
 @using DocumentsApp.Shared.Notifications
 @using System.Text
+@using DocumentsApp.Shared.Dtos.Auth
 
 @inject UserManager<Account> UserManager
 @inject NotificationService NotificationService
@@ -14,10 +15,10 @@
 <div class="w-100 text-left d-flex justify-content-center align-items-center my-4">
 
     <RadzenTemplateForm
-        TItem="RegisterAccountDto"
-        Data="@_registerAccountDto"
+        TItem="RegisterDto"
+        Data="@_registerDto"
         Style="width: 100%; max-width: 450px"
-        Submit="() => OnSubmit(_registerAccountDto)">
+        Submit="() => OnSubmit(_registerDto)">
 
         <RadzenFieldset>
 
@@ -33,7 +34,7 @@
                     Placeholder="Enter Username..."
                     Name="Username"
                     Style="display: block"
-                    @bind-Value="@_registerAccountDto.UserName"/>
+                    @bind-Value="@_registerDto.UserName"/>
 
                 <RadzenRequiredValidator
                     Component="Username"
@@ -51,7 +52,7 @@
                     Placeholder="Enter email..."
                     Name="Email"
                     Style="display: block"
-                    @bind-Value="@_registerAccountDto.Email"/>
+                    @bind-Value="@_registerDto.Email"/>
 
                 <RadzenRequiredValidator
                     Component="Email"
@@ -75,7 +76,7 @@
                     Placeholder="Enter password..."
                     Name="Password"
                     Style="display: block"
-                    @bind-Value="@_registerAccountDto.Password"/>
+                    @bind-Value="@_registerDto.Password"/>
 
                 <RadzenRequiredValidator
                     Component="Password"
@@ -94,7 +95,7 @@
                     Placeholder="Confirm password..."
                     Name="ConfirmPassword"
                     Style="display: block"
-                    @bind-Value="@_registerAccountDto.ConfirmPassword"/>
+                    @bind-Value="@_registerDto.ConfirmPassword"/>
 
                 <RadzenRequiredValidator
                     Component="ConfirmPassword"
@@ -103,8 +104,8 @@
                     Style="position: absolute"/>
 
                 <RadzenCompareValidator
-                    Visible="@(!string.IsNullOrEmpty(_registerAccountDto.ConfirmPassword))"
-                    Value="@_registerAccountDto.Password"
+                    Visible="@(!string.IsNullOrEmpty(_registerDto.ConfirmPassword))"
+                    Value="@_registerDto.Password"
                     Component="ConfirmPassword"
                     Text="Passwords should be the same"
                     Popup="@true"
@@ -132,24 +133,24 @@
 
 @code {
 
-    readonly RegisterAccountDto _registerAccountDto = new();
+    readonly RegisterDto _registerDto = new();
 
-    private async Task OnSubmit(RegisterAccountDto registerDto)
+    private async Task OnSubmit(RegisterDto registerDto)
     {
         var newAccount = new Account
         {
-            UserName = _registerAccountDto.UserName,
-            Email = _registerAccountDto.Email
+            UserName = _registerDto.UserName,
+            Email = _registerDto.Email
         };
 
-        var result = await UserManager.CreateAsync(newAccount, _registerAccountDto.Password);
+        var result = await UserManager.CreateAsync(newAccount, _registerDto.Password);
 
         if (result.Succeeded)
         {
             NotificationService.Notify(new SuccessNotification("Success", "Successfully registered an account."));
             NotificationService.Notify(new InfoNotification("Email confirmation", "Confirm your email before you sign in"));
 
-            await AccountService.SubmitEmailConfirmationAsync(_registerAccountDto.Email);
+            await AccountService.SubmitEmailConfirmationAsync(_registerDto.Email);
         }
         else
         {

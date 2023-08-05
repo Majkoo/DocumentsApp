@@ -1,9 +1,10 @@
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Auth;
 using FluentValidation;
 
 namespace DocumentsApp.Data.Validators.FluentValidation;
 
-public class LoginAccountDtoValidator : AbstractValidator<LoginAccountDto>
+public class LoginAccountDtoValidator : AbstractValidator<LoginDto>
 {
     public LoginAccountDtoValidator()
     {

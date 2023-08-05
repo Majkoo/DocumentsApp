@@ -12,6 +12,7 @@ using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
 using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -77,9 +78,9 @@ builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 
 #region Validators
 
-builder.Services.AddScoped<IValidator<RegisterAccountDto>, RegisterAccountDtoValidator>();
+builder.Services.AddScoped<IValidator<RegisterDto>, RegisterAccountDtoValidator>();
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
-builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator>();
+builder.Services.AddScoped<IValidator<LoginDto>, LoginAccountDtoValidator>();
 
 #endregion
 
@@ -139,6 +140,7 @@ builder.Services.AddControllers();
 builder.Services.AddAuthenticationCore();
 
 #endregion
+
 
 var app = builder.Build();
 

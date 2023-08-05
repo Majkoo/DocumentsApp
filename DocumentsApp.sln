@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsApp.Shared", "Docu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsApp.Tests", "DocumentsApp.Tests\DocumentsApp.Tests.csproj", "{25EAE76D-D491-41F4-B63B-AB178A75AF1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsApp.Api", "DocumentsApp.Api\DocumentsApp.Api.csproj", "{3631C511-8157-4F5B-A908-16EF3D9A9B25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{25EAE76D-D491-41F4-B63B-AB178A75AF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25EAE76D-D491-41F4-B63B-AB178A75AF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25EAE76D-D491-41F4-B63B-AB178A75AF1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3631C511-8157-4F5B-A908-16EF3D9A9B25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3631C511-8157-4F5B-A908-16EF3D9A9B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3631C511-8157-4F5B-A908-16EF3D9A9B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3631C511-8157-4F5B-A908-16EF3D9A9B25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
