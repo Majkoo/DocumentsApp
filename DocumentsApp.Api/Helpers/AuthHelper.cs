@@ -60,26 +60,26 @@ public class AuthHelper : IAuthHelper
         return await GenerateJwtData(acc);
     }
     public async Task<bool> SignUp(RegisterDto registerDto)
+    {
+        var newUser = new Account
         {
-            var newUser = new Account
-            {
-                UserName = registerDto.UserName,
-                Email = registerDto.Email,
-            };
+            UserName = registerDto.UserName,
+            Email = registerDto.Email,
+        };
 
-            newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
-            
-            var createResult = await _userManager.CreateAsync(newUser);
-            if (createResult.Errors.Any()) throw new BadRequestException(createResult.Errors.First().Description);
-            
-            if (!createResult.Succeeded)
-            {
-                throw new BadRequestException("Failed to create user account.");
-            }
-
-            return createResult.Succeeded;
-
+        newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
+        
+        var createResult = await _userManager.CreateAsync(newUser);
+        if (createResult.Errors.Any()) throw new BadRequestException(createResult.Errors.First().Description);
+        
+        if (!createResult.Succeeded)
+        {
+            throw new BadRequestException("Failed to create user account.");
         }
+
+        return createResult.Succeeded;
+
+    }
 
     
     #region Private methods
