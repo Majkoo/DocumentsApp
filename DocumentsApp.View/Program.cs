@@ -2,6 +2,7 @@ using DocumentsApp.Data.Auth;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.MappingProfiles;
+using DocumentsApp.Data.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.MiddleWare;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
@@ -9,6 +10,7 @@ using DocumentsApp.Data.Services;
 using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Data.Sieve;
 using DocumentsApp.Data.Validators.FluentValidation;
+using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using FluentValidation;
@@ -54,15 +56,14 @@ builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 });
 
 builder.Services.AddIdentity<Account, IdentityRole>(opts =>
-{
-    opts.Password.RequiredLength = 8;
-    opts.User.RequireUniqueEmail = true;
+    {
+        opts.Password.RequiredLength = 8;
+        opts.User.RequireUniqueEmail = true;
 
-    opts.SignIn.RequireConfirmedEmail = false;
-    opts.SignIn.RequireConfirmedAccount = false;
-    opts.SignIn.RequireConfirmedPhoneNumber = false;
-
-})
+        opts.SignIn.RequireConfirmedEmail = true;
+        opts.SignIn.RequireConfirmedAccount = false;
+        opts.SignIn.RequireConfirmedPhoneNumber = false;
+    })
     .AddEntityFrameworkStores<DocumentsAppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -87,28 +88,42 @@ builder.Services.AddScoped<IValidator<LoginAccountDto>, LoginAccountDtoValidator
 builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
+builder.Services.AddScoped<IEncryptionKeyRepo, EncryptionKeyRepo>();
+
+builder.Services.Configure<EncryptionKeySettings>(builder.Configuration.GetSection(nameof(EncryptionKeySettings)));
 
 #endregion
 
 #region Business Logic Services
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IShareDocumentService, ShareDocumentService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IEncryptionKeyService, EncryptionKeyService>();
 
 #endregion
 
 #region Helper Services
 
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddScoped<IAesCipher, AesCipher>();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
 #endregion
 
 #region Other Services
 
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<DtoMappingProfile>();
-});
+
+builder.Services.AddScoped<AccessLevelResolver>();
+builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
+builder.Services.AddScoped<IsModifiableResolver>();
+builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<DtoMappingProfile>(); });
+
+builder.Services.AddHostedService<EncryptionKeyGenerator>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
@@ -124,7 +139,6 @@ builder.Services.AddControllers();
 builder.Services.AddAuthenticationCore();
 
 #endregion
-
 
 var app = builder.Build();
 
@@ -155,5 +169,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-

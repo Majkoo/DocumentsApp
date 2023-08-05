@@ -17,6 +17,7 @@ public class DocumentRepo : IDocumentRepo
     {
         return _dbContext.Documents
             .Include(d => d.Account)
+            .Include(d => d.AccessLevels)
             .Where(d => d.AccountId == accountId)
             .OrderByDescending(d => d.DateCreated)
             .AsQueryable();
@@ -26,11 +27,12 @@ public class DocumentRepo : IDocumentRepo
     {
         return await _dbContext.Documents
             .Include(d => d.Account)
+            .Include(d => d.AccessLevels)
             .Where(d => d.AccountId == accountId)
             .OrderByDescending(d => d.DateCreated)
             .ToListAsync();
     }
-    
+
     public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
     {
         var accessLevels = _dbContext.DocumentAccessLevels
@@ -47,14 +49,14 @@ public class DocumentRepo : IDocumentRepo
     {
         return await _dbContext
             .Documents
-            .SingleOrDefaultAsync(d=>d.Id == id);
+            .SingleOrDefaultAsync(d => d.Id == id);
     }
 
     public async Task<Document> InsertDocumentAsync(Document document)
     {
         await _dbContext.Documents.AddAsync(document);
         await _dbContext.SaveChangesAsync();
-        
+
         return await _dbContext.Documents
             .SingleOrDefaultAsync(d => d.Id == document.Id);
     }
@@ -63,7 +65,7 @@ public class DocumentRepo : IDocumentRepo
     {
         _dbContext.Documents.Update(document);
         await _dbContext.SaveChangesAsync();
-        
+
         return await _dbContext.Documents
             .SingleOrDefaultAsync(d => d.Id == document.Id);
     }
@@ -73,5 +75,4 @@ public class DocumentRepo : IDocumentRepo
         _dbContext.Documents.Remove(document);
         return await _dbContext.SaveChangesAsync() > 0;
     }
-
 }

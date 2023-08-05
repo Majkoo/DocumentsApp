@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using DocumentsApp.Shared.Enums;
 
 namespace DocumentsApp.Shared.Dtos.DocumentDtos;
 
@@ -14,4 +15,9 @@ public class GetDocumentDto
     public DateTime DateCreated { get; set; }
 
     public string AccountName { get; set; }
+
+    public AccessLevelEnum? AccessLevel { get; set; }
+
+    public bool isCurrentUserACreator { get; set; }
+    public bool isModifiable { get; set; }
 }

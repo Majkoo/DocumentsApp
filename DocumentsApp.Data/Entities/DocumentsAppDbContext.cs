@@ -10,4 +10,6 @@ public class DocumentsAppDbContext : IdentityDbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<DocumentAccessLevel> DocumentAccessLevels { get; set; }
     public DbSet<Document> Documents { get; set; }
+
+    public DbSet<EncryptionKey> EncryptionKeys { get; set; }
 }

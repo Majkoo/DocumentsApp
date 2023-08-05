@@ -76,6 +76,33 @@ namespace DocumentsApp.Data.Migrations
                     b.ToTable("DocumentAccessLevels");
                 });
 
+            modelBuilder.Entity("DocumentsApp.Data.Entities.EncryptionKey", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateExpired")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("EncryptionKeyType")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Key")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.Property<byte[]>("Vector")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EncryptionKeys");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -297,7 +324,7 @@ namespace DocumentsApp.Data.Migrations
                         .HasForeignKey("AccountId");
 
                     b.HasOne("DocumentsApp.Data.Entities.Document", "Document")
-                        .WithMany()
+                        .WithMany("AccessLevels")
                         .HasForeignKey("DocumentId");
 
                     b.Navigation("Account");
@@ -354,6 +381,11 @@ namespace DocumentsApp.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
+                {
+                    b.Navigation("AccessLevels");
                 });
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Account", b =>

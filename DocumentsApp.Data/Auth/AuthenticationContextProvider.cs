@@ -22,7 +22,7 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
         var idClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
         return idClaim?.Value;
     }
-
+    
     public async Task<string?> GetUserEmail()
     {
         var emailClaim = (await GetAuthenticationStateAsync()).User.FindFirst(c => c.Type == ClaimTypes.Email);
@@ -56,7 +56,7 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
         {
             return new AuthenticationState(_anonymous);
         }
-
+        
     }
-
+    
 }
