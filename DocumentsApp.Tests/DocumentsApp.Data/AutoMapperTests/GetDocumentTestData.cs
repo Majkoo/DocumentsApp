@@ -3,7 +3,7 @@ using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
 using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Tests.AutoMapperTests;
+namespace DocumentsApp.Tests.DocumentsApp.Data.AutoMapperTests;
 
 public class GetDocumentTestData : IEnumerable<object[]>
 {

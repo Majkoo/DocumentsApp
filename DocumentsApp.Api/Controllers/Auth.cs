@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Api.Helper;
+﻿using DocumentsApp.Api.Helpers.Interfaces;
 using DocumentsApp.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,10 +31,9 @@ public class Auth : ControllerBase
     
     [HttpPost]
     [Route("RefreshToken")]
-    public async Task<IActionResult> RefreshToken()
+    public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
     {
-        throw new NotImplementedException();
+        return Ok(await _authHelper.RefreshToken(refreshToken));
     }
-    
 
 }

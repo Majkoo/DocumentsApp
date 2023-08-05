@@ -9,6 +9,6 @@ public class Test: ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok("Success");
+        return Ok("Test endpoint executed successfully");
     }
 }

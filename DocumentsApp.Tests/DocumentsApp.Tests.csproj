@@ -25,9 +25,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DocumentsApp.Api\DocumentsApp.Api.csproj" />
       <ProjectReference Include="..\DocumentsApp.Data\DocumentsApp.Data.csproj" />
       <ProjectReference Include="..\DocumentsApp.Shared\DocumentsApp.Shared.csproj" />
-      <ProjectReference Include="..\DocumentsApp.View\DocumentsApp.View.csproj" />
     </ItemGroup>
 
     <ItemGroup>

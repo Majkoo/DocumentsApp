@@ -26,6 +26,12 @@ public class AccountRepo : IAccountRepo
             .SingleOrDefaultAsync(u => u.Id == userId);
     }
 
+    public async Task<Account> GetAccountByRefreshToken(string refreshToken)
+    {
+        return await _dbContext.Accounts
+            .FirstOrDefaultAsync(a => a.RefreshToken == refreshToken);
+    }
+
     public async Task<Account> GetAccountByEmailAsync(string userEmail)
     {
         return await _dbContext.Accounts
