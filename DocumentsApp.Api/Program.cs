@@ -108,7 +108,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
         };
     });
-var signInConfig = new SignInConfig();
+var signInConfig = new AuthConfig();
 builder.Configuration.GetSection("SignInConfig").Bind(signInConfig);
 builder.Services.AddSingleton(signInConfig);
 builder.Services.Configure<IdentityOptions>(options =>

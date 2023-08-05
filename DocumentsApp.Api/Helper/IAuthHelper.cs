@@ -5,5 +5,5 @@ namespace DocumentsApp.Api.Helper;
 public interface IAuthHelper
 {
     Task<JwtDataDto> SignIn(LoginDto loginDto);
-    Task<JwtDataDto> SignUp(RegisterDto registerDto);
+    Task<bool> SignUp(RegisterDto registerDto);
 }
