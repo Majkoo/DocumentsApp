@@ -37,10 +37,13 @@
 
 <style lang="scss">
 	.help-link {
-	  opacity: 0.6;
-      font-size: 1rem;
+		opacity: 0.6;
+		font-size: 1rem;
 		i {
-            font-size: 1.25rem;
+			font-size: 1.25rem;
+		}
+	  	&:hover {
+		  opacity: 0.5;
 		}
 	}
 </style>
