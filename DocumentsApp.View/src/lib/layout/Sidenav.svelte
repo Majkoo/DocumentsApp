@@ -13,7 +13,7 @@
 		<div class="d-flex flex-column side-menu">
 			<a href="/" class="nav-link">
 				Documents
-				<i class="bi bi-paperclip nav-icon"></i>
+				<i class="bi bi-folder2 nav-icon"></i>
 			</a>
 			<a href="/create" class="nav-link">
 				Create
