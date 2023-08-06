@@ -1,0 +1,26 @@
+@import "variables";
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap-utilities";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
+
+*  :not(body) :not(html) :not(main) {
+  transition: 150ms ease-in-out;
+}
+nav, header {
+  * {
+    user-select: none;
+    font-family: Calibri, serif !important;
+  }
+}
+body {
+  background-color: $light;
+  .page-content {
+    padding: 16px;
+    flex-grow: 1;
+  }
+}
+i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,76 +1,63 @@
-/* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
-@import "variables";
-@import "../node_modules/bootstrap/scss/bootstrap";
-@import "../node_modules/bootstrap/scss/bootstrap-utilities";
-@import "../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
+@import "root.scss";
 
-*  :not(body) :not(html) :not(main) {
-  transition: 150ms ease-in-out;
+// small screen exclusive
+@include media-breakpoint-down(lg) {
+  header {
+    border-bottom: 1px dashed $bg-base;
+  }
+  .doc-nav {
+    background-image: linear-gradient(270deg, $dark 0%, $primary-darker 35%, $primary 80%);
+    position: sticky;
+    top: 0;
+  }
 }
 
-body {
-  background: $dark fixed;
-  background: linear-gradient(343deg, $dark 0%, $primary-darker 35%, $primary 80%);
+// big screens exclusive
+@include media-breakpoint-up(lg) {
+  header {
+    position: fixed;
+    top: 0;
+  }
+  .doc-nav {
+    background-image: linear-gradient(330deg, $dark 0%, $primary-darker 35%, $primary 80%);
+    min-width: $aside-width;
+    max-width: $aside-width;
+    position: fixed;
+    top: $header-height;
+    bottom: 0;
+  }
+  .page-content {
+    margin-top: $header-height;
+    margin-left: $aside-width;
+  }
 }
 
 header {
-  height: $header-height;
-  background-color: transparent;
-}
+  min-height: $header-height;
+  max-height: $header-height;
 
-nav, header {
-  * {
-    font-family: Calibri, serif !important;
-  }
-}
+  background-image: linear-gradient(270deg, $dark 0%, $primary-darker 35%, $primary 80%);
 
-main {
-  background-color: $light;
-}
-
-.aside {
-  width: $aside-width;
-  background-color: transparent;
-
-  .side-title {
-    cursor: pointer;
-    user-select: none;
-
-    height: $header-height;
+  .app-title {
     display: flex;
+    justify-content: start;
     align-items: center;
-    justify-content: center;
-    padding: 0 1rem;
-    gap: 3px;
+    text-decoration: none;
+    height: 100%;
+    gap: 4px;
+    padding: 8px 16px;
 
-    &:hover {
-      opacity: 0.8;
-    }
-
-    &:focus,&:active {
-      backdrop-filter: brightness(0.95);
-    }
+    flex-grow: 1;
 
     * {
-      color: $white !important;
-      text-decoration: none;
+      margin: 0;
+    }
 
+    .nav-icon {
+      font-size: 30px;
     }
   }
 
-}
-
-.side-menu {
-  gap: 0;
-  .nav-link {
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    display: flex;
-    justify-content: space-between;
-    height: min-content !important;
-
-    font-size: 1.25rem;
-  }
 }
 
 .nav-link {
@@ -82,8 +69,8 @@ main {
   gap: 5px;
   color: $white;
   transition: 75ms ease-out;
-  font-size: 1.1rem;
-
+  cursor: pointer;
+  font-size: 20px;
 
   &:hover {
     color: $white;
@@ -93,15 +80,8 @@ main {
   &:focus {
     backdrop-filter: brightness(0.97) blur(10px);
   }
-}
 
-.nav-icon {
-  font-size: 1.75rem;
+  i {
+    font-size: 1.5rem;
+  }
 }
-
-i {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-

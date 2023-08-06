@@ -1,4 +1,3 @@
-/* Variables and mixins declared here will be available in all other SCSS files */
 $light:      #d2e6fe;
 $dark:       rgba(2,0,36,1);
 $primary:    rgba(0,168,255,1);
@@ -9,7 +8,9 @@ $success:    #16995b;
 $warning:    #dec918;
 $danger:     #eb200a;
 
-$header-height: 5rem;
-$aside-width: 15rem;
+// big screens variables
+$header-height: 85px;
+$aside-width: 24ch;
 
+$bg-base: $light;
 
