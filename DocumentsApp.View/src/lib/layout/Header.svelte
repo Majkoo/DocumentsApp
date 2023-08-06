@@ -1,10 +1,16 @@
 <header
-		class="text-primary m-0"
+		class="container-fluid p-0 d-flex align-items-center justify-content-end m-0"
 >
-	<div class="container-fluid d-flex align-items-center h-100 justify-content-end px-4 m-0">
-		<a href="/account" class="nav-link">Account</a>
-		<a href="/settings" class="nav-link">Settings</a>
-		<a href="/help" class="nav-link">Help</a>
+
+	<a href="/account" class="nav-link">
+		<i class="bi bi-person nav-icon"></i>
+		My Account
+	</a>
+
+	<div class="nav-link">
+		<i class="bi bi-moon nav-icon"></i>
+		Dark mode
 	</div>
+
 </header>
 

@@ -2,6 +2,7 @@
 @import "variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootstrap/scss/bootstrap-utilities";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
 
 *  :not(body) :not(html) :not(main) {
   transition: 150ms ease-in-out;
@@ -17,11 +18,17 @@ header {
   background-color: transparent;
 }
 
+nav, header {
+  * {
+    font-family: Calibri, serif !important;
+  }
+}
+
 main {
   background-color: $light;
 }
 
-aside {
+.aside {
   width: $aside-width;
   background-color: transparent;
 
@@ -56,11 +63,13 @@ aside {
 .side-menu {
   gap: 0;
   .nav-link {
-    justify-content: start;
     padding-bottom: 1rem;
     padding-top: 1rem;
     display: flex;
+    justify-content: space-between;
     height: min-content !important;
+
+    font-size: 1.25rem;
   }
 }
 
@@ -70,9 +79,12 @@ aside {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
   color: $white;
   transition: 75ms ease-out;
+  font-size: 1.1rem;
+
+
   &:hover {
     color: $white;
     opacity: 0.75;
@@ -81,5 +93,15 @@ aside {
   &:focus {
     backdrop-filter: brightness(0.97) blur(10px);
   }
+}
+
+.nav-icon {
+  font-size: 1.75rem;
+}
+
+i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
