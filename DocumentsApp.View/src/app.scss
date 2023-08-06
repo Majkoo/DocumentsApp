@@ -6,7 +6,7 @@
     border-bottom: 1px dashed $bg-base;
   }
   .doc-nav {
-    background-image: linear-gradient(270deg, $dark 0%, $primary-darker 35%, $primary 80%);
+    background-image: linear-gradient(270deg, $primary-darker 0%, $primary 100%);
     position: sticky;
     top: 0;
   }
@@ -19,7 +19,7 @@
     top: 0;
   }
   .doc-nav {
-    background-image: linear-gradient(330deg, $dark 0%, $primary-darker 35%, $primary 80%);
+    background-image: linear-gradient(330deg, $primary-darker 0, $primary 100%);
     min-width: $aside-width;
     max-width: $aside-width;
     position: fixed;
@@ -36,7 +36,7 @@ header {
   min-height: $header-height;
   max-height: $header-height;
 
-  background-image: linear-gradient(270deg, $dark 0%, $primary-darker 35%, $primary 80%);
+  background-image: linear-gradient(270deg, $primary-darker 0%, $primary 100%);
 
   .app-title {
     display: flex;
