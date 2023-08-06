@@ -1,4 +1,4 @@
-# git ls-files --others --exclude-from=.git/info/exclude
+﻿# git ls-files --others --exclude-from=.git/info/exclude
 # Lines that start with '#' are comments.
 # For a project mostly in C, the following would be a good set of
 # exclude patterns (uncomment them if you want to use them):
@@ -27,6 +27,7 @@
 #####################
 
 *.Development.json
+appsettings.json
 
 ####################
 # VS Upgrade stuff #
@@ -98,3 +99,15 @@ _[Ss]cripts
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
+
+# View
+*/.DS_Store
+*/node_modules
+*/build
+*/.svelte-kit
+*/package
+*/.env
+*/.env.*
+*/!.env.example
+*/vite.config.js.timestamp-*
+*/vite.config.ts.timestamp-*

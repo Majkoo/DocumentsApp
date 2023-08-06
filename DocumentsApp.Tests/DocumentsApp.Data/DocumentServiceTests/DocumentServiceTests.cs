@@ -1,22 +1,23 @@
 using AutoMapper;
+using DocumentsApp.Api.Services;
 using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Exceptions;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Data.Services;
 using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Exceptions;
 using FluentAssertions;
 using MockQueryable.Moq;
 using Moq;
 using Sieve.Models;
 using Sieve.Services;
 
-namespace DocumentsApp.Tests.DocumentServiceTests;
+namespace DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests;
 
 public class DocumentServiceTests
 {
     [Theory]
-    [ClassData(typeof(GetDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(Tests.DocumentServiceTests.GetDocumentTestData.DocumentNoThrowTestData))]
     public async void GetDocumentById_ForExistingAndAuthorized_ReturnGetDocumentDto(string userId, Document document,
         DocumentAccessLevel accessLevel, GetDocumentDto expected)
     {
@@ -47,8 +48,8 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(GetDocumentTestData.DocumentThrowTestData))]
-    public async void GetDocumentById_ForUnauthorizedUser_ThrowNotAuthorizedException(string userId, Document document,
+    [ClassData(typeof(Tests.DocumentServiceTests.GetDocumentTestData.DocumentThrowTestData))]
+    public async void GetDocumentById_ForUnauthorizedUser_ThrowUnauthorizedException(string userId, Document document,
         DocumentAccessLevel accessLevel)
     {
         // arrange
@@ -74,7 +75,7 @@ public class DocumentServiceTests
         
         // assert
 
-        await result.Should().ThrowAsync<NotAuthorizedException>();
+        await result.Should().ThrowAsync<UnauthorizedException>();
     }
     
     [Fact]
@@ -108,7 +109,7 @@ public class DocumentServiceTests
     
 
     [Theory]
-    [ClassData(typeof(UpdateDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(Tests.DocumentServiceTests.UpdateDocumentTestData.DocumentNoThrowTestData))]
     public async void UpdateDocument_ForExistingAndAuthorized_NoExceptionThrown(string userId, string documentId,
         UpdateDocumentDto dto, DocumentAccessLevel accessLevel, Document document)
     {
@@ -140,8 +141,8 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(UpdateDocumentTestData.DocumentThrowTestData))]
-    public async void UpdateDocument_ForUnAuthorizedUser_ThrowNotAuthorizedException(string userId, string documentId,
+    [ClassData(typeof(Tests.DocumentServiceTests.UpdateDocumentTestData.DocumentThrowTestData))]
+    public async void UpdateDocument_ForUnAuthorizedUser_ThrowUnauthorizedException(string userId, string documentId,
         UpdateDocumentDto dto, DocumentAccessLevel accessLevel, Document document)
     {
         // arrange
@@ -167,7 +168,7 @@ public class DocumentServiceTests
         
         // assert
 
-        await result.Should().ThrowAsync<NotAuthorizedException>();
+        await result.Should().ThrowAsync<UnauthorizedException>();
     }
     
     [Fact]
@@ -201,7 +202,7 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(DeleteDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(Tests.DocumentServiceTests.DeleteDocumentTestData.DocumentNoThrowTestData))]
     public async void DeleteDocument_ForExistingAndAuthorized_NoExceptionThrown(string userId, string documentId,
         Document document, DocumentAccessLevel accessLevel)
     {
@@ -233,8 +234,8 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(DeleteDocumentTestData.DocumentThrowTestData))]
-    public async void DeleteDocument_ForUnAuthorizedUser_ThrowNotAuthorizedException(string userId, string documentId,
+    [ClassData(typeof(Tests.DocumentServiceTests.DeleteDocumentTestData.DocumentThrowTestData))]
+    public async void DeleteDocument_ForUnAuthorizedUser_ThrowUnauthorizedException(string userId, string documentId,
         Document document, DocumentAccessLevel accessLevel)
     {
         // arrange
@@ -260,7 +261,7 @@ public class DocumentServiceTests
         
         // assert
 
-        await result.Should().ThrowAsync<NotAuthorizedException>();
+        await result.Should().ThrowAsync<UnauthorizedException>();
     }
     
     [Fact]
@@ -418,7 +419,7 @@ public class DocumentServiceTests
     private Mock<IAuthenticationContextProvider> GetAuthProviderMock(string userId)
     { 
         var mock = new Mock<IAuthenticationContextProvider>();
-        mock.Setup(m => m.GetUserId()).ReturnsAsync(userId);
+        mock.Setup(m => m.GetUserId()).Returns(userId);
         return mock; 
     }
 

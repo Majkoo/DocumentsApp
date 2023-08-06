@@ -7,12 +7,10 @@ namespace DocumentsApp.Data.Repos;
 public class AccountRepo : IAccountRepo
 {
     private readonly DocumentsAppDbContext _dbContext;
-    private readonly IAccessLevelRepo _accessLevelRepo;
 
-    public AccountRepo(DocumentsAppDbContext dbContext, IAccessLevelRepo accessLevelRepo)
+    public AccountRepo(DocumentsAppDbContext dbContext)
     {
         _dbContext = dbContext;
-        _accessLevelRepo = accessLevelRepo;
     }
 
     public async Task<IEnumerable<Account>> GetAllAccountsAsync()
@@ -26,6 +24,12 @@ public class AccountRepo : IAccountRepo
     {
         return await _dbContext.Accounts
             .SingleOrDefaultAsync(u => u.Id == userId);
+    }
+
+    public async Task<Account> GetAccountByRefreshToken(string refreshToken)
+    {
+        return await _dbContext.Accounts
+            .FirstOrDefaultAsync(a => a.RefreshToken == refreshToken);
     }
 
     public async Task<Account> GetAccountByEmailAsync(string userEmail)

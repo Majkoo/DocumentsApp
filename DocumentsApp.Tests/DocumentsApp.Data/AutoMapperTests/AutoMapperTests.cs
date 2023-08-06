@@ -8,7 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
-namespace DocumentsApp.Tests.AutoMapperTests;
+namespace DocumentsApp.Tests.DocumentsApp.Data.AutoMapperTests;
 
 public class AutoMapperTests
 {
@@ -22,7 +22,7 @@ public class AutoMapperTests
         
         //moq
         var authProviderMock = new Mock<IAuthenticationContextProvider>();
-        authProviderMock.Setup(m => m.GetUserId()).ReturnsAsync(userId);
+        authProviderMock.Setup(m => m.GetUserId()).Returns(userId);
         
         //add services and resolvers
         services.AddSingleton(authProviderMock.Object);

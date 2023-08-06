@@ -6,6 +6,7 @@ public interface IAccountRepo
 {
     Task<IEnumerable<Account>> GetAllAccountsAsync();
     Task<Account> GetAccountByIdAsync(string userId);
+    Task<Account> GetAccountByRefreshToken(string refreshToken);
     Task<Account> GetAccountByEmailAsync(string userEmail);
     Task<Account> GetAccountByUsernameAsync(string userName);
     Task<Account> InsertAccountAsync(Account account);

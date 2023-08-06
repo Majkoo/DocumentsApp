@@ -16,7 +16,7 @@ namespace DocumentsApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DocumentsApp.Data.Entities.Document", b =>
@@ -220,6 +220,8 @@ namespace DocumentsApp.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -304,6 +306,12 @@ namespace DocumentsApp.Data.Migrations
             modelBuilder.Entity("DocumentsApp.Data.Entities.Account", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("RefreshTokenExp")
+                        .HasColumnType("datetime(6)");
 
                     b.HasDiscriminator().HasValue("Account");
                 });
