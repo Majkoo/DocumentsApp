@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    @apply h-full
+}
+
+header {
+    @apply bg-purple-800 text-white flex justify-between px-0 items-center h-14 fixed w-full
+}
+main {
+    @apply flex h-full mt-14
+}
+button {
+    @apply rounded px-4 py-2 text-black hover:opacity-90 border-gray-100 border-2 active:opacity-60 transition ease-in-out
+}
+aside {
+    height: calc(100vh - 3.5rem);
+    @apply hidden sm:flex sm:w-60 border-r-2 border-r-purple-100 fixed flex-col
+}
+.content {
+    @apply sm:ml-60 p-3 w-full
+}
+
+.nav-link {
+    @apply flex justify-between items-center w-full self-center p-4 transition ease-in-out font-bold border-b-gray-100 hover:bg-purple-100 hover:bg-opacity-75 select-none
+}
+.nav-link.active {
+    @apply bg-gray-100 text-purple-800 hover:bg-purple-100 hover:bg-opacity-75
+}
+.header-link {
+    @apply nav-link hover:bg-purple-700 hover:bg-opacity-100 bg-purple-800 cursor-pointer
+}
+.header-link.active {
+    @apply text-white bg-purple-700 hover:bg-purple-700
+}
+
+.title {
+    @apply select-none text-2xl cursor-pointer transition ease-in-out hover:opacity-60 sm:w-60 flex items-center justify-start px-4 font-bold
+}
+.bg-primary {
+    @apply bg-purple-800 text-white
+}
+.bg-secondary {
+    @apply bg-emerald-200 text-black
+}
