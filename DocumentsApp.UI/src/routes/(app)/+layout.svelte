@@ -1,27 +1,15 @@
 <script lang="ts">
 	import "../../app.css"
     import { page } from '$app/stores';
+    import ThemeSwitch from "$lib/layout/ThemeSwitch.svelte";
+    import Header from "$lib/layout/Header.svelte";
 
     $: currentRoute = $page.url.pathname;
 </script>
 
 <div class="flex flex-col h-full">
 
-	<header>
-		<a class="title" href="/">
-			<span class="material-icons-outlined">description</span>
-			DocumentsApp
-		</a>
-
-		<div class="flex">
-			<a class="header-link" href="/account" class:active={currentRoute === '/account'}>
-				<span class="material-icons-outlined">person</span>
-			</a>
-			<div class="header-link">
-				<span class="material-icons-outlined">light_mode</span>
-			</div>
-		</div>
-	</header>
+	<Header bind:currentRoute={currentRoute}/>
 
 	<main>
 
@@ -45,7 +33,7 @@
 
 			</div>
 
-			<a class="nav-link" href="/help" class:active={currentRoute ===  '/help'}>
+			<a class="nav-link text-gray-700 text-opacity-50" href="/help" class:active={currentRoute ===  '/help'}>
 				<span class="w-full">Need some help</span>
 				<span class="material-icons-outlined">question_mark</span>
 			</a>
