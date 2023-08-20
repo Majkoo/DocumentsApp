@@ -3,8 +3,8 @@
     export let icon: string;
     export let href: string;
     export let currentRoute: string;
-    export let title: string = "";
-	export let expand: boolean = false;
+    export let title = "";
+	export let expand = false;
 </script>
 
 <a
@@ -13,6 +13,6 @@
 	class:active={currentRoute === href}
 >
 	<span class="whitespace-nowrap {expand ? 'nav-link-expand' : 'hidden'}">{title}</span>
-
 	<span class="material-icons-outlined">{icon}</span>
 </a>
+

@@ -25,15 +25,20 @@
             darkMode = false;
         }
     }
+    export let expand = false;
 </script>
 
-<div class="nav-link" aria-roledescription="dark mode switch" on:click={() => handleSwitchDarkMode()}>
+<button class="{expand ? 'w-full' : ''} nav-link"  aria-roledescription="dark mode switch" on:click={() => handleSwitchDarkMode()}>
 	<input checked={darkMode} on:click={handleSwitchDarkMode} type="checkbox" id="theme-toggle" />
+	<span class="whitespace-nowrap text-left {expand ? 'nav-link-expand' : 'hidden'}">
+		{#if darkMode}Light mode{/if}
+		{#if !darkMode}Dark mode{/if}
+	</span>
 	<span class="material-icons-outlined">
 		{#if darkMode}light_mode{/if}
 		{#if !darkMode}dark_mode{/if}
 	</span>
-</div>
+</button>
 
 <style lang="postcss">
 
