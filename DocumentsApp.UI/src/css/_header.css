@@ -1,0 +1,21 @@
+header {
+    @apply
+    flex justify-between px-0 items-center fixed w-full h-14
+    bg-prim-700 text-white tran
+    sm:h-20
+    dark:bg-prim-900 dark:text-white
+}
+.header-link {
+    @apply
+    nav-link cursor-pointer h-14
+    hover:backdrop-brightness-110 tran
+    sm:h-20
+}
+.header-link.active {
+    @apply
+    backdrop-brightness-90
+    hover:backdrop-brightness-110
+}
+.title {
+    @apply select-none text-2xl cursor-pointer hover:opacity-60 sm:w-60 flex items-center justify-start px-4 font-bold
+}

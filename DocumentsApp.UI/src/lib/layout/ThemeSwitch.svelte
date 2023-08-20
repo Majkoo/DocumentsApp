@@ -27,7 +27,7 @@
     }
 </script>
 
-<div class="header-link" aria-roledescription="dark mode switch" on:click={() => handleSwitchDarkMode()}>
+<div class="nav-link" aria-roledescription="dark mode switch" on:click={() => handleSwitchDarkMode()}>
 	<input checked={darkMode} on:click={handleSwitchDarkMode} type="checkbox" id="theme-toggle" />
 	<span class="material-icons-outlined">
 		{#if darkMode}light_mode{/if}

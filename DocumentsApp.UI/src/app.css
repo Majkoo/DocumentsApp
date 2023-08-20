@@ -1,9 +1,16 @@
-@import "layout.css";
+@import "css/_button.css";
+@import "css/_header.css";
+@import "css/_layout.css";
+@import "css/_nav.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .tran {
-    @apply transition ease-in-out
+    @apply transition-all ease-in-out duration-150
+}
+
+.tran-75 {
+    @apply transition-all ease-in-out duration-75
 }

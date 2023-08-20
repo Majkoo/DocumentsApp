@@ -1,0 +1,30 @@
+.nav {
+    @apply
+    sm:flex sm:flex-col sm:h-screen text-gray-100
+    bg-gradient-to-b from-prim-900 to-prim-950
+    dark:bg-gradient-to-b dark:from-prim-800 dark:to-prim-900
+    duration-200 ease-in-out transition-all
+}
+.nav-expand {
+    @apply w-screen sm:w-60 px-2
+}
+.nav-collapse {
+    @apply w-screen sm:w-14
+}
+.nav-link {
+    @apply
+    flex justify-between items-center w-min self-center m-1.5 p-2.5 font-bold select-none rounded-lg
+    transition ease-in-out duration-300
+    hover:backdrop-brightness-125 cursor-pointer
+}
+.nav-link.active {
+    @apply rounded-xl shadow-2xl bg-prim-800 dark:bg-prim-700
+}
+.nav-link-expand {
+    @apply w-full
+}
+.nav-mandatory-links {
+    @apply
+    flex flex-row h-14
+    sm:flex-col sm:flex-grow
+}

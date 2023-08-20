@@ -1,3 +1,5 @@
+import flowbite from "flowbite/plugin.js";
+
 /** @type {import('tailwindcss').Config} */
 const theme = {
   'prim': {
@@ -11,7 +13,7 @@ const theme = {
     '700': '#7e22ce',
     '800': '#6b21a8',
     '900': '#581c87',
-    '950': '#3b0764'
+    '950': '#3b0764',
   },
   'accent': {
     '50': '#f0fafa',
@@ -55,15 +57,18 @@ const theme = {
 }
 
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    './node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
+  ],
   darkMode: 'class',
+  mode: 'jit',
   theme: {
     extend: {
-      backgroundColor: theme,
-      borderColor: theme,
-      text: theme,
-      textColor: theme,
+      colors: theme
     }
   },
-  plugins: []
+  plugins: [
+    flowbite
+  ]
 };
