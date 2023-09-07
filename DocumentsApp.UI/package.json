@@ -42,6 +42,7 @@
 		"flowbite": "^1.8.1",
 		"flowbite-svelte": "^0.44.2",
 		"material-icons": "^1.13.9",
-		"tailwind-merge": "^1.14.0"
+		"tailwind-merge": "^1.14.0",
+		"wretch": "^2.6.0"
 	}
 }

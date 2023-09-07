@@ -1,9 +1,9 @@
 <script lang="ts">
-	import "../../app.css"
     import { page } from '$app/stores';
+    import Nav from "$lib/layout/Nav.svelte";
+    import "../../app.css"
     import {onMount} from "svelte";
     import {initFlowbite} from "flowbite";
-    import Nav from "$lib/layout/Nav.svelte";
 
     onMount(() => {
         initFlowbite();

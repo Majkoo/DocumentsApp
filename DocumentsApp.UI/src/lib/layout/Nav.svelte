@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ThemeSwitch from "$lib/layout/ThemeSwitch.svelte";
 	import NavLink from "$lib/layout/NavLink.svelte";
+    import {appSettings} from "$lib/configs/appSettings";
 
     export let currentRoute: string;
     let expand = false;
@@ -14,7 +15,7 @@
 			<span class="material-icons-outlined">
 			description
 			</span>
-			{#if expand} <h1 class="font-bold text-lg">Documents</h1> {/if}
+			{#if expand} <h1 class="font-bold text-lg">{appSettings.appTitle}</h1> {/if}
 		</a>
 
 		<button type="button" class="nav-link" on:click={() => {expand = !expand}}>
