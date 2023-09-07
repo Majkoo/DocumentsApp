@@ -4,7 +4,7 @@ import {appSettings} from "$lib/configs/appSettings";
 import type {LoginDto} from "$lib/models/dtos/auth/LoginDto";
 import type {RegisterDto} from "$lib/models/dtos/auth/RegisterDto";
 
-export const AuthService = {
+export const AuthApiService = {
     login: async (loginData: LoginDto) => {
         await callApi<JwtDataDto>(
             `${appSettings.apiUrl}/auth/login`,

@@ -1,26 +1,36 @@
 <script>
-	import {appSettings} from "$lib/configs/appSettings.ts";
+    import {LoginDto} from "$lib/models/dtos/auth/LoginDto.ts";
+    import {AuthApiService} from "$lib/services/api/authApiService.ts";
+
+    let loginDto = new LoginDto();
+
+    async function submit() {
+        await AuthApiService.login(loginDto);
+	}
+
 </script>
 
-<div class="w-full h-screen mt-[25vh]">
+<div class="w-full h-full mt-[25vh]">
 
 	<div class="flex flex-col justify-start items-center">
 
-		<a class="flex justify-between items-center w-min self-center mb-4 select-none rounded-lg cursor-pointer gap-2 flex-nowrap text-4xl" href="/">
-			<span class="material-icons-outlined icon-lg">description</span>
-			<div class="font-semibold">{appSettings.appTitle}</div>
-		</a>
+		<div class="rounded-lg w-min min-w-[400px] text-center bg card-shadow">
 
-		<div class="rounded-lg w-min mb-20 min-w-[400px] text-center bg">
+			<h1 class="text-2xl font-semibold border-b-2 border-purple-200 text-white mb-6 mx-4 py-3">Login</h1>
 
-			<h1 class="text-xl border-b-2 border-purple-200 text-white py-2 mb-4">Log in to your account</h1>
+			<form class="flex flex-col px-4">
+				<input id="username" bind:value={loginDto.email} class="form-field" type="text" placeholder="Username or email...">
+				<input id="password" bind:value={loginDto.password} class="form-field" type="password" placeholder="Password...">
 
-			<div class="flex flex-col px-4 py-2">
-				<input id="username" class="py-1 px-2 mb-4 w-full rounded border-purple-500" type="text" placeholder="Username or email...">
-				<input id="password" class="py-1 px-2 mb-4 w-full rounded border-purple-500" type="password" placeholder="Password...">
-				<button type="submit" class="py-1 px-6 mb-4 text-white font-semibold btn bg-teal-500 self-center">Submit</button>
-			</div>
+				<div class="mt-2 mb-4 flex justify-between items-center">
+					<button type="submit" class="btn form-btn tran-75" on:click={submit}>Submit</button>
+					<a href="/register" class="text-white opacity-40 hover:opacity-50 tran-75 underline">Do not have an account?</a>
+				</div>
+
+			</form>
 		</div>
+
+
 
 	</div>
 
@@ -32,7 +42,10 @@
 		dark:bg-gradient-to-b dark:from-prim-800 dark:to-prim-900
 		duration-200 ease-in-out transition-all
 	}
-	.icon-lg {
-		@apply text-5xl !important
+	.form-field {
+        @apply py-1 px-2 mb-4 w-full rounded border-purple-500
+	}
+	.form-btn {
+        @apply py-1 px-6 text-white font-semibold bg-teal-500 self-center border-0
 	}
 </style>

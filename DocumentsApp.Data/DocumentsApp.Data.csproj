@@ -30,4 +30,8 @@
       <ProjectReference Include="..\DocumentsApp.Shared\DocumentsApp.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20230907191548_remove_custom_refresh_tokens.Designer.cs" />
+    </ItemGroup>
+
 </Project>

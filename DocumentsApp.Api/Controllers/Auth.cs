@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DocumentsApp.Api.Controllers;
 
 [ApiController]
-[Route("Auth")]
+[Route("auth")]
 public class Auth : ControllerBase
 {
     private readonly IAuthHelper _authHelper;
@@ -16,21 +16,21 @@ public class Auth : ControllerBase
     }
 
     [HttpPost]
-    [Route("SignIn")]
+    [Route("login")]
     public async Task<IActionResult> SignIn([FromBody] LoginDto loginDto)
     {
         return Ok(await _authHelper.SignIn(loginDto));
     }
     
     [HttpPost]
-    [Route("SignUp")]
+    [Route("register")]
     public async Task<IActionResult> SignUp([FromBody] RegisterDto registerDto)
     {
         return Ok(await _authHelper.SignUp(registerDto));
     }
     
     [HttpPost]
-    [Route("RefreshToken")]
+    [Route("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
     {
         return Ok(await _authHelper.RefreshToken(refreshToken));

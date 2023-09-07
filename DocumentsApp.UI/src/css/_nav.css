@@ -1,6 +1,6 @@
 .nav {
     @apply
-    fixed h-screen
+    fixed h-screen card-shadow
     sm:static
     flex flex-col sm:h-screen text-gray-100
     bg-gradient-to-b from-prim-900 to-prim-950
