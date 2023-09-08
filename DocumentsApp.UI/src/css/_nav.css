@@ -3,8 +3,8 @@
     fixed h-screen card-shadow
     sm:static
     flex flex-col sm:h-screen text-gray-100
-    bg-gradient-to-b from-prim-900 to-prim-950
-    dark:bg-gradient-to-b dark:from-prim-800 dark:to-prim-900
+    bg-gradient-to-b from-primary-800 to-primary-900
+    dark:bg-gradient-to-b dark:from-primary-800 dark:to-primary-900
     duration-200 ease-in-out transition-all gap-2 py-2
 }
 .nav-expand {
@@ -20,7 +20,7 @@
     hover:backdrop-brightness-125 cursor-pointer
 }
 .nav-link.active {
-    @apply rounded-xl shadow-2xl bg-prim-800 dark:bg-prim-700
+    @apply rounded-xl shadow-2xl bg-primary-800 dark:bg-primary-700
 }
 .nav-link-expand {
     @apply w-full

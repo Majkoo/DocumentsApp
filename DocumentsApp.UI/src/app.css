@@ -6,17 +6,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
+
+html,
+body {
+	@apply h-full overflow-hidden;
+}
 
 .tran {
-    @apply transition-all ease-in-out duration-150
+	@apply transition-all ease-in-out duration-150
 }
 
 .tran-75 {
-    @apply transition-all ease-in-out duration-75
+	@apply transition-all ease-in-out duration-75
 }
 
 .card-shadow {
-    -webkit-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
-    -moz-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
-    box-shadow: 0 0 55px -10px rgb(108, 108, 108);
+	-webkit-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
+	-moz-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
+	box-shadow: 0 0 55px -10px rgb(108, 108, 108);
 }

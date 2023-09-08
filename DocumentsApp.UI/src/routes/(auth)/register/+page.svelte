@@ -1,6 +1,6 @@
 <script>
-    import {AuthApiService} from "$lib/services/api/authApiService.ts";
-    import {RegisterDto} from "$lib/models/dtos/auth/RegisterDto.ts";
+    import {AuthApiService} from "$lib/services/api/authApiService";
+    import {RegisterDto} from "$lib/models/dtos/auth/RegisterDto";
 
     let registerDto = new RegisterDto();
 
@@ -40,14 +40,14 @@
 
 <style lang="postcss">
     .bg {
-        @apply bg-gradient-to-b from-prim-900 to-prim-950
-        dark:bg-gradient-to-b dark:from-prim-800 dark:to-prim-900
+        @apply bg-gradient-to-b from-primary-800 to-primary-900
+        dark:bg-gradient-to-b dark:from-primary-800 dark:to-primary-900
         duration-200 ease-in-out transition-all
     }
     .form-field {
-        @apply py-1 px-2 mb-4 w-full rounded border-purple-500
+        @apply py-1 px-2 mb-4 w-full rounded border-primary-500
     }
     .form-btn {
-        @apply py-1 px-6 text-white font-semibold bg-teal-500 self-center border-0
+        @apply py-1 px-6 text-white font-semibold bg-secondary-500 self-center border-0
     }
 </style>

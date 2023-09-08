@@ -1,9 +1,9 @@
 header {
     @apply
     flex justify-between px-0 items-center fixed w-full h-14
-    bg-prim-700 text-white tran
+    bg-primary-700 text-white tran
     sm:h-20
-    dark:bg-prim-900 dark:text-white
+    dark:bg-primary-900 dark:text-white
 }
 .header-link {
     @apply

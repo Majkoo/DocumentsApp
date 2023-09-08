@@ -1,13 +1,7 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import Nav from "$lib/layout/Nav.svelte";
+    import Nav from "$lib/components/layout/Nav.svelte";
     import "../../app.css"
-    import {onMount} from "svelte";
-    import {initFlowbite} from "flowbite";
-
-    onMount(() => {
-        initFlowbite();
-	})
 
     $: currentRoute = $page.url.pathname;
 </script>

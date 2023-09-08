@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ThemeSwitch from "$lib/layout/ThemeSwitch.svelte";
-	import NavLink from "$lib/layout/NavLink.svelte";
-    import {appSettings} from "$lib/configs/appSettings";
+	import ThemeSwitch from "$lib/components/layout/ThemeSwitch.svelte";
+	import NavLink from "$lib/components/layout/NavLink.svelte";
+	import {appSettings} from "$lib/configs/appSettings";
 
     export let currentRoute: string;
     let expand = false;
@@ -11,7 +11,7 @@
 
 	<div class="nav-title-section {expand ? 'flex-row justify-between' : 'flex-col items-center'}">
 
-		<a class="flex justify-between items-center w-min self-center p-2.5 font-bold select-none rounded-lg cursor-pointer gap-2 flex-nowrap" href="/">
+		<a class="flex justify-between items-center w-min self-center p-2.5 font-bold select-none rounded-lg cursor-pointer gap-2 flex-nowrap" href="/static">
 			<span class="material-icons-outlined">
 			description
 			</span>
