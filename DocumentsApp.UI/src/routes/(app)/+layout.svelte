@@ -1,7 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import Nav from "$lib/components/layout/Nav.svelte";
-    import "../../app.css"
 
     $: currentRoute = $page.url.pathname;
 </script>

@@ -37,8 +37,5 @@
 	input {
 		display: none;
 	}
-	label {
-		height: min-content !important;
-	}
 
 </style>

@@ -45,6 +45,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.5.1",
     "highlight.js": "11.8.0",
-    "material-icons": "^1.13.11"
+    "material-icons": "^1.13.11",
+    "svelte-preprocess": "^5.0.4"
   }
 }

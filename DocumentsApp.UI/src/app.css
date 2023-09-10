@@ -1,6 +1,8 @@
-@import "css/_button.css";
 @import "css/_layout.css";
 @import "css/_nav.css";
+@import "css/_auth.css";
+
+@import "../node_modules/material-icons";
 
 @tailwind base;
 @tailwind components;

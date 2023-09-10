@@ -1,6 +1,5 @@
 <script lang="ts">
     import {browser} from "$app/environment";
-
     if (browser) {
         if (
             localStorage.theme === 'dark' ||
@@ -15,6 +14,6 @@
 
 <slot/>
 
-<style global>
-    @import "../../node_modules/material-icons";
+<style global lang="postcss">
+	@import "../app.css";
 </style>

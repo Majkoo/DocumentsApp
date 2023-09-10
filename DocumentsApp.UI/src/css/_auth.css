@@ -1,0 +1,9 @@
+.auth-card {
+    @apply bg-gradient-to-b from-surface-800 to-surface-900
+    dark:bg-gradient-to-b dark:from-surface-800 dark:to-surface-900
+    duration-200 ease-in-out transition-all
+    drop-shadow-xl
+}
+.form-btn {
+    @apply btn variant-ghost-primary text-white
+}
