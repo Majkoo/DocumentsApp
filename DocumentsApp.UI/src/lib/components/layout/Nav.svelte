@@ -11,7 +11,7 @@
 
 	<div class="nav-title-section {expand ? 'flex-row justify-between' : 'flex-col items-center'}">
 
-		<a class="flex justify-between items-center w-min self-center p-2.5 font-bold select-none rounded-lg cursor-pointer gap-2 flex-nowrap" href="/static">
+		<a class="flex justify-between items-center w-min self-center p-2.5 font-bold select-none rounded-lg cursor-pointer gap-2 flex-nowrap" href="/">
 			<span class="material-icons-outlined">
 			description
 			</span>

@@ -4,6 +4,6 @@
 
 <slot/>
 
-<style global>
+<style global lang="postcss">
     @import "../../../node_modules/material-icons";
 </style>

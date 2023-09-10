@@ -1,15 +1,11 @@
 body {
-    @apply h-full bg-gray-100 dark:bg-gray-800 dark:text-gray-100 tran
+    @apply h-full
 }
-
 main {
-    @apply
-    flex h-full bg-gray-100
-    dark:bg-gray-800 dark:text-gray-100
+    @apply flex h-full
 }
 .content {
-    @apply
-    p-3 w-full ml-14 sm:ml-0 tran h-screen
+    @apply p-3 w-full ml-14 sm:ml-0 h-screen
 }
 
 

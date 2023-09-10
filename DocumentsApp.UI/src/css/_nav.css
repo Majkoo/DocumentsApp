@@ -1,11 +1,13 @@
 .nav {
     @apply
-    fixed h-screen card-shadow
+    fixed h-screen
     sm:static
+    duration-300 ease-in-out transition-all
     flex flex-col sm:h-screen text-gray-100
-    bg-gradient-to-b from-primary-800 to-primary-900
-    dark:bg-gradient-to-b dark:from-primary-800 dark:to-primary-900
-    duration-200 ease-in-out transition-all gap-2 py-2
+    bg-gradient-to-b from-surface-800 to-surface-900
+    gap-2 py-2
+    dark:shadow-2xl dark:shadow-surface-400
+    shadow-xl shadow-surface-600
 }
 .nav-expand {
     @apply w-60 max-w-full px-2
@@ -20,16 +22,16 @@
     hover:backdrop-brightness-125 cursor-pointer
 }
 .nav-link.active {
-    @apply rounded-xl shadow-2xl bg-primary-800 dark:bg-primary-700
+    @apply rounded-xl shadow-2xl bg-surface-700 dark:bg-surface-700
 }
 .nav-link-expand {
     @apply w-full
 }
 .nav-link-section {
-    @apply flex flex-col gap-2
+    @apply flex flex-col gap-2 overflow-clip
 }
 .nav-title-section {
-    @apply flex gap-2 border-b pb-2
+    @apply flex gap-2 border-b pb-2 overflow-clip
 }
 .nav-account-section {
     @apply flex justify-center items-center border-t pt-2

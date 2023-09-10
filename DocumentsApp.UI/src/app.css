@@ -10,19 +10,6 @@
 
 html,
 body {
-	@apply h-full overflow-hidden;
+	@apply h-full overflow-hidden bg-surface-50 dark:bg-surface-700 bg-none !important;
 }
 
-.tran {
-	@apply transition-all ease-in-out duration-150
-}
-
-.tran-75 {
-	@apply transition-all ease-in-out duration-75
-}
-
-.card-shadow {
-	-webkit-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
-	-moz-box-shadow: 0 0 55px -10px rgb(108, 108, 108);
-	box-shadow: 0 0 55px -10px rgb(108, 108, 108);
-}

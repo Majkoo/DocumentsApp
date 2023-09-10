@@ -1,11 +1,11 @@
 <script>
-    import {AuthApiService} from "$lib/services/api/authApiService";
     import {RegisterDto} from "$lib/models/dtos/auth/RegisterDto";
+    import {register} from "$lib/services/api/authApiService.ts";
 
     let registerDto = new RegisterDto();
 
     async function submit() {
-        await AuthApiService.register(registerDto);
+        await register(registerDto);
     }
 
 </script>
@@ -14,7 +14,7 @@
 
 	<div class="flex flex-col justify-start items-center">
 
-		<div class="rounded-lg w-min min-w-[400px] text-center bg card-shadow">
+		<div class="rounded-lg w-min min-w-[400px] text-center bg">
 
 			<h1 class="text-2xl font-semibold border-b-2 border-purple-200 text-white mb-6 mx-4 py-3">Register</h1>
 
@@ -25,8 +25,8 @@
 				<input id="confirmPassword" bind:value={registerDto.confirmPassword} class="form-field" type="password" placeholder="Confirm password...">
 
 				<div class="mt-2 mb-4 flex justify-between items-center">
-					<button type="submit" class="btn form-btn tran-75" on:click={submit}>Submit</button>
-					<a href="/login" class="text-white opacity-40 hover:opacity-50 tran-75 underline">Have an account?</a>
+					<button type="submit" class="btn form-btn" on:click={submit}>Submit</button>
+					<a href="/login" class="text-white opacity-40 hover:opacity-50 underline">Have an account?</a>
 				</div>
 
 			</form>
@@ -40,14 +40,14 @@
 
 <style lang="postcss">
     .bg {
-        @apply bg-gradient-to-b from-primary-800 to-primary-900
-        dark:bg-gradient-to-b dark:from-primary-800 dark:to-primary-900
+        @apply bg-gradient-to-b from-surface-800 to-surface-900
+        dark:bg-gradient-to-b dark:from-surface-800 dark:to-surface-900
         duration-200 ease-in-out transition-all
     }
     .form-field {
         @apply py-1 px-2 mb-4 w-full rounded border-primary-500
     }
     .form-btn {
-        @apply py-1 px-6 text-white font-semibold bg-secondary-500 self-center border-0
+        @apply py-1 px-6 text-white font-semibold bg-primary-500 self-center border-0
     }
 </style>

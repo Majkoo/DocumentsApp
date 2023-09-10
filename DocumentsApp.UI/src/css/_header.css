@@ -1,14 +1,14 @@
 header {
     @apply
     flex justify-between px-0 items-center fixed w-full h-14
-    bg-primary-700 text-white tran
+    bg-primary-700 text-white
     sm:h-20
     dark:bg-primary-900 dark:text-white
 }
 .header-link {
     @apply
     nav-link cursor-pointer h-14
-    hover:backdrop-brightness-110 tran
+    hover:backdrop-brightness-110
     sm:h-20
 }
 .header-link.active {
