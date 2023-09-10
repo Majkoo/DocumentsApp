@@ -14,3 +14,7 @@
 </script>
 
 <slot/>
+
+<style global>
+    @import "../../node_modules/material-icons";
+</style>
