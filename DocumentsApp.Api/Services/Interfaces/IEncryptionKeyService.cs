@@ -1,6 +1,7 @@
-using DocumentsApp.Shared.Enums;
 using DocumentsApp.Data.Entities;
-namespace DocumentsApp.Data.Services.Interfaces;
+using DocumentsApp.Shared.Enums;
+
+namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IEncryptionKeyService
 {

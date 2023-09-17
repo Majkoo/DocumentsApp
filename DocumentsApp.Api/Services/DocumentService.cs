@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using DocumentsApp.Data.Auth.Interfaces;
-using DocumentsApp.Data.Dtos;
+using DocumentsApp.Api.Providers;
+using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
-using DocumentsApp.Data.Services.Interfaces;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos;
+using DocumentsApp.Shared.Dtos.Document;
 using DocumentsApp.Shared.Enums;
 using DocumentsApp.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;

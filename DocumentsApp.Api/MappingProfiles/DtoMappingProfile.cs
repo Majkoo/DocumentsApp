@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
+using DocumentsApp.Api.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.MappingProfiles.ValueResolvers;
-using DocumentsApp.Shared.Dtos.AccountDtos;
 using DocumentsApp.Shared.Dtos.Auth;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 
-namespace DocumentsApp.Data.MappingProfiles;
+namespace DocumentsApp.Api.MappingProfiles;
 
 public class DtoMappingProfile : Profile
 {

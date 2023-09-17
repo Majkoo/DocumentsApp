@@ -9,6 +9,7 @@ using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace DocumentsApp.Api.Helpers;
 
@@ -24,17 +25,17 @@ public class AuthHelper : IAuthHelper
         UserManager<Account> userManager,
         IAccountRepo accountRepo,
         JwtConfig jwtConfig
-        )
+    )
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _accountRepo = accountRepo;
         _jwtConfig = jwtConfig;
     }
-    
+
     public async Task<JwtDataDto> SignIn(LoginDto loginDto)
     {
-        var acc = 
+        var acc =
             await _accountRepo.GetAccountByEmailAsync(loginDto.Email) ??
             await _accountRepo.GetAccountByUsernameAsync(loginDto.Email);
 
@@ -47,9 +48,10 @@ public class AuthHelper : IAuthHelper
         if (signInResult.IsNotAllowed) throw new UnauthorizedException("Not allowed");
 
         if (signInResult.Succeeded) return await GenerateJwtData(acc);
-            
+
         throw new UnauthorizedException("Invalid login credentials");
     }
+
     public async Task<JwtDataDto> RefreshToken(string refreshToken)
     {
         var acc = await _accountRepo.GetAccountByRefreshToken(refreshToken);
@@ -59,6 +61,7 @@ public class AuthHelper : IAuthHelper
 
         return await GenerateJwtData(acc);
     }
+
     public async Task<bool> SignUp(RegisterDto registerDto)
     {
         var newUser = new Account
@@ -68,22 +71,21 @@ public class AuthHelper : IAuthHelper
         };
 
         newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
-        
+
         var createResult = await _userManager.CreateAsync(newUser);
         if (createResult.Errors.Any()) throw new BadRequestException(createResult.Errors.First().Description);
-        
+
         if (!createResult.Succeeded)
         {
             throw new BadRequestException("Failed to create user account.");
         }
 
         return createResult.Succeeded;
-
     }
 
-    
+
     #region Private methods
-    
+
     private async Task<JwtDataDto> GenerateJwtData(Account acc)
     {
         var claims = new[]
@@ -91,8 +93,10 @@ public class AuthHelper : IAuthHelper
             new Claim(ClaimTypes.NameIdentifier, acc.Id),
             new Claim(ClaimTypes.Name, acc.UserName!),
             new Claim(ClaimTypes.Email, acc.Email!),
+            new Claim(JwtRegisteredClaimNames.Iss, _jwtConfig.Issuer),
+            new Claim(JwtRegisteredClaimNames.Aud, _jwtConfig.Audience)
         };
-            
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
@@ -100,7 +104,8 @@ public class AuthHelper : IAuthHelper
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(_jwtConfig.ExpirationMinutes),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -122,12 +127,15 @@ public class AuthHelper : IAuthHelper
                 UserEmail = acc.Email!,
             }
         };
+
         return jwtDataDto;
     }
+
     private string GenerateRefreshToken()
     {
         return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
     }
-    
+
     #endregion
+
 }

@@ -1,4 +1,4 @@
-using DocumentsApp.Data.Services.Interfaces;
+using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Shared.Configurations;
 using MailKit.Net.Smtp;
 using MailKit.Security;

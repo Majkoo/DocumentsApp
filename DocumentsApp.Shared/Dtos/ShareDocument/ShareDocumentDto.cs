@@ -1,6 +1,6 @@
 using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Data.Dtos.ShareDocumentDtos;
+namespace DocumentsApp.Shared.Dtos.ShareDocument;
 
 public class ShareDocumentDto
 {

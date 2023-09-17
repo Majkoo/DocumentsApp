@@ -1,7 +1,7 @@
-using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Account;
 using Microsoft.AspNetCore.Identity;
 
-namespace DocumentsApp.Data.Services.Interfaces;
+namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IAccountService
 {

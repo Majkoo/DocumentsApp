@@ -8,23 +8,24 @@ public class RegisterAccountDtoValidator : AbstractValidator<RegisterDto>
 {
     public RegisterAccountDtoValidator(IAccountRepo accountRepo)
     {
-        RuleFor(d=>d.UserName)
+        RuleFor(d => d.UserName)
             .NotEmpty()
             .MaximumLength(20)
             .Custom((value, context) =>
             {
-                var accounts =  accountRepo.GetAllAccountsAsync().Result;
+                var accounts = accountRepo.GetAllAccountsAsync().Result;
                 if (accounts.Any(a => a.UserName == value))
                 {
                     context.AddFailure("UserName", "UserName is already taken");
                 }
             });
-        
+
         RuleFor(d => d.Email)
             .EmailAddress()
             .Custom((value, context) =>
             {
-                var accounts =  accountRepo.GetAllAccountsAsync().Result;
+                var accounts = accountRepo.GetAllAccountsAsync().Result;
+
                 if (accounts.Any(a => a.Email == value))
                 {
                     context.AddFailure("Email", "Email is already taken");

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace DocumentsApp.Shared.Dtos.DocumentDtos;
+namespace DocumentsApp.Shared.Dtos.Document;
 
 public class AddDocumentDto
 {

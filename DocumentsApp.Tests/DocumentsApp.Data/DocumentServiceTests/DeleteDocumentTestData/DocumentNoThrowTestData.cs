@@ -1,8 +1,7 @@
 using System.Collections;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Tests.DocumentServiceTests.DeleteDocumentTestData;
+namespace DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests.DeleteDocumentTestData;
 
 public class DocumentNoThrowTestData : IEnumerable<object[]>
 {

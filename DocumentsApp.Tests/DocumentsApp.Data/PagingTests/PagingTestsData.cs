@@ -1,9 +1,9 @@
 using System.Collections;
-using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Shared.Dtos;
 using Sieve.Models;
 
-namespace DocumentsApp.Tests.PagingTests;
+namespace DocumentsApp.Tests.DocumentsApp.Data.PagingTests;
 
 public class PagingTestsData : IEnumerable<object[]>
 {

@@ -1,7 +1,7 @@
 using System.Collections;
 using DocumentsApp.Data.Entities;
 
-namespace DocumentsApp.Tests.DocumentServiceTests.GetDocumentTestData;
+namespace DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests.GetDocumentTestData;
 
 public class DocumentThrowTestData : IEnumerable<object[]>
 {

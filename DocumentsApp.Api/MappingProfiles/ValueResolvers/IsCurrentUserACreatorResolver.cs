@@ -1,9 +1,9 @@
 using AutoMapper;
-using DocumentsApp.Data.Auth.Interfaces;
+using DocumentsApp.Api.Providers;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 
-namespace DocumentsApp.Data.MappingProfiles.ValueResolvers;
+namespace DocumentsApp.Api.MappingProfiles.ValueResolvers;
 
 public class IsCurrentUserACreatorResolver : IValueResolver<Document, GetDocumentDto, bool>
 {

@@ -1,11 +1,11 @@
 using AutoMapper;
+using DocumentsApp.Api.Providers;
 using DocumentsApp.Api.Services;
-using DocumentsApp.Data.Auth.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
-using DocumentsApp.Data.Services;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 using DocumentsApp.Shared.Exceptions;
+using DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests.GetDocumentTestData;
 using FluentAssertions;
 using MockQueryable.Moq;
 using Moq;
@@ -17,7 +17,7 @@ namespace DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests;
 public class DocumentServiceTests
 {
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.GetDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(DocumentNoThrowTestData))]
     public async void GetDocumentById_ForExistingAndAuthorized_ReturnGetDocumentDto(string userId, Document document,
         DocumentAccessLevel accessLevel, GetDocumentDto expected)
     {
@@ -48,7 +48,7 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.GetDocumentTestData.DocumentThrowTestData))]
+    [ClassData(typeof(DocumentThrowTestData))]
     public async void GetDocumentById_ForUnauthorizedUser_ThrowUnauthorizedException(string userId, Document document,
         DocumentAccessLevel accessLevel)
     {
@@ -109,7 +109,7 @@ public class DocumentServiceTests
     
 
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.UpdateDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(UpdateDocumentTestData.DocumentNoThrowTestData))]
     public async void UpdateDocument_ForExistingAndAuthorized_NoExceptionThrown(string userId, string documentId,
         UpdateDocumentDto dto, DocumentAccessLevel accessLevel, Document document)
     {
@@ -141,7 +141,7 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.UpdateDocumentTestData.DocumentThrowTestData))]
+    [ClassData(typeof(UpdateDocumentTestData.DocumentThrowTestData))]
     public async void UpdateDocument_ForUnAuthorizedUser_ThrowUnauthorizedException(string userId, string documentId,
         UpdateDocumentDto dto, DocumentAccessLevel accessLevel, Document document)
     {
@@ -202,7 +202,7 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.DeleteDocumentTestData.DocumentNoThrowTestData))]
+    [ClassData(typeof(DeleteDocumentTestData.DocumentNoThrowTestData))]
     public async void DeleteDocument_ForExistingAndAuthorized_NoExceptionThrown(string userId, string documentId,
         Document document, DocumentAccessLevel accessLevel)
     {
@@ -234,7 +234,7 @@ public class DocumentServiceTests
     }
 
     [Theory]
-    [ClassData(typeof(Tests.DocumentServiceTests.DeleteDocumentTestData.DocumentThrowTestData))]
+    [ClassData(typeof(DeleteDocumentTestData.DocumentThrowTestData))]
     public async void DeleteDocument_ForUnAuthorizedUser_ThrowUnauthorizedException(string userId, string documentId,
         Document document, DocumentAccessLevel accessLevel)
     {

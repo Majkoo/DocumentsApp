@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using DocumentsApp.Api.Helpers.Interfaces;
-using DocumentsApp.Data.Auth.Interfaces;
+using DocumentsApp.Api.Providers;
+using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Services.Interfaces;
-using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Enums;
 using DocumentsApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Identity;

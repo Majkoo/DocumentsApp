@@ -1,10 +1,6 @@
 using System.Security.Claims;
-using DocumentsApp.Data.Auth.Interfaces;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Http;
 
-namespace DocumentsApp.Data.Auth;
+namespace DocumentsApp.Api.Providers;
 
 public class AuthenticationContextProvider : IAuthenticationContextProvider
 {

@@ -1,9 +1,9 @@
 using System.Collections;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Tests.DocumentServiceTests.GetDocumentTestData;
+namespace DocumentsApp.Tests.DocumentsApp.Data.DocumentServiceTests.GetDocumentTestData;
 
 public class DocumentNoThrowTestData : IEnumerable<object[]>
 {

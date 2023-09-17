@@ -1,4 +1,4 @@
-﻿using DocumentsApp.Shared.Dtos.DocumentDtos;
+﻿using DocumentsApp.Shared.Dtos.Document;
 using FluentValidation;
 
 namespace DocumentsApp.Api.Validators;
@@ -9,7 +9,7 @@ public class AddDocumentDtoValidator : AbstractValidator<AddDocumentDto>
     {
         RuleFor(d => d.Name)
             .NotEmpty()
-            .MaximumLength(20);
+            .MaximumLength(30);
 
         RuleFor(d => d.Description)
             .MaximumLength(150);

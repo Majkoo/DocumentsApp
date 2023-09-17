@@ -1,5 +1,5 @@
-using DocumentsApp.Data.Auth.Interfaces;
-using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Api.Providers;
+using DocumentsApp.Shared.Dtos.Account;
 using FluentValidation;
 
 namespace DocumentsApp.Api.Validators;

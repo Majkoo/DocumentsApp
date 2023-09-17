@@ -1,11 +1,11 @@
 using DocumentsApp.Api.Helpers;
-using DocumentsApp.Data.Dtos;
 using DocumentsApp.Data.Entities;
+using DocumentsApp.Shared.Dtos;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Sieve.Models;
 
-namespace DocumentsApp.Tests.PagingTests;
+namespace DocumentsApp.Tests.DocumentsApp.Data.PagingTests;
 
 public class PagingTests
 {

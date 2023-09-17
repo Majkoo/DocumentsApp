@@ -1,6 +1,6 @@
-﻿using DocumentsApp.Data.Entities;
+﻿using DocumentsApp.Api.Services.Interfaces;
+using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
-using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Enums;
 using DocumentsApp.Shared.Exceptions;
 

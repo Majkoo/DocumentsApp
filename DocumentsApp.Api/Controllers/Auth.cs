@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DocumentsApp.Api.Controllers;
 
 [ApiController]
-[Route("Auth")]
+[Route("[controller]")]
 public class Auth : ControllerBase
 {
     private readonly IAuthHelper _authHelper;

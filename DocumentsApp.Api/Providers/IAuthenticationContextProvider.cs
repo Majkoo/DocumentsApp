@@ -1,4 +1,4 @@
-namespace DocumentsApp.Data.Auth.Interfaces;
+namespace DocumentsApp.Api.Providers;
 
 public interface IAuthenticationContextProvider
 {

@@ -1,6 +1,6 @@
 using MimeKit;
 
-namespace DocumentsApp.Data.Services.Interfaces;
+namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IMailService
 {

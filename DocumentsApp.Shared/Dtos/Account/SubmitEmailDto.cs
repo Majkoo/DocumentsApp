@@ -1,4 +1,4 @@
-﻿namespace DocumentsApp.Shared.Dtos.AccountDtos;
+﻿namespace DocumentsApp.Shared.Dtos.Account;
 
 public class SubmitEmailDto
 {

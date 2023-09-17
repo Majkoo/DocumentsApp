@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
+using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
-using DocumentsApp.Data.Services.Interfaces;
 using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Enums;
 using Microsoft.Extensions.Options;

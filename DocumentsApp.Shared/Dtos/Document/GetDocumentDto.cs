@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Shared.Dtos.DocumentDtos;
+namespace DocumentsApp.Shared.Dtos.Document;
 
 public class GetDocumentDto
 {

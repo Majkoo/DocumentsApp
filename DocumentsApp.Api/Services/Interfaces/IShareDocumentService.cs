@@ -1,9 +1,9 @@
-using DocumentsApp.Data.Dtos;
-using DocumentsApp.Data.Dtos.ShareDocumentDtos;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos;
+using DocumentsApp.Shared.Dtos.Document;
+using DocumentsApp.Shared.Dtos.ShareDocument;
 using Sieve.Models;
 
-namespace DocumentsApp.Data.Services.Interfaces;
+namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IShareDocumentService
 {
