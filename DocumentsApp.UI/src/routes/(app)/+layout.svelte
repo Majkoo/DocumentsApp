@@ -9,7 +9,7 @@
 
 	<main>
 
-		<Nav currentRoute="{currentRoute}"/>
+		<Nav currentRoute="{currentRoute}" />
 
 		<section class="content">
 

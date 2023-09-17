@@ -2,7 +2,8 @@
     @apply bg-gradient-to-b from-surface-800 to-surface-900
     dark:bg-gradient-to-b dark:from-surface-800 dark:to-surface-900
     duration-200 ease-in-out transition-all
-    drop-shadow-xl
+    dark:shadow-lg dark:shadow-gray-950
+    shadow-lg shadow-surface-600
 }
 .form-btn {
     @apply btn variant-ghost-primary text-white

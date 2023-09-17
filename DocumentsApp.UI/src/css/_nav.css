@@ -6,7 +6,7 @@
     flex flex-col sm:h-screen text-gray-100
     bg-gradient-to-b from-surface-800 to-surface-900
     gap-2 py-2
-    dark:shadow-xl dark:shadow-surface-500
+    dark:shadow-lg dark:shadow-gray-950
     shadow-xl shadow-surface-600
 }
 .nav-expand {

@@ -11,6 +11,6 @@
 
 html,
 body {
-	@apply h-full overflow-hidden bg-surface-50 dark:bg-surface-700 bg-none !important;
+	@apply h-full overflow-hidden bg-surface-50 dark:bg-surface-900 bg-none !important;
 }
 
