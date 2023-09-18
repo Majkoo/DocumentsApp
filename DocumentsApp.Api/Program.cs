@@ -85,7 +85,7 @@ builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<IAesCipher, AesCipher>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
-builder.Services.AddScoped<DocumentsAppDbSeeder>();
+// builder.Services.AddScoped<DocumentsAppDbSeeder>();
 
 builder.Services.AddScoped<AccessLevelResolver>();
 builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
@@ -96,6 +96,8 @@ builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContext
 // builder.Services.AddHostedService<EncryptionKeyGenerator>();
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
 builder.Services.AddScoped<ISieveProcessor, DocumentsAppSieveProcessor>();
 builder.Services.AddHttpContextAccessor();
 
@@ -188,6 +190,7 @@ builder.Services.AddSwaggerGen(option =>
                 new string[] { }
             }
         });
+        
     }
 );
 
@@ -196,7 +199,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(option =>
+    {
+        option.EnablePersistAuthorization();
+    });
 }
 
 app.UseHttpsRedirection();

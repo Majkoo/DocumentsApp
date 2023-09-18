@@ -38,8 +38,8 @@ public class DocumentService : IDocumentService
 
     public async Task<GetDocumentDto> GetDocumentByIdAsync(string documentId)
     {
-        var accountId = _authenticationContextProvider.GetUserId();
         var document = await SearchDocumentDbAsync(documentId);
+        var accountId = _authenticationContextProvider.GetUserId();
         var documentAccessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(accountId, document.Id);
 
         if (documentAccessLevel is null && document.AccountId != accountId)
@@ -53,15 +53,15 @@ public class DocumentService : IDocumentService
     {
         var accountId = _authenticationContextProvider.GetUserId();
         var documents = _documentRepo.GetAllUserDocumentsAsQueryable(accountId);
-        
-        if (!documents.Any()) 
-            throw new NotFoundException("No documents available for this user");
 
         var resultDocuments = await _sieveProcessor
             .Apply(query, documents)
             .Select(d => _mapper.Map<GetDocumentDto>(d))
             .ToListAsync();
          
+        if (resultDocuments.Count == 0) 
+            throw new NotFoundException("No documents available for this user");
+        
         return new PagedResults<GetDocumentDto>(
             resultDocuments,
             documents.Count(),

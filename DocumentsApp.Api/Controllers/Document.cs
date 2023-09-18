@@ -40,19 +40,13 @@ public class Document : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int pageSize)
+    public async Task<IActionResult> GetAll([FromQuery] SieveModel query)
     {
-        var query = new SieveModel()
-        {
-            Page = page,
-            PageSize = pageSize
-        };
-
         return Ok(await _documentService.GetAllDocumentsAsync(query));
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetDocumentDto))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetDocumentDto))]
     public async Task<IActionResult> Create([FromBody] AddDocumentDto dto)
     {
         var document = await _documentService.AddDocumentAsync(dto);
@@ -81,20 +75,14 @@ public class Document : ControllerBase
     [Route("shared")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllShared([FromQuery] int page, [FromBody] int pageSize)
+    public async Task<IActionResult> GetAllShared([FromQuery] SieveModel query)
     {
-        var query = new SieveModel()
-        {
-            Page = page,
-            PageSize = pageSize
-        };
-
         return Ok(await _shareDocumentService.GetAllSharedDocumentsAsync(query));
     }
 
     [HttpPost]
     [Route("{id}/share")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Share([FromRoute] string id, [FromBody] ShareDocumentDto dto)
@@ -104,7 +92,7 @@ public class Document : ControllerBase
 
     [HttpPut]
     [Route("{id}/share")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateShare([FromRoute] string id, [FromBody] ShareDocumentDto dto)
     {

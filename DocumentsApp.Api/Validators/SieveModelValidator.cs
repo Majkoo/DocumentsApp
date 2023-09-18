@@ -23,6 +23,7 @@ public class SieveModelValidator : AbstractValidator<SieveModel>
             });
 
         RuleFor(s => s.Page)
+            .NotNull()
             .GreaterThanOrEqualTo(1);
 
         RuleFor(s => s.Sorts)

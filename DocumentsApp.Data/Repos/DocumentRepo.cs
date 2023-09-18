@@ -20,7 +20,7 @@ public class DocumentRepo : IDocumentRepo
             .Include(d => d.AccessLevels)
             .Where(d => d.AccountId == accountId)
             .OrderByDescending(d => d.DateCreated)
-            .AsQueryable();
+            .AsNoTracking();
     }
 
     public async Task<IEnumerable<Document>> GetAllUserDocumentsAsync(string accountId)
@@ -35,14 +35,12 @@ public class DocumentRepo : IDocumentRepo
 
     public IQueryable<Document> GetAllSharedDocumentsAsQueryable(string userId)
     {
-        var accessLevels = _dbContext.DocumentAccessLevels
-            .Include(a => a.Document)
-            .Where(a => a.AccountId == userId);
-
-        return accessLevels
-            .Select(d => d.Document)
+        return _dbContext.Documents
+            .Include(d => d.Account)
+            .Include(d => d.AccessLevels)
+            .Where(d => d.AccessLevels.Any(a => a.AccountId == userId))
             .OrderByDescending(d => d.DateCreated)
-            .AsQueryable();
+            .AsNoTracking();
     }
 
     public async Task<Document> GetDocumentByIdAsync(string id)

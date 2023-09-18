@@ -49,7 +49,6 @@ public class AccessLevelRepo : IAccessLevelRepo
     public async Task<bool> RemoveDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel)
     {
         _dbContext.DocumentAccessLevels.Remove(documentAccessLevel);
-
         return await _dbContext.SaveChangesAsync() > 0;
     }
 
