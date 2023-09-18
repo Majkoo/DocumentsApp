@@ -4,7 +4,7 @@ namespace DocumentsApp.Data.Repos.Interfaces;
 
 public interface IAccessLevelRepo
 {
-    Task<IEnumerable<DocumentAccessLevel>> GetAllDocumentAccessLevelsAsync(string userId);
+    IQueryable<DocumentAccessLevel> GetAllDocumentAccessLevelsAsync(string documentId);
     Task<DocumentAccessLevel> GetDocumentAccessLevelAsync(string userId, string documentId);
     Task<DocumentAccessLevel> InsertDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel);
     Task<DocumentAccessLevel> UpdateDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel);

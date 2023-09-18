@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Shared.Dtos;
+using DocumentsApp.Shared.Dtos.AccessLevel;
 using DocumentsApp.Shared.Dtos.Document;
 using DocumentsApp.Shared.Dtos.ShareDocument;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace DocumentsApp.Api.Controllers;
 [Route("[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
 public class Document : ControllerBase
 {
     private readonly IDocumentService _documentService;
@@ -31,6 +32,7 @@ public class Document : ControllerBase
     [HttpGet]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetDocumentDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromRoute] string id)
     {
@@ -39,6 +41,7 @@ public class Document : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll([FromQuery] SieveModel query)
     {
@@ -47,6 +50,7 @@ public class Document : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetDocumentDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> Create([FromBody] AddDocumentDto dto)
     {
         var document = await _documentService.AddDocumentAsync(dto);
@@ -56,6 +60,7 @@ public class Document : ControllerBase
     [HttpPut]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetDocumentDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateDocumentDto dto)
     {
@@ -74,16 +79,27 @@ public class Document : ControllerBase
     [HttpGet]
     [Route("shared")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllShared([FromQuery] SieveModel query)
     {
         return Ok(await _shareDocumentService.GetAllSharedDocumentsAsync(query));
     }
+    
+    [HttpGet]
+    [Route("{id}/shares")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetAccessLevelDto>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAllDocumentShares([FromRoute] string id, [FromQuery] SieveModel query)
+    {
+        return Ok(await _shareDocumentService.GetAllDocumentSharesAsync(id, query));
+    }
 
     [HttpPost]
     [Route("{id}/share")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Share([FromRoute] string id, [FromBody] ShareDocumentDto dto)
     {
@@ -93,6 +109,7 @@ public class Document : ControllerBase
     [HttpPut]
     [Route("{id}/share")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateShare([FromRoute] string id, [FromBody] ShareDocumentDto dto)
     {

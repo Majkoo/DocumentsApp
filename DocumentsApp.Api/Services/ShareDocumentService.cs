@@ -4,6 +4,7 @@ using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
 using DocumentsApp.Shared.Dtos;
+using DocumentsApp.Shared.Dtos.AccessLevel;
 using DocumentsApp.Shared.Dtos.Document;
 using DocumentsApp.Shared.Dtos.ShareDocument;
 using DocumentsApp.Shared.Exceptions;
@@ -39,6 +40,25 @@ public class ShareDocumentService : IShareDocumentService
         _accountRepo = accountRepo;
     }
 
+    public async Task<PagedResults<GetAccessLevelDto>> GetAllDocumentSharesAsync(string documentId, SieveModel query)
+    {
+        var userId = _authenticationContextProvider.GetUserId();
+        var document = await FindDocumentAsync(documentId);
+        if (document.AccountId != userId)
+            throw new UnauthorizedException("Only document owner can view its shares");
+        var shares = _accessLevelRepo.GetAllDocumentAccessLevelsAsync(documentId);
+        var result = await _sieveProcessor.Apply(query, shares).Select(a => _mapper.Map<GetAccessLevelDto>(a))
+            .ToListAsync();
+        
+        if(result.Count == 0)
+            throw new NotFoundException("Document has no shares");
+        
+        return new PagedResults<GetAccessLevelDto>(
+            result,
+            shares.Count(),
+            query.PageSize.GetValueOrDefault(),
+            query.Page.GetValueOrDefault());
+    }
     public async Task<PagedResults<GetDocumentDto>> GetAllSharedDocumentsAsync(SieveModel query)
     {
         var userId = _authenticationContextProvider.GetUserId();
@@ -63,7 +83,7 @@ public class ShareDocumentService : IShareDocumentService
     {
         await CheckIfUserAuthorizedAsync(documentId, "User is not authorized to share this document");
         var document = await FindDocumentAsync(documentId);
-        var shareToUser = await FindShareToUserAsync(dto.ShareToUserName);
+        var shareToUser = await FindShareToUserAsync(dto.ShareToNameOrEmail);
 
         if (document.AccountId == shareToUser.Id)
             throw new BadRequestException("Cannot share document to owner");
@@ -87,7 +107,7 @@ public class ShareDocumentService : IShareDocumentService
     public async Task<ShareDocumentDto> UpdateShareAsync(string documentId, ShareDocumentDto dto)
     {
         await CheckIfUserAuthorizedAsync(documentId,"User is not authorized to edit sharing of this document");
-        var shareToUser = await FindShareToUserAsync(dto.ShareToUserName);
+        var shareToUser = await FindShareToUserAsync(dto.ShareToNameOrEmail);
 
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(shareToUser.Id, documentId);
         if (accessLevel is null || accessLevel.AccessLevelEnum == dto.AccessLevelEnum)

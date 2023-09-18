@@ -16,6 +16,7 @@ using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Dtos.Document;
+using DocumentsApp.Shared.Dtos.ShareDocument;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,17 +64,19 @@ builder.Services.AddScoped<ErrorHandlingMiddleWare>();
 builder.Services.AddScoped<LogMiddleWare>();
 
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
+builder.Services.AddScoped<IValidator<UpdateDocumentDto>, UpdateDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<UpdateUserNameDto>, UpdateUserNameValidator>();
+builder.Services.AddScoped<IValidator<ShareDocumentDto>, ShareDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<SieveModel>, SieveModelValidator>();
 
-// builder.Services.AddScoped<IValidator<RegisterDto>, RegisterAccountDtoValidator>();
-builder.Services.AddScoped<IValidator<LoginDto>, LoginAccountDtoValidator>();
+builder.Services.AddScoped<IValidator<RegisterDto>, RegisterDtoValidator>();
+builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
 
 builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
 builder.Services.AddScoped<IEncryptionKeyRepo, EncryptionKeyRepo>();
 
-builder.Services.Configure<EncryptionKeySettings>(builder.Configuration.GetSection(nameof(EncryptionKeySettings)));
+// builder.Services.Configure<EncryptionKeySettings>(builder.Configuration.GetSection(nameof(EncryptionKeySettings)));
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IShareDocumentService, ShareDocumentService>();
@@ -201,6 +204,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(option =>
     {
+        option.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         option.EnablePersistAuthorization();
     });
 }

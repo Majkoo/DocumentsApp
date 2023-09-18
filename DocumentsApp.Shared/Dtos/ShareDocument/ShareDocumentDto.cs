@@ -4,7 +4,7 @@ namespace DocumentsApp.Shared.Dtos.ShareDocument;
 
 public class ShareDocumentDto
 {
-    public string ShareToUserName { get; set; }
+    public string ShareToNameOrEmail { get; set; }
     
     public AccessLevelEnum AccessLevelEnum { get; set; }
 }
