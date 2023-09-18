@@ -20,6 +20,9 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -33,6 +36,7 @@ builder.Logging.AddConsole();
 builder.Services.AddDbContext<DocumentsAppDbContext>(opts =>
 {
     var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+
     opts.UseMySql(
         connString,
         ServerVersion.AutoDetect(connString),
@@ -81,7 +85,6 @@ builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<IAesCipher, AesCipher>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
-
 builder.Services.AddScoped<DocumentsAppDbSeeder>();
 
 builder.Services.AddScoped<AccessLevelResolver>();
@@ -99,10 +102,13 @@ builder.Services.AddHttpContextAccessor();
 var jwtConfig = new JwtConfig();
 builder.Configuration.GetSection("JwtConfig").Bind(jwtConfig);
 builder.Services.AddSingleton(jwtConfig);
-builder.Services.AddAuthentication(options => {
+
+builder.Services.AddAuthentication(options =>
+    {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;})
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -115,10 +121,33 @@ builder.Services.AddAuthentication(options => {
             ValidAudience = jwtConfig.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
         };
+        
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                // Call this to skip the default logic and avoid using the default response
+                context.HandleResponse();
+            
+                var httpContext = context.HttpContext;
+                var statusCode = StatusCodes.Status401Unauthorized;
+            
+                var routeData = httpContext.GetRouteData();
+                var actionContext = new ActionContext(httpContext, routeData, new ActionDescriptor());
+            
+                var factory = httpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+                var problemDetails = factory.CreateProblemDetails(httpContext, statusCode, detail: context.Error);
+            
+                var result = new ObjectResult(problemDetails) { StatusCode = statusCode };
+                await result.ExecuteResultAsync(actionContext);
+            }
+        };
     });
+
 var authConfig = new AuthConfig();
 builder.Configuration.GetSection("SignInConfig").Bind(authConfig);
 builder.Services.AddSingleton(authConfig);
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Lockout.AllowedForNewUsers = authConfig.LockOutEnabledOnSignUp;
@@ -132,7 +161,10 @@ builder.Services.AddAuthentication();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option => {option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+
+builder.Services.AddSwaggerGen(option =>
+    {
+        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Description = "Please enter a valid token",
@@ -141,6 +173,7 @@ builder.Services.AddSwaggerGen(option => {option.AddSecurityDefinition("Bearer",
             BearerFormat = "JWT",
             Scheme = "Bearer"
         });
+
         option.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
@@ -148,14 +181,15 @@ builder.Services.AddSwaggerGen(option => {option.AddSecurityDefinition("Bearer",
                 {
                     Reference = new OpenApiReference
                     {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
                     }
                 },
-                new string[]{}
+                new string[] { }
             }
-        });}
-    );
+        });
+    }
+);
 
 var app = builder.Build();
 
@@ -173,9 +207,6 @@ app.UseAuthorization();
 app.UseMiddleware<LogMiddleWare>();
 app.UseMiddleware<ErrorHandlingMiddleWare>();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
 app.Run();

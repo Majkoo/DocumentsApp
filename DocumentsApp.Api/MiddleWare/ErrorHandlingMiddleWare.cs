@@ -27,7 +27,6 @@ public class ErrorHandlingMiddleWare : IMiddleware
         {
             LogError(e);
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            Console.WriteLine("401");
             await context.Response.WriteAsync(e.Message);
         }
         catch (NotFoundException e)
