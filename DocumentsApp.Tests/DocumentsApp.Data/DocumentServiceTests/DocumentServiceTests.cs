@@ -380,7 +380,10 @@ public class DocumentServiceTests
     {
         // arrange
 
-        var documents = new List<Document>().AsQueryable();
+        var documents = new List<Document>();
+        
+        // MockQueryable extension 
+        var dataMock = documents.BuildMock();
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
@@ -390,9 +393,9 @@ public class DocumentServiceTests
         var sieveMock = new Mock<ISieveProcessor>();
         
         //setup mocks
-        documentRepoMock.Setup(m => m.GetAllUserDocumentsAsQueryable(It.IsAny<string>())).Returns(documents);
+        documentRepoMock.Setup(m => m.GetAllUserDocumentsAsQueryable(It.IsAny<string>())).Returns(dataMock);
         sieveMock.Setup(m => m.Apply(It.IsAny<SieveModel>(), It.IsAny<IQueryable<Document>>(), null, true, true, true))
-            .Returns(value: null);
+            .Returns(dataMock);
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, sieveMock.Object,
