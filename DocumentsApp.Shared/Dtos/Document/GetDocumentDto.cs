@@ -5,19 +5,17 @@ namespace DocumentsApp.Shared.Dtos.Document;
 
 public class GetDocumentDto
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    
-    [AllowNull]
-    public string Description { get; set; }
-    public string Content { get; set; }
+    public string Id { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public string Content { get; set; } = null!;
 
     public DateTime DateCreated { get; set; }
 
-    public string AccountName { get; set; }
+    public string AccountName { get; set; } = null!;
 
     public AccessLevelEnum? AccessLevel { get; set; }
 
-    public bool isCurrentUserACreator { get; set; }
+    public bool isCurrentUserACreator { get; set; } 
     public bool isModifiable { get; set; }
 }

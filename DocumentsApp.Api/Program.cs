@@ -49,10 +49,6 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
     {
         opts.Password.RequiredLength = 8;
         opts.User.RequireUniqueEmail = true;
-
-        opts.SignIn.RequireConfirmedEmail = true;
-        opts.SignIn.RequireConfirmedAccount = false;
-        opts.SignIn.RequireConfirmedPhoneNumber = false;
     })
     .AddEntityFrameworkStores<DocumentsAppDbContext>()
     .AddDefaultTokenProviders();
@@ -65,7 +61,7 @@ builder.Services.AddScoped<LogMiddleWare>();
 
 builder.Services.AddScoped<IValidator<AddDocumentDto>, AddDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<UpdateDocumentDto>, UpdateDocumentDtoValidator>();
-builder.Services.AddScoped<IValidator<UpdateUserNameDto>, UpdateUserNameValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserNameDto>, UpdateUserNameDtoValidator>();
 builder.Services.AddScoped<IValidator<ShareDocumentDto>, ShareDocumentDtoValidator>();
 builder.Services.AddScoped<IValidator<SieveModel>, SieveModelValidator>();
 

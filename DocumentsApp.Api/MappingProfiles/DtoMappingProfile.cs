@@ -2,6 +2,7 @@
 using DocumentsApp.Api.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.AccessLevel;
+using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Dtos.Document;
 
@@ -33,5 +34,7 @@ public class DtoMappingProfile : Profile
         CreateMap<DocumentAccessLevel, GetAccessLevelDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Account.UserName))
             .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.Account.Email));
+
+        CreateMap<Account, GetAccountDto>();
     }
 }

@@ -7,9 +7,9 @@ public class ShareDocumentDtoValidator : AbstractValidator<ShareDocumentDto>
 {
     public ShareDocumentDtoValidator()
     {
-        RuleFor(s => s.ShareToNameOrEmail)
+        RuleFor(d => d.ShareToNameOrEmail)
             .NotEmpty();
-        RuleFor(s => s.AccessLevelEnum)
+        RuleFor(d => d.AccessLevelEnum)
             .NotNull();
     }
 }

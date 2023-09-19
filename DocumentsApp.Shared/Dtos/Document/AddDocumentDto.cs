@@ -4,9 +4,7 @@ namespace DocumentsApp.Shared.Dtos.Document;
 
 public class AddDocumentDto
 {
-    public string Name { get; set; }
-    
-    [AllowNull]
-    public string Description { get; set; }
-    public string Content { get; set; }
+    public string Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public string Content { get; set; } = null!;
 }

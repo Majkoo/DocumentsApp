@@ -13,7 +13,7 @@ public class SieveModelValidator : AbstractValidator<SieveModel>
 
     public SieveModelValidator()
     {
-        RuleFor(s => s.PageSize)
+        RuleFor(d => d.PageSize)
             .Custom((value, context) =>
             {
                 if (!_allowedPageSizes.Contains(value.GetValueOrDefault()))
@@ -22,11 +22,11 @@ public class SieveModelValidator : AbstractValidator<SieveModel>
                 }
             });
 
-        RuleFor(s => s.Page)
+        RuleFor(d => d.Page)
             .NotNull()
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(s => s.Sorts)
+        RuleFor(d => d.Sorts)
             .Must(value => string.IsNullOrEmpty(value) || _allowedSortValues.Contains(value) ||
                            _allowedSortValues.Contains(value.Remove(0, 1)))
             .WithMessage($"Sorts is optional or must be in [{string.Join(",", _allowedSortValues)}] or negative");
