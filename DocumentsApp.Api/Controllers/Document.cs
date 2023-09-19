@@ -77,7 +77,7 @@ public class Document : ControllerBase
     }
 
     [HttpGet]
-    [Route("shared")]
+    [Route("Shared")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetDocumentDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -87,7 +87,7 @@ public class Document : ControllerBase
     }
     
     [HttpGet]
-    [Route("{id}/shares")]
+    [Route("{id}/Shares")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResults<GetAccessLevelDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,7 +97,7 @@ public class Document : ControllerBase
     }
 
     [HttpPost]
-    [Route("{id}/share")]
+    [Route("{id}/Share")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -107,7 +107,7 @@ public class Document : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id}/share")]
+    [Route("{id}/Share")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareDocumentDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -117,7 +117,7 @@ public class Document : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id}/share")]
+    [Route("{id}/Share")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UnShare([FromRoute] string id, [FromBody] string userName)

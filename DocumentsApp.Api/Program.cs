@@ -12,7 +12,6 @@ using DocumentsApp.Api.Validators;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos;
 using DocumentsApp.Data.Repos.Interfaces;
-using DocumentsApp.Shared.Configurations;
 using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Dtos.Auth;
 using DocumentsApp.Shared.Dtos.Document;
@@ -70,21 +69,15 @@ builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
 
 builder.Services.AddScoped<IDocumentRepo, DocumentRepo>();
 builder.Services.AddScoped<IAccessLevelRepo, AccessLevelRepo>();
-builder.Services.AddScoped<IEncryptionKeyRepo, EncryptionKeyRepo>();
-
-// builder.Services.Configure<EncryptionKeySettings>(builder.Configuration.GetSection(nameof(EncryptionKeySettings)));
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IShareDocumentService, ShareDocumentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IEncryptionKeyService, EncryptionKeyService>();
 
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
-builder.Services.AddScoped<IAesCipher, AesCipher>();
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.Configure<MailConfig>(builder.Configuration.GetSection(nameof(MailConfig)));
 
-// builder.Services.AddScoped<DocumentsAppDbSeeder>();
 
 builder.Services.AddScoped<AccessLevelResolver>();
 builder.Services.AddScoped<IsCurrentUserACreatorResolver>();
@@ -92,8 +85,6 @@ builder.Services.AddScoped<IsModifiableResolver>();
 builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<DtoMappingProfile>(); });
 
 builder.Services.AddScoped<IAuthenticationContextProvider, AuthenticationContextProvider>();
-// builder.Services.AddHostedService<EncryptionKeyGenerator>();
-
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));

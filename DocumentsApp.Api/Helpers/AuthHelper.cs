@@ -70,14 +70,13 @@ public class AuthHelper : IAuthHelper
             Email = registerDto.Email,
         };
 
-        newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerDto.Password);
-
-        var createResult = await _userManager.CreateAsync(newUser);
-        if (createResult.Errors.Any()) throw new BadRequestException(createResult.Errors.First().Description);
+        var createResult = await _userManager.CreateAsync(newUser, registerDto.Password);
+        if (createResult.Errors.Any())
+            throw new BadRequestException(nameof(SignUp), createResult.Errors.First().Description);
 
         if (!createResult.Succeeded)
         {
-            throw new BadRequestException("Failed to create user account.");
+            throw new BadRequestException(nameof(SignUp), "Failed to create user account.");
         }
 
         return createResult.Succeeded;
@@ -137,5 +136,4 @@ public class AuthHelper : IAuthHelper
     }
 
     #endregion
-
 }

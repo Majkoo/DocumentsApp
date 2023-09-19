@@ -2,6 +2,7 @@ using DocumentsApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace DocumentsApp.Api.MiddleWare;
 
@@ -25,7 +26,7 @@ public class ErrorHandlingMiddleWare : IMiddleware
         catch (BadRequestException e)
         {
             LogError(e);
-            var result = GetResult(context, StatusCodes.Status400BadRequest, e.Message);
+            var result = GetValidationResult(context, e.Title, e.Message);
             var actionContext = new ActionContext(context, context.GetRouteData(), new ActionDescriptor());
             await result.ExecuteResultAsync(actionContext);
         }
@@ -50,7 +51,6 @@ public class ErrorHandlingMiddleWare : IMiddleware
             var actionContext = new ActionContext(context, context.GetRouteData(), new ActionDescriptor());
             await result.ExecuteResultAsync(actionContext);
         }
-        
     }
 
     private void LogError(Exception exception)
@@ -58,15 +58,24 @@ public class ErrorHandlingMiddleWare : IMiddleware
         _logger.LogError(
             "An exception occured.\n" +
             "Message: {ExceptionMessage}\n" +
-            "Stack trace:{ExceptionStackTrace}", 
+            "Stack trace:{ExceptionStackTrace}",
             exception.Message,
             exception.StackTrace
-            );
+        );
     }
 
     private ObjectResult GetResult(HttpContext context, int statusCode, string message)
     {
         var problemDetails = _problemDetailsFactory.CreateProblemDetails(context, statusCode, detail: message);
         return new ObjectResult(problemDetails) { StatusCode = statusCode };
+    }
+
+    private ObjectResult GetValidationResult(HttpContext context, string title, string message)
+    {
+        var errors = new ModelStateDictionary();
+        errors.AddModelError(title, message);
+        var problemDetails = _problemDetailsFactory
+            .CreateValidationProblemDetails(context, errors, statusCode: StatusCodes.Status400BadRequest);
+        return new ObjectResult(problemDetails);
     }
 }

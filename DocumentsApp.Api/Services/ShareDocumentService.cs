@@ -86,11 +86,11 @@ public class ShareDocumentService : IShareDocumentService
         var shareToUser = await FindShareToUserAsync(dto.ShareToNameOrEmail);
 
         if (document.AccountId == shareToUser.Id)
-            throw new BadRequestException("Cannot share document to owner");
+            throw new BadRequestException("ShareDocument", "Cannot share document to owner");
 
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(shareToUser.Id, documentId);
         if (accessLevel is not null)
-            throw new BadRequestException("Document is already shared to this user");
+            throw new BadRequestException("ShareDocument", "Document is already shared to this user");
 
         var newAccessLevel = new DocumentAccessLevel()
         {
@@ -111,7 +111,7 @@ public class ShareDocumentService : IShareDocumentService
 
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(shareToUser.Id, documentId);
         if (accessLevel is null || accessLevel.AccessLevelEnum == dto.AccessLevelEnum)
-            throw new BadRequestException("Document is not shared to this user");
+            throw new BadRequestException("UpdateShare", "Document is not shared to this user");
 
         accessLevel.AccessLevelEnum = dto.AccessLevelEnum;
         
