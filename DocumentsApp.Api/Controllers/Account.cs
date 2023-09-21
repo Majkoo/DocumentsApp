@@ -52,7 +52,7 @@ public class Account : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route("SubmitEmailConfirmation")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityResult))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> SubmitEmailConfirmation([FromBody] string email)
     {
@@ -62,7 +62,7 @@ public class Account : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route("ConfirmEmail")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityResult))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> ConfirmEmail([FromQuery] AccountSecurityData data)
     {
@@ -72,7 +72,7 @@ public class Account : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route("SubmitPasswordReset")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityResult))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> SubmitPasswordReset([FromBody] string email)
     {
@@ -82,7 +82,7 @@ public class Account : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route("ResetPassword")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityResult))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {

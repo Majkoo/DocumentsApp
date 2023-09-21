@@ -19,7 +19,8 @@ public class MailHelper : IMailHelper
     {
         var uriBuilder = new UriBuilder()
         {
-            Path = _config.BaseUrl + _config.ConfirmEmailUrl,
+            Host = _config.BaseUrl,
+            Path = _config.ConfirmEmailUrl,
             Query = $"id={accountSecurityData.AccountId}&token={accountSecurityData.Token}"
         };
 
@@ -48,7 +49,8 @@ public class MailHelper : IMailHelper
     {
         var uriBuilder = new UriBuilder()
         {
-            Path = _config.BaseUrl + _config.ConfirmEmailUrl,
+            Host = _config.BaseUrl,
+            Path = _config.ConfirmEmailUrl,
             Query = $"id={accountSecurityData.AccountId}&token={accountSecurityData.Token}"
         };
 
