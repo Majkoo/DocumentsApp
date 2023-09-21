@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Sieve.Exceptions;
 
 namespace DocumentsApp.Api.MiddleWare;
 
@@ -44,6 +45,13 @@ public class ErrorHandlingMiddleWare : IMiddleware
             var actionContext = new ActionContext(context, context.GetRouteData(), new ActionDescriptor());
             await result.ExecuteResultAsync(actionContext);
         }
+        catch (SieveException e)
+        {
+            LogError(e);
+            var result = GetValidationResult(context, "Sieve error", e.Message);
+            var actionContext = new ActionContext(context, context.GetRouteData(), new ActionDescriptor());
+            await result.ExecuteResultAsync(actionContext);
+        }
         catch (Exception e)
         {
             LogError(e);
@@ -57,8 +65,10 @@ public class ErrorHandlingMiddleWare : IMiddleware
     {
         _logger.LogError(
             "An exception occured.\n" +
+            "Type: {ExceptionType}" +
             "Message: {ExceptionMessage}\n" +
             "Stack trace:{ExceptionStackTrace}",
+            exception.GetType(),
             exception.Message,
             exception.StackTrace
         );
@@ -74,8 +84,10 @@ public class ErrorHandlingMiddleWare : IMiddleware
     {
         var errors = new ModelStateDictionary();
         errors.AddModelError(title, message);
+
         var problemDetails = _problemDetailsFactory
             .CreateValidationProblemDetails(context, errors, statusCode: StatusCodes.Status400BadRequest);
+
         return new ObjectResult(problemDetails);
     }
 }
