@@ -1,4 +1,5 @@
 using System.Text;
+using DocumentsApp.Api.Filters;
 using DocumentsApp.Api.Helpers;
 using DocumentsApp.Api.Helpers.Interfaces;
 using DocumentsApp.Api.MappingProfiles;
@@ -166,21 +167,7 @@ builder.Services.AddSwaggerGen(option =>
             Scheme = "Bearer"
         });
 
-        option.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] { }
-            }
-        });
-        
+        option.OperationFilter<AuthResponsesOperationFilter>();
     }
 );
 
