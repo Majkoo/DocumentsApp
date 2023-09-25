@@ -47,6 +47,7 @@ public class DocumentRepo : IDocumentRepo
     {
         return await _dbContext
             .Documents
+            .Include(d => d.AccessLevels)
             .SingleOrDefaultAsync(d => d.Id == id);
     }
 

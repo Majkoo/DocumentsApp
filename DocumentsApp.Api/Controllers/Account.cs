@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using DocumentsApp.Api.Models;
-using DocumentsApp.Api.Providers;
+﻿using DocumentsApp.Api.Models;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +15,12 @@ namespace DocumentsApp.Api.Controllers;
 public class Account : ControllerBase
 {
     private readonly IAccountService _accountService;
+    private readonly UserManager<Data.Entities.Account> _userManager;
 
-    public Account(IAccountService accountService)
+    public Account(IAccountService accountService, UserManager<Data.Entities.Account> userManager)
     {
         _accountService = accountService;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -28,7 +28,11 @@ public class Account : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAccountDto))]
     public async Task<IActionResult> GetLoggedInUser()
     {
-        return Ok(await _accountService.GetCurrentUserInfo());
+        var userInfo = (await _accountService.GetCurrentUserInfo());
+        var user = await _userManager.FindByIdAsync(userInfo.Id);
+        var newToken = await _userManager.GenerateUserTokenAsync(user, "AccountTokenProvider", "Account");
+        await _userManager.SetAuthenticationTokenAsync(user, "AccountTokenProvider", "Account", newToken);
+        return Ok(newToken);
     }
 
     [HttpPut]

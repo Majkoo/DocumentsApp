@@ -2,6 +2,7 @@ using System.Text;
 using DocumentsApp.Api.Filters;
 using DocumentsApp.Api.Helpers;
 using DocumentsApp.Api.Helpers.Interfaces;
+using DocumentsApp.Api.Hubs;
 using DocumentsApp.Api.MappingProfiles;
 using DocumentsApp.Api.MappingProfiles.ValueResolvers;
 using DocumentsApp.Api.MiddleWare;
@@ -51,6 +52,7 @@ builder.Services.AddIdentity<Account, IdentityRole>(opts =>
         opts.User.RequireUniqueEmail = true;
     })
     .AddEntityFrameworkStores<DocumentsAppDbContext>()
+    .AddTokenProvider("AccountTokenProvider", typeof(DataProtectorTokenProvider<Account>))
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
@@ -114,23 +116,23 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwtConfig.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
         };
-        
+
         options.Events = new JwtBearerEvents
         {
             OnChallenge = async context =>
             {
                 // Call this to skip the default logic and avoid using the default response
                 context.HandleResponse();
-            
+
                 var httpContext = context.HttpContext;
                 var statusCode = StatusCodes.Status401Unauthorized;
-            
+
                 var routeData = httpContext.GetRouteData();
                 var actionContext = new ActionContext(httpContext, routeData, new ActionDescriptor());
-            
+
                 var factory = httpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
                 var problemDetails = factory.CreateProblemDetails(httpContext, statusCode, detail: context.Error);
-            
+
                 var result = new ObjectResult(problemDetails) { StatusCode = statusCode };
                 await result.ExecuteResultAsync(actionContext);
             }
@@ -171,17 +173,21 @@ builder.Services.AddSwaggerGen(option =>
     }
 );
 
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+
     app.UseSwaggerUI(option =>
     {
         option.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         option.EnablePersistAuthorization();
     });
 }
+
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -191,6 +197,10 @@ app.UseAuthorization();
 app.UseMiddleware<LogMiddleWare>();
 app.UseMiddleware<ErrorHandlingMiddleWare>();
 
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<SharedDocumentHub>("/sharedDocumentHub");
+});
 
 app.Run();
