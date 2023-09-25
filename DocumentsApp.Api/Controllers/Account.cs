@@ -33,12 +33,7 @@ public class Account : ControllerBase
     public async Task<IActionResult> GetLoggedInUser()
     {
         var userId = _contextProvider.GetUserId();
-        var userInfo = await _accountService.GetUserInfo(userId);
-        var user = await _userManager.FindByIdAsync(userInfo.Id);
-        var newToken = await _userManager.GenerateUserTokenAsync(user, "AccountTokenProvider", "Account");
-        
-        await _userManager.SetAuthenticationTokenAsync(user, "AccountTokenProvider", "Account", newToken);
-        return Ok(newToken);
+        return Ok(await _accountService.GetUserInfo(userId));
     }
 
     [HttpPut]
