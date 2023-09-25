@@ -6,9 +6,9 @@ namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IDocumentService
 {
-    Task<GetDocumentDto> GetDocumentByIdAsync(string documentId);
-    Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(SieveModel query);
-    Task<GetDocumentDto> AddDocumentAsync(AddDocumentDto dto);
-    Task<GetDocumentDto> UpdateDocumentAsync(string documentId, UpdateDocumentDto dto);
-    Task<bool> DeleteDocumentAsync(string documentId);
+    Task<GetDocumentDto> GetDocumentByIdAsync(string userId, string documentId);
+    Task<PagedResults<GetDocumentDto>> GetAllUserDocumentsAsync(string userId, SieveModel query);
+    Task<GetDocumentDto> AddDocumentAsync(string userId, AddDocumentDto dto);
+    Task<GetDocumentDto> UpdateDocumentAsync(string userId, string documentId, UpdateDocumentDto dto);
+    Task<bool> DeleteDocumentAsync(string userId, string documentId);
 }

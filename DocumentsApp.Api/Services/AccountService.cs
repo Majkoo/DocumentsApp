@@ -1,7 +1,6 @@
 using AutoMapper;
 using DocumentsApp.Api.Helpers.Interfaces;
 using DocumentsApp.Api.Models;
-using DocumentsApp.Api.Providers;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Shared.Dtos.Account;
@@ -12,35 +11,32 @@ namespace DocumentsApp.Api.Services;
 
 public class AccountService : IAccountService
 {
-    private readonly IAuthenticationContextProvider _authenticationContextProvider;
     private readonly UserManager<Account> _userManager;
     private readonly IMailHelper _mailHelper;
     private readonly IMailService _mailService;
     private readonly IMapper _mapper;
 
     public AccountService(
-        IAuthenticationContextProvider authenticationContextProvider,
         UserManager<Account> userManager,
         IMailHelper mailHelper,
         IMailService mailService,
         IMapper mapper)
     {
-        _authenticationContextProvider = authenticationContextProvider;
         _userManager = userManager;
         _mailHelper = mailHelper;
         _mailService = mailService;
         _mapper = mapper;
     }
 
-    public async Task<GetAccountDto> GetCurrentUserInfo()
+    public async Task<GetAccountDto> GetUserInfo(string id)
     {
-        var user = await GetUserFromContextAsync();
+        var user = await GetUserByIdAsync(id);
         return _mapper.Map<GetAccountDto>(user);
     }
 
-    public async Task<bool> UpdateUserNameAsync(UpdateUserNameDto dto)
+    public async Task<bool> UpdateUserNameAsync(string id, UpdateUserNameDto dto)
     {
-        var user = await GetUserFromContextAsync();
+        var user = await GetUserByIdAsync(id);
 
         if (!await _userManager.CheckPasswordAsync(user, dto.Password))
             throw new UnauthorizedException("Invalid login credentials");
@@ -53,9 +49,9 @@ public class AccountService : IAccountService
         return CheckResult(await _userManager.UpdateAsync(user), "UpdateUserName", "Failed to update username");
     }
 
-    public async Task<bool> UpdatePasswordAsync(UpdatePasswordDto dto)
+    public async Task<bool> UpdatePasswordAsync(string id, UpdatePasswordDto dto)
     {
-        var user = await GetUserFromContextAsync();
+        var user = await GetUserByIdAsync(id);
 
         if (await _userManager.CheckPasswordAsync(user, dto.NewPassword))
             throw new BadRequestException("UpdatePassword", "New password must be different from the old one");
@@ -152,10 +148,9 @@ public class AccountService : IAccountService
         return result.Succeeded;
     }
 
-    private async Task<Account> GetUserFromContextAsync()
+    private async Task<Account> GetUserByIdAsync(string id)
     {
-        var userId = _authenticationContextProvider.GetUserId();
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(id);
 
         if (user is null) throw new NotFoundException("No user found in context");
 

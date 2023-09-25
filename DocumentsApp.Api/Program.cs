@@ -174,6 +174,7 @@ builder.Services.AddSwaggerGen(option =>
 );
 
 builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

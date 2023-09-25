@@ -20,7 +20,6 @@ public class ShareDocumentService : IShareDocumentService
     private readonly IDocumentRepo _documentRepo;
     private readonly IAccessLevelRepo _accessLevelRepo;
     private readonly ISieveProcessor _sieveProcessor;
-    private readonly IAuthenticationContextProvider _authenticationContextProvider;
     private readonly IAccountRepo _accountRepo;
 
     public ShareDocumentService(
@@ -28,7 +27,6 @@ public class ShareDocumentService : IShareDocumentService
         IDocumentRepo documentRepo,
         ISieveProcessor sieveProcessor,
         IAccessLevelRepo accessLevelRepo,
-        IAuthenticationContextProvider authenticationContextProvider,
         IAccountRepo accountRepo
     )
     {
@@ -36,32 +34,33 @@ public class ShareDocumentService : IShareDocumentService
         _documentRepo = documentRepo;
         _accessLevelRepo = accessLevelRepo;
         _sieveProcessor = sieveProcessor;
-        _authenticationContextProvider = authenticationContextProvider;
         _accountRepo = accountRepo;
     }
 
-    public async Task<PagedResults<GetAccessLevelDto>> GetAllDocumentSharesAsync(string documentId, SieveModel query)
+    public async Task<PagedResults<GetAccessLevelDto>> GetAllDocumentSharesAsync(string userId, string documentId,
+        SieveModel query)
     {
-        var userId = _authenticationContextProvider.GetUserId();
         var document = await FindDocumentAsync(documentId);
         if (document.AccountId != userId)
             throw new UnauthorizedException("Only document owner can view its shares");
         var shares = _accessLevelRepo.GetAllDocumentAccessLevelsAsync(documentId);
-        var result = await _sieveProcessor.Apply(query, shares).Select(a => _mapper.Map<GetAccessLevelDto>(a))
+        var result = await _sieveProcessor
+            .Apply(query, shares)
+            .Select(a => _mapper.Map<GetAccessLevelDto>(a))
             .ToListAsync();
-        
-        if(result.Count == 0)
+
+        if (result.Count == 0)
             throw new NotFoundException("Document has no shares");
-        
+
         return new PagedResults<GetAccessLevelDto>(
             result,
             shares.Count(),
             query.PageSize.GetValueOrDefault(),
             query.Page.GetValueOrDefault());
     }
-    public async Task<PagedResults<GetDocumentDto>> GetAllSharedDocumentsAsync(SieveModel query)
+
+    public async Task<PagedResults<GetDocumentDto>> GetAllUserSharedDocumentsAsync(string userId, SieveModel query)
     {
-        var userId = _authenticationContextProvider.GetUserId();
         var documents = _documentRepo.GetAllSharedDocumentsAsQueryable(userId);
 
         var resultDocuments = await _sieveProcessor
@@ -79,9 +78,9 @@ public class ShareDocumentService : IShareDocumentService
             query.Page.GetValueOrDefault());
     }
 
-    public async Task<ShareDocumentDto> ShareDocumentAsync(string documentId, ShareDocumentDto dto)
+    public async Task<ShareDocumentDto> ShareDocumentAsync(string ownerId, string documentId, ShareDocumentDto dto)
     {
-        await CheckIfUserAuthorizedAsync(documentId, "User is not authorized to share this document");
+        await CheckIfUserAuthorizedAsync(ownerId, documentId, "User is not authorized to share this document");
         var document = await FindDocumentAsync(documentId);
         var shareToUser = await FindShareToUserAsync(dto.ShareToNameOrEmail);
 
@@ -104,9 +103,9 @@ public class ShareDocumentService : IShareDocumentService
         return dto;
     }
 
-    public async Task<ShareDocumentDto> UpdateShareAsync(string documentId, ShareDocumentDto dto)
+    public async Task<ShareDocumentDto> UpdateShareAsync(string ownerId, string documentId, ShareDocumentDto dto)
     {
-        await CheckIfUserAuthorizedAsync(documentId,"User is not authorized to edit sharing of this document");
+        await CheckIfUserAuthorizedAsync(ownerId, documentId, "User is not authorized to edit sharing of this document");
         var shareToUser = await FindShareToUserAsync(dto.ShareToNameOrEmail);
 
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(shareToUser.Id, documentId);
@@ -114,15 +113,15 @@ public class ShareDocumentService : IShareDocumentService
             throw new BadRequestException("UpdateShare", "Document is not shared to this user");
 
         accessLevel.AccessLevelEnum = dto.AccessLevelEnum;
-        
+
         await _accessLevelRepo.UpdateDocumentAccessLevelAsync(accessLevel);
 
         return dto;
     }
 
-    public async Task<bool> UnShareDocumentAsync(string documentId, string userName)
+    public async Task<bool> UnShareDocumentAsync(string ownerId, string documentId, string userName)
     {
-        await CheckIfUserAuthorizedAsync(documentId, "User is not authorized to unshare this document");
+        await CheckIfUserAuthorizedAsync(ownerId, documentId, "User is not authorized to unshare this document");
         var shareToUser = await FindShareToUserAsync(userName);
 
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(shareToUser.Id, documentId);
@@ -143,9 +142,8 @@ public class ShareDocumentService : IShareDocumentService
         return foundDocument;
     }
 
-    private async Task CheckIfUserAuthorizedAsync(string documentId, string message)
+    private async Task CheckIfUserAuthorizedAsync(string userId, string documentId, string message)
     {
-        var userId = _authenticationContextProvider.GetUserId();
         var document = await FindDocumentAsync(documentId);
         if (document.AccountId != userId)
             throw new UnauthorizedException(message);

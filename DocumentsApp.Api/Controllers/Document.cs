@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using DocumentsApp.Api.Providers;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Shared.Dtos;
 using DocumentsApp.Shared.Dtos.AccessLevel;
@@ -20,13 +21,16 @@ public class Document : ControllerBase
 {
     private readonly IDocumentService _documentService;
     private readonly IShareDocumentService _shareDocumentService;
+    private readonly IAuthenticationContextProvider _authenticationContextProvider;
 
     public Document(
         IDocumentService documentService,
-        IShareDocumentService shareDocumentService)
+        IShareDocumentService shareDocumentService
+        ,IAuthenticationContextProvider authenticationContextProvider)
     {
         _documentService = documentService;
         _shareDocumentService = shareDocumentService;
+        _authenticationContextProvider = authenticationContextProvider;
     }
 
     [HttpGet]
@@ -36,7 +40,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromRoute] string id)
     {
-        return Ok(await _documentService.GetDocumentByIdAsync(id));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _documentService.GetDocumentByIdAsync(userId, id));
     }
 
     [HttpGet]
@@ -45,7 +50,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll([FromQuery] SieveModel query)
     {
-        return Ok(await _documentService.GetAllDocumentsAsync(query));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _documentService.GetAllUserDocumentsAsync(userId, query));
     }
 
     [HttpPost]
@@ -53,7 +59,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> Create([FromBody] AddDocumentDto dto)
     {
-        var document = await _documentService.AddDocumentAsync(dto);
+        var userId = _authenticationContextProvider.GetUserId();
+        var document = await _documentService.AddDocumentAsync(userId, dto);
         return Created($"/api/restaurant/{document.Id}", document);
     }
 
@@ -64,7 +71,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateDocumentDto dto)
     {
-        return Ok(await _documentService.UpdateDocumentAsync(id, dto));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _documentService.UpdateDocumentAsync(userId, id, dto));
     }
 
     [HttpDelete]
@@ -73,7 +81,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
-        return Ok(await _documentService.DeleteDocumentAsync(id));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _documentService.DeleteDocumentAsync(userId, id));
     }
 
     [HttpGet]
@@ -83,7 +92,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllShared([FromQuery] SieveModel query)
     {
-        return Ok(await _shareDocumentService.GetAllSharedDocumentsAsync(query));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _shareDocumentService.GetAllUserSharedDocumentsAsync(userId, query));
     }
     
     [HttpGet]
@@ -93,7 +103,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllDocumentShares([FromRoute] string id, [FromQuery] SieveModel query)
     {
-        return Ok(await _shareDocumentService.GetAllDocumentSharesAsync(id, query));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _shareDocumentService.GetAllDocumentSharesAsync(userId, id, query));
     }
 
     [HttpPost]
@@ -103,7 +114,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Share([FromRoute] string id, [FromBody] ShareDocumentDto dto)
     {
-        return Ok(await _shareDocumentService.ShareDocumentAsync(id, dto));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _shareDocumentService.ShareDocumentAsync(userId, id, dto));
     }
 
     [HttpPut]
@@ -113,7 +125,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateShare([FromRoute] string id, [FromBody] ShareDocumentDto dto)
     {
-        return Ok(await _shareDocumentService.UpdateShareAsync(id, dto));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _shareDocumentService.UpdateShareAsync(userId, id, dto));
     }
 
     [HttpDelete]
@@ -122,7 +135,8 @@ public class Document : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UnShare([FromRoute] string id, [FromBody] string userName)
     {
-        return Ok(await _shareDocumentService.UnShareDocumentAsync(id, userName));
+        var userId = _authenticationContextProvider.GetUserId();
+        return Ok(await _shareDocumentService.UnShareDocumentAsync(userId, id, userName));
     }
 
 }

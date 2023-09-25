@@ -7,9 +7,9 @@ namespace DocumentsApp.Api.Services.Interfaces;
 
 public interface IAccountService
 {
-    Task<GetAccountDto> GetCurrentUserInfo();
-    Task<bool> UpdateUserNameAsync(UpdateUserNameDto dto);
-    Task<bool> UpdatePasswordAsync(UpdatePasswordDto dto);
+    Task<GetAccountDto> GetUserInfo(string id);
+    Task<bool> UpdateUserNameAsync(string id, UpdateUserNameDto dto);
+    Task<bool> UpdatePasswordAsync(string id, UpdatePasswordDto dto);
 
     Task<bool> SubmitEmailConfirmationAsync(string email);
     Task<bool> SubmitPasswordResetAsync(string email);

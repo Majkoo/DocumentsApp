@@ -1,4 +1,5 @@
 ﻿using DocumentsApp.Api.Models;
+using DocumentsApp.Api.Providers;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Shared.Dtos.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,14 @@ public class Account : ControllerBase
 {
     private readonly IAccountService _accountService;
     private readonly UserManager<Data.Entities.Account> _userManager;
+    private readonly IAuthenticationContextProvider _contextProvider;
 
-    public Account(IAccountService accountService, UserManager<Data.Entities.Account> userManager)
+    public Account(IAccountService accountService, UserManager<Data.Entities.Account> userManager,
+        IAuthenticationContextProvider contextProvider)
     {
         _accountService = accountService;
         _userManager = userManager;
+        _contextProvider = contextProvider;
     }
 
     [HttpGet]
@@ -28,9 +32,11 @@ public class Account : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAccountDto))]
     public async Task<IActionResult> GetLoggedInUser()
     {
-        var userInfo = (await _accountService.GetCurrentUserInfo());
+        var userId = _contextProvider.GetUserId();
+        var userInfo = await _accountService.GetUserInfo(userId);
         var user = await _userManager.FindByIdAsync(userInfo.Id);
         var newToken = await _userManager.GenerateUserTokenAsync(user, "AccountTokenProvider", "Account");
+        
         await _userManager.SetAuthenticationTokenAsync(user, "AccountTokenProvider", "Account", newToken);
         return Ok(newToken);
     }
@@ -41,18 +47,20 @@ public class Account : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> UpdateUserName([FromBody] UpdateUserNameDto dto)
     {
-        return Ok(await _accountService.UpdateUserNameAsync(dto));
+        var userId = _contextProvider.GetUserId();
+        return Ok(await _accountService.UpdateUserNameAsync(userId, dto));
     }
-    
+
     [HttpPut]
     [Route("UpdatePassword")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> UpdateUserName([FromBody] UpdatePasswordDto dto)
     {
-        return Ok(await _accountService.UpdatePasswordAsync(dto));
+        var userId = _contextProvider.GetUserId();
+        return Ok(await _accountService.UpdatePasswordAsync(userId, dto));
     }
-    
+
     [AllowAnonymous]
     [HttpPost]
     [Route("SubmitEmailConfirmation")]
@@ -62,7 +70,7 @@ public class Account : ControllerBase
     {
         return Ok(await _accountService.SubmitEmailConfirmationAsync(email));
     }
-    
+
     [AllowAnonymous]
     [HttpPost]
     [Route("ConfirmEmail")]
@@ -72,7 +80,7 @@ public class Account : ControllerBase
     {
         return Ok(await _accountService.ConfirmEmailAsync(data));
     }
-    
+
     [AllowAnonymous]
     [HttpPost]
     [Route("SubmitPasswordReset")]
@@ -82,7 +90,7 @@ public class Account : ControllerBase
     {
         return Ok(await _accountService.SubmitPasswordResetAsync(email));
     }
-    
+
     [AllowAnonymous]
     [HttpPost]
     [Route("ResetPassword")]

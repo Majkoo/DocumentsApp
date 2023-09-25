@@ -1,7 +1,7 @@
-using DocumentsApp.Api.Providers;
+using System.Security.Claims;
 using DocumentsApp.Api.Services.Interfaces;
-using DocumentsApp.Shared.Dtos.AccessLevel;
 using DocumentsApp.Shared.Dtos.Document;
+using DocumentsApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -11,39 +11,36 @@ namespace DocumentsApp.Api.Hubs;
 public class SharedDocumentHub : Hub
 {
     private readonly IDocumentService _documentService;
-    private readonly IAuthenticationContextProvider _contextProvider;
 
-    public SharedDocumentHub(IDocumentService documentService, IAuthenticationContextProvider contextProvider)
+    public SharedDocumentHub(IDocumentService documentService)
     {
         _documentService = documentService;
-        
-        _contextProvider = contextProvider;
-    }
-    
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        var documentId = Context.GetHttpContext()?.Request.Query["id"];
-        //TODO save to db at disconnect
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, documentId);
-        await base.OnDisconnectedAsync(exception);
     }
 
     public async Task Subscribe(string documentId)
     {
-        // check document and access
-        await _documentService.GetDocumentByIdAsync(documentId);
+        await _documentService.GetDocumentByIdAsync(GetUserId(), documentId);
         await Groups.AddToGroupAsync(Context.ConnectionId, documentId);
     }
 
-    public async Task UpdateDocument(string documentId, string content)
+    public async Task Broadcast(string documentId, string content)
     {
-        await Clients.OthersInGroup(documentId).SendAsync("GetUpdate", content);
-
         var updated = new UpdateDocumentDto()
         {
             Content = content
         };
-        
-        await _documentService.UpdateDocumentAsync(documentId, updated);
+
+        await _documentService.UpdateDocumentAsync(GetUserId(), documentId, updated);
+        await Clients.OthersInGroup(documentId).SendAsync("GetUpdate", content);
     }
+
+    #region private methods
+
+    private string GetUserId()
+    {
+        return Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) ??
+               throw new UnauthorizedException("Invalid token");
+    }
+
+    #endregion
 }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using DocumentsApp.Shared.Exceptions;
 
 namespace DocumentsApp.Api.Providers;
 
@@ -13,20 +14,21 @@ public class AuthenticationContextProvider : IAuthenticationContextProvider
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string? GetUserId()
+    public string GetUserId()
     {
-        return _httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-    }
-    
-    public string? GetUserEmail()
-    {
-        return _httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+        return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+               throw new UnauthorizedException("Invalid token");
     }
 
-    public string? GetUserName()
+    public string GetUserEmail()
     {
-        return _httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
-
+        return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email) ??
+               throw new UnauthorizedException("Invalid token");
     }
 
+    public string GetUserName()
+    {
+        return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name) ??
+               throw new UnauthorizedException("Invalid token");
+    }
 }

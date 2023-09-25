@@ -25,7 +25,6 @@ public class DocumentServiceTests
 
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(expected);
-        var authProviderMock = GetAuthProviderMock(userId);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -36,11 +35,11 @@ public class DocumentServiceTests
 
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
         
         //act 
 
-        var result = await documentService.GetDocumentByIdAsync(document.Id);
+        var result = await documentService.GetDocumentByIdAsync(userId, document.Id);
 
         // assert
 
@@ -56,7 +55,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
-        var authProviderMock = GetAuthProviderMock(userId);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -67,11 +65,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.GetDocumentByIdAsync(null);
+        var result = async () => await documentService.GetDocumentByIdAsync(userId, null);
         
         // assert
 
@@ -85,7 +83,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
-        var authProviderMock = GetAuthProviderMock(null);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -96,11 +93,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.GetDocumentByIdAsync(null);
+        var result = async () => await documentService.GetDocumentByIdAsync(null, null);
         
         // assert
 
@@ -117,7 +114,6 @@ public class DocumentServiceTests
 
         // init mocks
         var autoMapperMock = GetMapperMock<Document, UpdateDocumentDto>(document);
-        var authProviderMock = GetAuthProviderMock(userId);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -129,11 +125,11 @@ public class DocumentServiceTests
 
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
         
         //act 
 
-        var result = async () => await documentService.UpdateDocumentAsync(documentId, dto);
+        var result = async () => await documentService.UpdateDocumentAsync(userId, documentId, dto);
 
         // assert
 
@@ -149,7 +145,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<Document, UpdateDocumentDto>(document);
-        var authProviderMock = GetAuthProviderMock(userId);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -160,11 +155,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.UpdateDocumentAsync(documentId, dto);
+        var result = async () => await documentService.UpdateDocumentAsync(userId, documentId, dto);
         
         // assert
 
@@ -190,11 +185,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.UpdateDocumentAsync(null, null);
+        var result = async () => await documentService.UpdateDocumentAsync(null, null, null);
         
         // assert
 
@@ -210,7 +205,6 @@ public class DocumentServiceTests
 
         // init mocks
         var autoMapperMock = GetMapperMock<Document, UpdateDocumentDto>(document);
-        var authProviderMock = GetAuthProviderMock(userId);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -222,11 +216,11 @@ public class DocumentServiceTests
 
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
         
         //act 
 
-        var result = async () => await documentService.DeleteDocumentAsync(documentId);
+        var result = async () => await documentService.DeleteDocumentAsync(userId, documentId);
 
         // assert
 
@@ -253,11 +247,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.DeleteDocumentAsync(documentId);
+        var result = async () => await documentService.DeleteDocumentAsync(null, documentId);
         
         // assert
 
@@ -271,7 +265,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
-        var authProviderMock = GetAuthProviderMock(null);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         
@@ -283,11 +276,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
 
         //act 
 
-        var result = async () => await documentService.DeleteDocumentAsync(null);
+        var result = async () => await documentService.DeleteDocumentAsync(null, null);
         
         // assert
 
@@ -317,7 +310,6 @@ public class DocumentServiceTests
 
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(expected);
-        var authProviderMock = GetAuthProviderMock(null);
         var documentRepoMock = new Mock<IDocumentRepo>();
         
         //setup mocks
@@ -326,11 +318,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, null,
-            null, authProviderMock.Object);
+            null);
         
         //act 
 
-        var result = await documentService.AddDocumentAsync(addDocument);
+        var result = await documentService.AddDocumentAsync(null, addDocument);
 
         // assert
 
@@ -352,7 +344,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(new GetDocumentDto());
-        var authProviderMock = GetAuthProviderMock(null);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         var sieveMock = new Mock<ISieveProcessor>();
@@ -364,11 +355,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, sieveMock.Object,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
         
         // act
 
-        var result = async () => await documentService.GetAllDocumentsAsync(new SieveModel());
+        var result = async () => await documentService.GetAllUserDocumentsAsync(null, new SieveModel());
         
         // assert
 
@@ -387,7 +378,6 @@ public class DocumentServiceTests
         
         // init mocks
         var autoMapperMock = GetMapperMock<GetDocumentDto, Document>(null);
-        var authProviderMock = GetAuthProviderMock(null);
         var documentRepoMock = new Mock<IDocumentRepo>();
         var accessLevelRepoMock = new Mock<IAccessLevelRepo>();
         var sieveMock = new Mock<ISieveProcessor>();
@@ -399,11 +389,11 @@ public class DocumentServiceTests
         
         //tested service
         var documentService = new DocumentService(autoMapperMock.Object, documentRepoMock.Object, sieveMock.Object,
-            accessLevelRepoMock.Object, authProviderMock.Object);
+            accessLevelRepoMock.Object);
         
         // act
 
-        var result = async () => await documentService.GetAllDocumentsAsync(new SieveModel());
+        var result = async () => await documentService.GetAllUserDocumentsAsync(null, new SieveModel());
         
         // assert
 

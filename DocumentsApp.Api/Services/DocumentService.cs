@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentsApp.Api.Providers;
 using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
 using DocumentsApp.Data.Repos.Interfaces;
@@ -19,40 +18,35 @@ public class DocumentService : IDocumentService
     private readonly IDocumentRepo _documentRepo;
     private readonly IAccessLevelRepo _accessLevelRepo;
     private readonly ISieveProcessor _sieveProcessor;
-    private readonly IAuthenticationContextProvider _authenticationContextProvider;
 
     public DocumentService(
         IMapper mapper,
         IDocumentRepo documentRepo,
         ISieveProcessor sieveProcessor,
-        IAccessLevelRepo accessLevelRepo,
-        IAuthenticationContextProvider authenticationContextProvider
+        IAccessLevelRepo accessLevelRepo
     )
     {
         _mapper = mapper;
         _documentRepo = documentRepo;
         _accessLevelRepo = accessLevelRepo;
         _sieveProcessor = sieveProcessor;
-        _authenticationContextProvider = authenticationContextProvider;
     }
 
-    public async Task<GetDocumentDto> GetDocumentByIdAsync(string documentId)
+    public async Task<GetDocumentDto> GetDocumentByIdAsync(string userId, string documentId)
     {
         var document = await SearchDocumentDbAsync(documentId);
-        var accountId = _authenticationContextProvider.GetUserId();
-        var documentAccessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(accountId, document.Id);
+        var documentAccessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(userId, document.Id);
 
-        if (documentAccessLevel is null && document.AccountId != accountId)
+        if (documentAccessLevel is null && document.AccountId != userId)
             throw new UnauthorizedException("User does not have access to this file");
                 
         var resultDocument = _mapper.Map<GetDocumentDto>(document);
         return resultDocument;
     }
 
-    public async Task<PagedResults<GetDocumentDto>> GetAllDocumentsAsync(SieveModel query)
+    public async Task<PagedResults<GetDocumentDto>> GetAllUserDocumentsAsync(string userId, SieveModel query)
     {
-        var accountId = _authenticationContextProvider.GetUserId();
-        var documents = _documentRepo.GetAllUserDocumentsAsQueryable(accountId);
+        var documents = _documentRepo.GetAllUserDocumentsAsQueryable(userId);
 
         var resultDocuments = await _sieveProcessor
             .Apply(query, documents)
@@ -69,20 +63,19 @@ public class DocumentService : IDocumentService
             query.Page.GetValueOrDefault());
     }
 
-    public async Task<GetDocumentDto> AddDocumentAsync(AddDocumentDto dto)
+    public async Task<GetDocumentDto> AddDocumentAsync(string userId, AddDocumentDto dto)
     {
         var document = _mapper.Map<Document>(dto);
-        document.AccountId = _authenticationContextProvider.GetUserId();
+        document.AccountId = userId;
         
         var result = await _documentRepo.InsertDocumentAsync(document);
         
         return _mapper.Map<GetDocumentDto>(result);
     }
 
-    public async Task<GetDocumentDto> UpdateDocumentAsync(string documentId, UpdateDocumentDto dto)
+    public async Task<GetDocumentDto> UpdateDocumentAsync(string userId, string documentId, UpdateDocumentDto dto)
     {
         var document = await SearchDocumentDbAsync(documentId);
-        var userId = _authenticationContextProvider.GetUserId();
         var accessLevel = await _accessLevelRepo.GetDocumentAccessLevelAsync(userId, documentId);
 
         if (document.AccountId != userId && accessLevel?.AccessLevelEnum != AccessLevelEnum.Write)
@@ -95,11 +88,9 @@ public class DocumentService : IDocumentService
         return _mapper.Map<GetDocumentDto>(result);
     }
 
-    public async Task<bool> DeleteDocumentAsync(string documentId)
+    public async Task<bool> DeleteDocumentAsync(string userId, string documentId)
     {
         var document = await SearchDocumentDbAsync(documentId);
-        var userId = _authenticationContextProvider.GetUserId();
-        
         if (document.AccountId != userId)
             throw new UnauthorizedException("User is not authorized to delete this document");
 
