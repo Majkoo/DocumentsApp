@@ -1,5 +1,5 @@
-using DocumentsApp.Data.Services.Interfaces;
-using DocumentsApp.Shared.Configurations;
+using DocumentsApp.Api.Models;
+using DocumentsApp.Api.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
@@ -9,18 +9,35 @@ namespace DocumentsApp.Api.Services;
 
 public class MailService : IMailService
 {
-    private readonly MailSettings _settings;
+    private readonly MailConfig _config;
 
-    public MailService(IOptions<MailSettings> settings)
+    public MailService(IOptions<MailConfig> settings)
     {
-        _settings = settings.Value;
+        _config = settings.Value;
     }
+
     public void SendMessageAsync(MimeMessage message)
     {
         using var smtp = new SmtpClient();
-        smtp.Connect(_settings.Host, _settings.Port,
-            _settings.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect);
-        smtp.Authenticate(_settings.UserName, _settings.Password);
+        if (_config.UseSsl)
+        {
+            try
+            {
+                smtp.Connect(_config.Host, _config.Port,
+                    _config.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect);
+            }
+            catch (NotSupportedException)
+            {
+                smtp.Connect(_config.Host, _config.Port, SecureSocketOptions.SslOnConnect);
+                throw;
+            }
+        }
+        else
+        {
+            smtp.Connect(_config.Host, _config.Port, SecureSocketOptions.None);
+        }
+
+        smtp.Authenticate(_config.UserName, _config.Password);
         smtp.Send(message);
         smtp.Disconnect(true);
     }

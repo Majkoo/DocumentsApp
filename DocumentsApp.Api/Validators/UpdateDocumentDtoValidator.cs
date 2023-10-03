@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace DocumentsApp.Api.Validators;
 
-public class AddDocumentDtoValidator : AbstractValidator<AddDocumentDto>
+public class UpdateDocumentDtoValidator : AbstractValidator<UpdateDocumentDto>
 {
-    public AddDocumentDtoValidator()
+    public UpdateDocumentDtoValidator()
     {
         RuleFor(d => d.Name)
             .NotEmpty()

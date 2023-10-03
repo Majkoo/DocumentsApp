@@ -2,5 +2,10 @@
 
 public class BadRequestException : Exception
 {
-    public BadRequestException(string message) : base(message){}
+    public string Title { get; set; }
+
+    public BadRequestException(string title, string message) : base(message)
+    {
+        Title = title;
+    }
 }

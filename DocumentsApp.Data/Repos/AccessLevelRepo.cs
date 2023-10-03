@@ -13,11 +13,12 @@ public class AccessLevelRepo : IAccessLevelRepo
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<DocumentAccessLevel>> GetAllDocumentAccessLevelsAsync(string userId)
+    public IQueryable<DocumentAccessLevel> GetAllDocumentAccessLevelsAsync(string documentId)
     {
-        return await _dbContext.DocumentAccessLevels
-            .Where(a => a.AccountId == userId)
-            .ToListAsync();
+        return _dbContext.DocumentAccessLevels
+            .Include(a => a.Account)
+            .Where(a => a.DocumentId == documentId)
+            .AsQueryable();
     }
 
     public async Task<DocumentAccessLevel> GetDocumentAccessLevelAsync(string userId, string documentId)
@@ -49,7 +50,6 @@ public class AccessLevelRepo : IAccessLevelRepo
     public async Task<bool> RemoveDocumentAccessLevelAsync(DocumentAccessLevel documentAccessLevel)
     {
         _dbContext.DocumentAccessLevels.Remove(documentAccessLevel);
-
         return await _dbContext.SaveChangesAsync() > 0;
     }
 

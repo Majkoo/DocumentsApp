@@ -1,6 +1,6 @@
 using System.Collections;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 
 namespace DocumentsApp.Tests.DocumentsApp.Data.AutoMapperTests;
 

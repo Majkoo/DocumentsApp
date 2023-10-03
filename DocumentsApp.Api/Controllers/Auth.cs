@@ -1,11 +1,15 @@
-﻿using DocumentsApp.Api.Helpers.Interfaces;
+﻿using System.Net.Mime;
+using DocumentsApp.Api.Helpers.Interfaces;
 using DocumentsApp.Shared.Dtos.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsApp.Api.Controllers;
 
 [ApiController]
-[Route("Auth")]
+[Route("[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 public class Auth : ControllerBase
 {
     private readonly IAuthHelper _authHelper;
@@ -17,6 +21,8 @@ public class Auth : ControllerBase
 
     [HttpPost]
     [Route("SignIn")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JwtDataDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> SignIn([FromBody] LoginDto loginDto)
     {
         return Ok(await _authHelper.SignIn(loginDto));
@@ -24,6 +30,8 @@ public class Auth : ControllerBase
     
     [HttpPost]
     [Route("SignUp")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Boolean))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
     public async Task<IActionResult> SignUp([FromBody] RegisterDto registerDto)
     {
         return Ok(await _authHelper.SignUp(registerDto));
@@ -31,6 +39,7 @@ public class Auth : ControllerBase
     
     [HttpPost]
     [Route("RefreshToken")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(JwtDataDto))]
     public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
     {
         return Ok(await _authHelper.RefreshToken(refreshToken));

@@ -1,10 +1,10 @@
 using DocumentsApp.Shared.Enums;
 
-namespace DocumentsApp.Data.Dtos.ShareDocumentDtos;
+namespace DocumentsApp.Shared.Dtos.ShareDocument;
 
 public class ShareDocumentDto
 {
-    public string SharedToUserName { get; set; }
+    public string ShareToNameOrEmail { get; set; } = null!;
     
     public AccessLevelEnum AccessLevelEnum { get; set; }
 }

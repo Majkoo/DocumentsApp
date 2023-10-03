@@ -6,28 +6,22 @@ namespace DocumentsApp.Api.Validators;
 
 public class SieveModelValidator : AbstractValidator<SieveModel>
 {
-    private readonly int[] _allowedPageSizes = { 5, 10, 15 };
-
-    private readonly string[] _allowedSortValues = 
+    private readonly string[] _allowedSortValues =
         { nameof(Document.Name), nameof(Document.DateCreated), nameof(Document.Account.UserName) };
-    
+
     public SieveModelValidator()
     {
-        RuleFor(s => s.PageSize)
-            .Custom((value, context) =>
-            {
-                if (!_allowedPageSizes.Contains(value.GetValueOrDefault()))
-                {
-                    context.AddFailure("PageSize", $"Page Size must be in [{string.Join(",", _allowedPageSizes)}]");
-                }
-            });
-        
-        RuleFor(s => s.Page)
+        RuleFor(d => d.PageSize)
+            .NotNull()
+            .LessThanOrEqualTo(500);
+
+        RuleFor(d => d.Page)
+            .NotNull()
             .GreaterThanOrEqualTo(1);
-        
-        RuleFor(s=>s.Sorts)
+
+        RuleFor(d => d.Sorts)
             .Must(value => string.IsNullOrEmpty(value) || _allowedSortValues.Contains(value) ||
-                           _allowedSortValues.Contains(value.Remove(0,1)))
-            .WithMessage($"Sorts is optional or must be in [{string.Join(",", _allowedSortValues)}] or negative");
+                           _allowedSortValues.Contains(value.Remove(0, 1)))
+            .WithMessage($"Sorts must be empty or in (-)[{string.Join(",", _allowedSortValues)}]");
     }
 }

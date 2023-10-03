@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.6.23329.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
           <PrivateAssets>all</PrivateAssets>
@@ -19,6 +20,13 @@
     <ItemGroup>
         <ProjectReference Include="..\DocumentsApp.Data\DocumentsApp.Data.csproj" />
         <ProjectReference Include="..\DocumentsApp.Shared\DocumentsApp.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Services\EncryptionKeyGenerator.cs" />
+      <Compile Remove="Services\EncryptionKeyService.cs" />
+      <Compile Remove="Services\Interfaces\IAesCipher.cs" />
+      <Compile Remove="Services\Interfaces\IEncryptionKeyService.cs" />
     </ItemGroup>
     
 

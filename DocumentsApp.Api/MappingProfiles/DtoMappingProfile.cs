@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using DocumentsApp.Api.MappingProfiles.ValueResolvers;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.MappingProfiles.ValueResolvers;
-using DocumentsApp.Shared.Dtos.AccountDtos;
+using DocumentsApp.Shared.Dtos.AccessLevel;
+using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Dtos.Auth;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 
-namespace DocumentsApp.Data.MappingProfiles;
+namespace DocumentsApp.Api.MappingProfiles;
 
 public class DtoMappingProfile : Profile
 {
@@ -29,5 +30,11 @@ public class DtoMappingProfile : Profile
 
         CreateMap<UpdateDocumentDto, Document>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcM) => srcM != null));
+
+        CreateMap<DocumentAccessLevel, GetAccessLevelDto>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.Account.Email));
+
+        CreateMap<Account, GetAccountDto>();
     }
 }

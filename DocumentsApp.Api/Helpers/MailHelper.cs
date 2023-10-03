@@ -1,5 +1,5 @@
 using DocumentsApp.Api.Helpers.Interfaces;
-using DocumentsApp.Shared.Configurations;
+using DocumentsApp.Api.Models;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
@@ -8,18 +8,21 @@ namespace DocumentsApp.Api.Helpers;
 
 public class MailHelper : IMailHelper
 {
-    private readonly MailSettings _settings;
+    private readonly MailConfig _config;
 
-    public MailHelper(IOptions<MailSettings> settings)
+    public MailHelper(IOptions<MailConfig> settings)
     {
-        _settings = settings.Value;
+        _config = settings.Value;
     }
 
-    public MimeMessage GetEmailConfirmationMessage(string userEmail, string encryptedCredentials)
+    public MimeMessage GetEmailConfirmationMessage(string userEmail, AccountSecurityData accountSecurityData)
     {
-        var link = Path.
-            Combine(_settings.BaseUrl!, $"/auth/confirmemail?encrypted={Uri.EscapeDataString(encryptedCredentials)}"
-            );
+        var uriBuilder = new UriBuilder()
+        {
+            Host = _config.BaseUrl,
+            Path = _config.ConfirmEmailUrl,
+            Query = $"id={accountSecurityData.AccountId}&token={accountSecurityData.Token}"
+        };
 
         const string subject = "DocumentsApp Email Confirmation";
         var html =
@@ -33,7 +36,7 @@ public class MailHelper : IMailHelper
                 <body>
                     <h3>Welcome to DocumentsApp!</h3>
                     <p>
-                        <a href=""{link}"">Click here</a>
+                        <a href=""{uriBuilder.Uri}"">Click here</a>
                         to confirm your email.
                     </p>
                 </body>
@@ -42,12 +45,15 @@ public class MailHelper : IMailHelper
         return CreateMessage(userEmail, html, subject);
     }
 
-    public MimeMessage GetPasswordResetMessage(string userEmail, string encryptedCredentials)
+    public MimeMessage GetPasswordResetMessage(string userEmail, AccountSecurityData accountSecurityData)
     {
-        var link = Path.
-            Combine(_settings.BaseUrl!, $"/auth/confirmemail?encrypted={Uri.EscapeDataString(encryptedCredentials)}"
-            );
-        
+        var uriBuilder = new UriBuilder()
+        {
+            Host = _config.BaseUrl,
+            Path = _config.ConfirmEmailUrl,
+            Query = $"id={accountSecurityData.AccountId}&token={accountSecurityData.Token}"
+        };
+
         const string subject = "DocumentsApp Password Reset";
         var html =
             @$"<!DOCTYPE html>
@@ -60,7 +66,7 @@ public class MailHelper : IMailHelper
                 <body>
                     <h3>DocumentsApp password reset</h3>
                     <p>
-                        <a href=""{link}"">Click here</a>
+                        <a href=""{uriBuilder.Uri}"">Click here</a>
                         to reset your password.
                     </p>
                     <p>If you didn't request this password reset, contact service administrators.</p>
@@ -73,7 +79,7 @@ public class MailHelper : IMailHelper
     private MimeMessage CreateMessage(string userEmail, string html, string subject)
     {
         var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(_settings.From));
+        message.From.Add(MailboxAddress.Parse(_config.From));
         message.To.Add(MailboxAddress.Parse(userEmail));
         message.Subject = subject;
         message.Body = new TextPart(TextFormat.Html) { Text = html };

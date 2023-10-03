@@ -1,14 +1,14 @@
-namespace DocumentsApp.Data.Dtos;
+namespace DocumentsApp.Shared.Dtos;
 
 public class PagedResults<T>
 {
-    public List<T> Items { get; set; }
+    public IList<T> Items { get; set; }
     public int TotalPages { get; set; }
     public int ItemsFrom  { get; set; }
     public int ItemsTo { get; set; }
     public int TotalItemsCount { get; set; }
 
-    public PagedResults(List<T> items, int totalCount, int pageSize, int pageNum)
+    public PagedResults(IList<T> items, int totalCount, int pageSize, int pageNum)
     {
         Items = items;
         TotalItemsCount = totalCount;

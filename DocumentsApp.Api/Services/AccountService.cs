@@ -1,10 +1,10 @@
-using System.Security.Cryptography;
+using AutoMapper;
 using DocumentsApp.Api.Helpers.Interfaces;
-using DocumentsApp.Data.Auth.Interfaces;
+using DocumentsApp.Api.Models;
+using DocumentsApp.Api.Providers;
+using DocumentsApp.Api.Services.Interfaces;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.Services.Interfaces;
-using DocumentsApp.Shared.Dtos.AccountDtos;
-using DocumentsApp.Shared.Enums;
+using DocumentsApp.Shared.Dtos.Account;
 using DocumentsApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,43 +16,52 @@ public class AccountService : IAccountService
     private readonly UserManager<Account> _userManager;
     private readonly IMailHelper _mailHelper;
     private readonly IMailService _mailService;
-    private readonly IAesCipher _aesCipher;
-    private readonly IEncryptionKeyService _keyService;
+    private readonly IMapper _mapper;
 
     public AccountService(
         IAuthenticationContextProvider authenticationContextProvider,
         UserManager<Account> userManager,
         IMailHelper mailHelper,
         IMailService mailService,
-        IAesCipher aesCipher,
-        IEncryptionKeyService keyService)
+        IMapper mapper)
     {
         _authenticationContextProvider = authenticationContextProvider;
         _userManager = userManager;
         _mailHelper = mailHelper;
         _mailService = mailService;
-        _aesCipher = aesCipher;
-        _keyService = keyService;
+        _mapper = mapper;
     }
 
-    public async Task<IdentityResult> UpdateUserNameAsync(UpdateUserNameDto dto)
+    public async Task<GetAccountDto> GetCurrentUserInfo()
+    {
+        var user = await GetUserFromContextAsync();
+        return _mapper.Map<GetAccountDto>(user);
+    }
+
+    public async Task<bool> UpdateUserNameAsync(UpdateUserNameDto dto)
     {
         var user = await GetUserFromContextAsync();
 
-        var passwordCheck = await _userManager.CheckPasswordAsync(user, dto.Password);
-        if (!passwordCheck)
+        if (!await _userManager.CheckPasswordAsync(user, dto.Password))
             throw new UnauthorizedException("Invalid login credentials");
+
+        if (user.UserName == dto.NewUserName)
+            throw new BadRequestException("UpdateUserName", "Username must be different from the current one");
 
         user.UserName = dto.NewUserName;
 
-        return await _userManager.UpdateAsync(user);
+        return CheckResult(await _userManager.UpdateAsync(user), "UpdateUserName", "Failed to update username");
     }
 
-    public async Task<IdentityResult> UpdatePasswordAsync(UpdatePasswordDto dto)
+    public async Task<bool> UpdatePasswordAsync(UpdatePasswordDto dto)
     {
         var user = await GetUserFromContextAsync();
 
-        return await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        if (await _userManager.CheckPasswordAsync(user, dto.NewPassword))
+            throw new BadRequestException("UpdatePassword", "New password must be different from the old one");
+        
+        return CheckResult(await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword),
+            "UpdatePassword", "Failed to update password");
     }
 
     public async Task<bool> SubmitEmailConfirmationAsync(string email)
@@ -60,11 +69,19 @@ public class AccountService : IAccountService
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null)
-            return false;
+            throw new NotFoundException("No user with such email");
+        
+        if (user.EmailConfirmed)
+            throw new BadRequestException("ConfirmEmail", "User email is already confirmed");
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encrypted = await EncryptCredentialsAsync(email, token, EncryptionKeyTypeEnum.EmailConfirmation);
-        var message = _mailHelper.GetEmailConfirmationMessage(email, encrypted);
+        var accountSecurityData = new AccountSecurityData()
+        {
+            AccountId = user.Id,
+            Token = token
+        };
+        
+        var message = _mailHelper.GetEmailConfirmationMessage(email, accountSecurityData);
         _mailService.SendMessageAsync(message);
 
         return true;
@@ -78,77 +95,61 @@ public class AccountService : IAccountService
             return false;
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var encrypted = await EncryptCredentialsAsync(email, token, EncryptionKeyTypeEnum.PasswordReset);
-        var message = _mailHelper.GetPasswordResetMessage(email, encrypted);
+        var accountSecurityData = new AccountSecurityData()
+        {
+            AccountId = user.Id,
+            Token = token
+        };
+        
+        var message = _mailHelper.GetPasswordResetMessage(email, accountSecurityData);
         _mailService.SendMessageAsync(message);
 
         return true;
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string encryptedString)
+    public async Task<bool> ConfirmEmailAsync(AccountSecurityData accountSecurityData)
     {
-        var decryptedCredentials =
-            await DecryptCredentialsAsync(encryptedString, EncryptionKeyTypeEnum.EmailConfirmation);
-
-        if (decryptedCredentials is null)
-            return IdentityResult.Failed(
-                new IdentityError
-                {
-                    Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "Invalid operation, try confirming your email again"
-                });
-
-        var user = await _userManager.FindByEmailAsync(decryptedCredentials.Email);
+        var user = await _userManager.FindByIdAsync(accountSecurityData.AccountId);
 
         if (user is null)
             throw new NotFoundException("No user with such id");
 
         if (user.EmailConfirmed)
-            return IdentityResult.Failed(
-                new IdentityError()
-                {
-                    Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "Invalid operation, your email is already confirmed"
-                });
+            throw new BadRequestException("ConfirmEmail", "User email is already confirmed");
 
-        var emailResult = await _userManager.ConfirmEmailAsync(user, decryptedCredentials.Token);
+        var emailResult = await _userManager.ConfirmEmailAsync(user, accountSecurityData.Token);
 
-        if (emailResult != IdentityResult.Success)
-            return emailResult;
-
+        CheckResult(emailResult, "ConfirmEmail", "Failed to confirm email");
         user.LockoutEnabled = false;
-        return await _userManager.UpdateAsync(user);
+        
+        return true;
     }
 
-    public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto, string encryptedString)
+    public async Task<bool> ResetPasswordAsync(ResetPasswordDto dto)
     {
-        var decryptedCredentials = await DecryptCredentialsAsync(encryptedString, EncryptionKeyTypeEnum.PasswordReset);
-
-        if (decryptedCredentials is null)
-            return IdentityResult.Failed(
-                new IdentityError
-                {
-                    Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "Invalid operation, try resetting your password again"
-                });
-
-        var user = await _userManager.FindByEmailAsync(decryptedCredentials.Email);
+        var user = await _userManager.FindByIdAsync(dto.AccountId);
 
         if (user is null)
             throw new NotFoundException("No user with such id");
 
-        // check if the new password is same as the old one
         if (await _userManager.CheckPasswordAsync(user, dto.NewPassword))
-        {
-            return IdentityResult.Failed(
-                new IdentityError
-                {
-                    Code = nameof(IdentityErrorDescriber.DefaultError),
-                    Description = "New password cannot be the same as the old one"
-                });
-        }
+            throw new BadRequestException("ResetPassword", "Password must be different from the old one");
 
-        return await _userManager.ResetPasswordAsync(user, decryptedCredentials.Token, dto.NewPassword);
+        return CheckResult(await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword),
+            "ResetPassword", "Failed to reset password");
+    }
+    
+    #region Private methods
+
+    private bool CheckResult(IdentityResult result, string titleOnFail, string messageOnFail)
+    {
+        if (result.Errors.Any())
+            throw new BadRequestException(titleOnFail, result.Errors.First().Description);
+
+        if (!result.Succeeded)
+            throw new BadRequestException(titleOnFail, messageOnFail);
+
+        return result.Succeeded;
     }
 
     private async Task<Account> GetUserFromContextAsync()
@@ -160,41 +161,6 @@ public class AccountService : IAccountService
 
         return user;
     }
-
-    private async Task<string> EncryptCredentialsAsync(string email, string token, EncryptionKeyTypeEnum keyType)
-    {
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(keyType);
-        var toEncrypt = $"{email}&{token}";
-
-        return Convert.ToBase64String(_aesCipher.EncryptString(toEncrypt, encryptedKey.Key, encryptedKey.Vector));
-    }
-
-    private async Task<EncryptionCredentials> DecryptCredentialsAsync(string encryptedCredentials,
-        EncryptionKeyTypeEnum keyType)
-    {
-        var encryptedKey = await _keyService.GetEncryptionKeyByTypeAsync(keyType);
-        string decrypted;
-
-        try
-        {
-            decrypted = _aesCipher.DecryptString(Convert.FromBase64String(encryptedCredentials), encryptedKey.Key,
-                encryptedKey.Vector);
-        }
-        catch (CryptographicException e)
-        {
-            return null;
-        }
-
-        return new EncryptionCredentials
-        {
-            Email = decrypted.Split('&')[0],
-            Token = decrypted.Split('&')[1]
-        };
-    }
-
-    private class EncryptionCredentials
-    {
-        public string Email;
-        public string Token;
-    }
+    
+    #endregion
 }

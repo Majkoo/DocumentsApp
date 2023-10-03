@@ -1,9 +1,9 @@
 using AutoMapper;
-using DocumentsApp.Data.Auth.Interfaces;
+using DocumentsApp.Api.MappingProfiles;
+using DocumentsApp.Api.MappingProfiles.ValueResolvers;
+using DocumentsApp.Api.Providers;
 using DocumentsApp.Data.Entities;
-using DocumentsApp.Data.MappingProfiles;
-using DocumentsApp.Data.MappingProfiles.ValueResolvers;
-using DocumentsApp.Shared.Dtos.DocumentDtos;
+using DocumentsApp.Shared.Dtos.Document;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
